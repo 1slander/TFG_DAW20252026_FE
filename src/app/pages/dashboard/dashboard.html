@@ -1,0 +1,31 @@
+<mat-toolbar>
+  <button
+    matIconButton
+    class="example-icon"
+    aria-label="Example icon-button with menu icon"
+    matTooltip="Menu"
+    matTooltipPosition="below"
+    (click)="drawer.toggle()"
+  >
+    <mat-icon>menu</mat-icon>
+  </button>
+  <span>Dashboard</span>
+  <span class="example-spacer"></span>
+
+  <app-theme-selector/>
+  <app-settings-menu />
+</mat-toolbar>
+
+<mat-drawer-container class="example-container">
+  <mat-drawer
+    #drawer
+    [mode]="isMobile() ? 'over' : 'side'"
+    [opened]="!isMobile()"
+    position="start"
+  >
+    <app-drawer-menu [isMobile]="isMobile()" (itemClicked)="onNavigate()" />
+  </mat-drawer>
+  <mat-drawer-content style="padding: 5px">
+    <router-outlet />
+  </mat-drawer-content>
+</mat-drawer-container>
