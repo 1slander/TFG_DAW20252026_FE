@@ -1,0 +1,10 @@
+.page-wrapper {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: var(--space-xxl) var(--space-lg);
+
+  background: var(--principal-white);
+}
