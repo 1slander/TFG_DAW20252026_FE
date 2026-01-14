@@ -1,0 +1,6 @@
+import { FormField } from '../interfaces/form-field';
+
+export const LOGIN_Form:FormField[]=[
+    {name:'email',label:'Email',type:'email',required:true},
+    {name:'password',label:'Password',type:'password',required:true}
+];
