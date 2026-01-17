@@ -3,8 +3,8 @@
   width: 100%;
   display: flex;
   justify-content: center;
-  align-items: flex-start;
+  align-items: center;
   padding: var(--space-xxl) var(--space-lg);
 
-  background: var(--principal-white);
+  background: var(--principal-background);
 }
