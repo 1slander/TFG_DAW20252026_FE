@@ -1,7 +1,10 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { MaterialModule } from '../../ui/material-modules';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
+
+
+type Area = 'admin' | 'user';
 
 @Component({
   selector: 'app-home',
@@ -10,44 +13,71 @@ import { RouterLink } from '@angular/router';
   styleUrl: './home.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
+
+
 export class Home {
 
-   modules = [
+  area: Area = 'user';
+  base = '/user/dashboard';
+
+  constructor(private route: ActivatedRoute) {
+    // Home cuelga de /{area}/dashboard -> el data.area está en el padre (dashboard)
+    this.area = (this.route.parent?.snapshot.data['area'] ?? 'user') as Area;
+    this.base = `/${this.area}/dashboard`;
+  }
+
+   private allModules: Array<{
+    title: string;
+    description: string;
+    traits: string[];
+    areas: Area[];          
+    route: () => string;     
+  }> = [
     {
       title: 'Admins',
       description: 'This is the module for admins.',
       traits: ['charming', 'graceful', 'sassy'],
-      route: '/dashboard/admin/admins',
+      areas: ['admin'],
+      route: () => `/admin/dashboard/admin/admins`,
     },
-    {
+       {
       title: 'Users',
       description: 'This is the module for users.',
       traits: ['fluffy', 'alert', 'intelligent'],
-      route: '/dashboard/user/users',
+      areas: ['user'], 
+      route: () => `${this.base}/user/users`,
     },
     {
       title: 'Editors',
       description: 'This is the module for editors.',
       traits: ['charming', 'graceful', 'sassy'],
-      route: '/dashboard/editor/editors',
+      areas: ['user', 'admin'],
+      route: () => `${this.base}/editor`,
     },
     {
       title: 'Viewers',
       description: 'This is the module for viewers.',
       traits: ['fluffy', 'alert', 'intelligent'],
-      route: '/dashboard/viewer/viewers',
+      areas: ['user', 'admin'],
+      route: () => `${this.base}/viewer`,
     },
     {
       title: 'Cars',
       description: 'This is the module for cars.',
       traits: ['charming', 'graceful', 'sassy'],
-      route: '/dashboard/car/cars',
+      areas: ['user', 'admin'],
+      route: () => `${this.base}/car`,
     },
     {
       title: 'Articles',
       description: 'This is the module for articles.',
       traits: ['fluffy', 'alert', 'intelligent'],
-      route: '/dashboard/article/articles',
+      areas: ['user', 'admin'],
+      route: () => `${this.base}/article`,
     },
   ];
+
+  get modules() {
+    return this.allModules.filter(m => m.areas.includes(this.area));
+  }
 }
