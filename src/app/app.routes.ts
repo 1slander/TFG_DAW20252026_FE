@@ -5,25 +5,39 @@ import { LoginComponent } from './pages/login/login';
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: 'dashboard',
+    redirectTo: 'api/dashboard',
     pathMatch: 'full',
   },
+
+  //RUTAS PARA ADMIN
   {
-    path: 'dashboard',
+    path:'admin',
+    loadChildren:()=>
+      import('./routes/admin.routes').then((m)=>m.adminRoutes)
+  },
+
+  //RUTAS PARA USER
+  {
+    path: 'api',
     loadChildren: () =>
-      import('./shared/dashboard.routes').then((m) => m.dashboardRoutes),
+      import('./routes/api.routes').then((m) => m.apiRoutes),
   },
-  {
-    path: 'register',
-    component: RegisterComponent
+  
+  //RUTAS DE AUTH
+ {
+    path: 'auth',
+    loadChildren: () =>
+      import('./routes/auth.routes').then((m) => m.authRoutes),
   },
-  {
-    path:'login',
-    component: LoginComponent
-  },
+
   {
     path: '**',
-    pathMatch: 'full',
-    redirectTo: 'dashboard',
+    redirectTo: 'api/dashboard',
   },
 ];
+
+// {
+//   path: 'dashboard',
+//   loadChildren: () =>
+//     import('./shared/dashboard.routes').then((m) => m.dashboardRoutes),
+// },

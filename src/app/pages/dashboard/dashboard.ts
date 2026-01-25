@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, inject, ViewChild } from '@angular/
 import { MaterialModule } from '../../ui/material-modules';
 import {MatDrawer, MatSidenavModule} from '@angular/material/sidenav';
 import { SettingsMenu } from "../../shared/settings-menu/settings-menu";
-import { RouterOutlet } from '@angular/router';
+import { ActivatedRoute, RouterOutlet } from '@angular/router';
 import { DrawerMenu } from "../../shared/drawer-menu/drawer-menu";
 import { ScreenSize } from '../../services/screen-size';
 import { ThemeSelector } from "../../shared/theme-selector/theme-selector";
@@ -17,11 +17,18 @@ export class Dashboard {
   @ViewChild('drawer') drawer!: MatDrawer;
   private readonly screenSizeService = inject(ScreenSize);
 
+  area: 'admin' | 'user' = 'user';
+  constructor(private route: ActivatedRoute) {}
+
   isMobile = this.screenSizeService.isMobile;
 
   onNavigate() {
     if (this.isMobile()) {
       this.drawer.close();
     }
+  }
+
+  ngOnInit() {
+    this.area = this.route.snapshot.data['area'] ?? 'user';
   }
 }

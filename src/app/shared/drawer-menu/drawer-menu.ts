@@ -33,4 +33,7 @@ export class DrawerMenu {
       this.itemClicked.emit();
     }
   }
+
+  @Input() area: 'admin' | 'user' = 'user';
+
 }
