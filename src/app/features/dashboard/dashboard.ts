@@ -29,6 +29,6 @@ export class Dashboard {
   }
 
   ngOnInit() {
-    this.area = this.route.snapshot.data['area'] ?? 'user';
+    this.area = this.route.snapshot.data['area'] ?? 'api';
   }
 }

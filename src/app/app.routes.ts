@@ -16,11 +16,11 @@ export const routes: Routes = [
       import('./core/routes/admin.routes').then((m)=>m.adminRoutes)
   },
 
-  //RUTAS PARA USER
+  //RUTAS PARA API
   {
-    path: 'user',
+    path: 'api',
     loadChildren: () =>
-      import('./core/routes/user.routes').then((m) => m.userRoutes),
+      import('./core/routes/api.routes').then((m) => m.apiRoutes),
   },
   
   //RUTAS DE AUTH
@@ -32,7 +32,7 @@ export const routes: Routes = [
 
   {
     path: '**',
-    redirectTo: 'user/dashboard',
+    redirectTo: 'api/dashboard',
   },
 ];
 
