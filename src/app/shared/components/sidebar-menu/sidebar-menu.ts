@@ -13,12 +13,12 @@ import { MaterialModule } from '../../ui/material-modules';
 
 @Component({
   selector: 'app-drawer-menu',
-  imports: [MaterialModule,CommonModule,RouterModule],
+  imports: [MaterialModule, CommonModule, RouterModule],
   templateUrl: './sidebar-menu.html',
   styleUrl: './sidebar-menu.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DrawerMenu {
+export class SideBarMenu {
   @Input() isMobile = false;
   @Output() itemClicked = new EventEmitter<void>();
 
@@ -34,6 +34,6 @@ export class DrawerMenu {
     }
   }
 
-  @Input() area: 'admin' | 'user' = 'user';
+  @Input() area: 'admin' | 'api' = 'api';
 
 }
