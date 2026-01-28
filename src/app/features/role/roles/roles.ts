@@ -3,9 +3,9 @@ import { Component } from '@angular/core';
 @Component({
   selector: 'app-editors',
   imports: [],
-  templateUrl: './editors.html',
-  styleUrl: './editors.scss',
+  templateUrl: './roles.html',
+  styleUrl: './roles.scss',
 })
-export class Editors {
+export class Roles {
 
 }

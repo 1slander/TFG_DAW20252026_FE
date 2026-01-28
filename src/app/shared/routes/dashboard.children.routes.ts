@@ -12,14 +12,14 @@ export const dashboardChildrenRoutes: Routes = [
       import('../../features/settings/settings.routes').then(m => m.settingsRoutes),
   },
   {
-    path: 'editor',
+    path: 'role',
     loadChildren: () =>
-      import('../../features/editor/editor.routes').then(m => m.editorRoutes),
+      import('../../features/role/role.routes').then(m => m.rolesRoutes),
   },
   {
-    path: 'viewer',
+    path: 'user',
     loadChildren: () =>
-      import('../../features/viewer/viewer.routes').then(m => m.viewerRoutes),
+      import('../../features/user/user.routes').then(m => m.userRoutes),
   },
   {
     path: 'car',
@@ -32,8 +32,8 @@ export const dashboardChildrenRoutes: Routes = [
       import('../../features/article/article.routes').then(m => m.articleRoutes),
   },
   {
-    path: 'drawer',
+    path: 'sidebar-sections',
     loadChildren: () =>
-      import('../../features/sidebar-sections/drawer.routes').then(m => m.drawerRoutes),
+      import('../../features/sidebar-sections/sidebar-sections.routes').then(m => m.sidebarSectionRoutes),
   },
 ];

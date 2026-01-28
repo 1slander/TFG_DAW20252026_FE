@@ -10,12 +10,13 @@ export const apiRoutes: Routes = [
     component: Dashboard,
     data: { area: 'api' },
     children: [
-       ...dashboardChildrenRoutes,
+      ...dashboardChildrenRoutes,
 
-       {
-        path: 'user',
+
+      {
+        path: 'viewer',
         loadChildren: () =>
-          import('../../features/user/user.routes').then(m => m.userRoutes),
+          import('../../features/viewer/viewer.routes').then(m => m.viewerRoutes),
       },
 
       // wildcard dentro del dashboard user
