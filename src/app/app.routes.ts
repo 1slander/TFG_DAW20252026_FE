@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
-import { RegisterComponent } from './pages/register/register';
-import { LoginComponent } from './pages/login/login';
+import { RegisterComponent } from './features/auth/register/register';
+import { LoginComponent } from './features/auth/login/login';
 
 export const routes: Routes = [
   {
@@ -13,21 +13,21 @@ export const routes: Routes = [
   {
     path:'admin',
     loadChildren:()=>
-      import('./routes/admin.routes').then((m)=>m.adminRoutes)
+      import('./core/routes/admin.routes').then((m)=>m.adminRoutes)
   },
 
-  //RUTAS PARA USER
+  //RUTAS PARA API
   {
     path: 'api',
     loadChildren: () =>
-      import('./routes/api.routes').then((m) => m.apiRoutes),
+      import('./core/routes/api.routes').then((m) => m.apiRoutes),
   },
   
   //RUTAS DE AUTH
  {
     path: 'auth',
     loadChildren: () =>
-      import('./routes/auth.routes').then((m) => m.authRoutes),
+      import('./core/routes/auth.routes').then((m) => m.authRoutes),
   },
 
   {
