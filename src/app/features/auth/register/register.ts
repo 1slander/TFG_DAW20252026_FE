@@ -7,7 +7,7 @@ import { OWNER_REGISTER_FORM } from '../../../forms/owner-register';
   standalone: true,
   imports: [DynamicFormComponent],
   templateUrl: './register.html',
-  styleUrl: './register.css'
+  styleUrl: './register.scss'
 })
 export class RegisterComponent {
 

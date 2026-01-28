@@ -5,7 +5,7 @@ import { RouterLink } from '@angular/router';
   selector: 'app-settings-menu',
   imports: [MaterialModule, RouterLink],
   templateUrl: './settings-menu.html',
-  styleUrl: './settings-menu.css',
+  styleUrl: './settings-menu.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SettingsMenu {
