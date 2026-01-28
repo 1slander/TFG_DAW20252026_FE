@@ -5,14 +5,14 @@
       Home
     </span>
   </mat-list-item>
-  <mat-list-item routerLink="drawer/table" routerLinkActive="activelink" (click)="handleItemClick()"
+  <mat-list-item routerLink="sidebar-sections/table" routerLinkActive="activelink" (click)="handleItemClick()"
     tabindex="-1">
     <span class="icon-and-text">
       <mat-icon class="icon-margin">phone</mat-icon>
       Table
     </span>
   </mat-list-item>
-  <mat-list-item routerLink="drawer/list" routerLinkActive="activelink" (click)="handleItemClick()"
+  <mat-list-item routerLink="sidebar-sections/list" routerLinkActive="activelink" (click)="handleItemClick()"
     tabindex="-1">
     <span class="icon-and-text">
       <mat-icon class="icon-margin">list</mat-icon>
@@ -35,7 +35,7 @@
 
     @if(subMenuOpen() === 'components'){
     <div>
-      <mat-list-item routerLink="drawer/buttons" routerLinkActive="activelink" class="submenu-content"
+      <mat-list-item routerLink="sidebar-sections/buttons" routerLinkActive="activelink" class="submenu-content"
         (click)="handleItemClick()" tabindex="-1">
         <span class="icon-and-text">
           <mat-icon class="icon-margin">rss_feed</mat-icon>
@@ -43,7 +43,7 @@
         </span>
       </mat-list-item>
 
-      <mat-list-item routerLink="drawer/tabs" routerLinkActive="activelink" class="submenu-content"
+      <mat-list-item routerLink="sidebar-sections/tabs" routerLinkActive="activelink" class="submenu-content"
         (click)="handleItemClick()" tabindex="-1">
         <span class="icon-and-text">
           <mat-icon class="icon-margin">sentiment_satisfied_alt</mat-icon>

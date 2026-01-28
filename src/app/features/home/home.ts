@@ -26,56 +26,56 @@ export class Home {
     this.base = `/${this.area}/dashboard`;
   }
 
-   private allModules: Array<{
+  private allModules: Array<{
     title: string;
     description: string;
-    traits: string[];
-    areas: Area[];          
-    route: () => string;     
+    // traits: string[];
+    areas: Area[];
+    route: () => string;
   }> = [
-    {
-      title: 'Admins',
-      description: 'This is the module for admins.',
-      traits: ['charming', 'graceful', 'sassy'],
-      areas: ['admin'],
-      route: () => `${this.base}/admin/admins`,
-    },
-       {
-      title: 'Users',
-      description: 'This is the module for users.',
-      traits: ['fluffy', 'alert', 'intelligent'],
-      areas: ['api'], 
-      route: () => `${this.base}/user/users`,
-    },
-    {
-      title: 'Editors',
-      description: 'This is the module for editors.',
-      traits: ['charming', 'graceful', 'sassy'],
-      areas: ['api', 'admin'],
-      route: () => `${this.base}/editor`,
-    },
-    {
-      title: 'Viewers',
-      description: 'This is the module for viewers.',
-      traits: ['fluffy', 'alert', 'intelligent'],
-      areas: ['api', 'admin'],
-      route: () => `${this.base}/viewer`,
-    },
-    {
-      title: 'Cars',
-      description: 'This is the module for cars.',
-      traits: ['charming', 'graceful', 'sassy'],
-      areas: ['api', 'admin'],
-      route: () => `${this.base}/car`,
-    },
-    {
-      title: 'Articles',
-      description: 'This is the module for articles.',
-      traits: ['fluffy', 'alert', 'intelligent'],
-      areas: ['api', 'admin'],
-      route: () => `${this.base}/article`,
-    },
-  ];
+      {
+        title: 'Admins',
+        description: 'Lista de todos los Administradores.',
+        //traits: ['charming', 'graceful', 'sassy'],
+        areas: ['admin'],
+        route: () => `${this.base}/admin/admins`,
+      },
+      {
+        title: 'Usarios',
+        description: 'Vista de todos los usuarios.',
+        //traits: ['fluffy', 'alert', 'intelligent'],
+        areas: ['admin'],
+        route: () => `${this.base}/user/users`,
+      },
+      {
+        title: 'Roles',
+        description: 'Vista para insertar nuevos roles.',
+        //traits: ['charming', 'graceful', 'sassy'],
+        areas: ['admin'],
+        route: () => `${this.base}/role`,
+      },
+      {
+        title: 'Viewer',
+        description: 'Vista de todos los usuarios.',
+        // traits: ['fluffy', 'alert', 'intelligent'],
+        areas: ['api'],
+        route: () => `${this.base}/viewer`,
+      },
+      {
+        title: 'Cars',
+        description: 'This is the module for cars.',
+        // traits: ['charming', 'graceful', 'sassy'],
+        areas: ['api'],
+        route: () => `${this.base}/car`,
+      },
+      {
+        title: 'Articles',
+        description: 'This is the module for articles.',
+        //traits: ['fluffy', 'alert', 'intelligent'],
+        areas: ['api'],
+        route: () => `${this.base}/article`,
+      },
+    ];
 
   get modules() {
     return this.allModules.filter(m => m.areas.includes(this.area));
