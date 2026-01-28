@@ -14,8 +14,8 @@ import { MaterialModule } from '../../ui/material-modules';
 @Component({
   selector: 'app-drawer-menu',
   imports: [MaterialModule,CommonModule,RouterModule],
-  templateUrl: './drawer-menu.html',
-  styleUrl: './drawer-menu.scss',
+  templateUrl: './sidebar-menu.html',
+  styleUrl: './sidebar-menu.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DrawerMenu {

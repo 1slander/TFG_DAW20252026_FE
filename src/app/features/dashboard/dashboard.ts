@@ -3,7 +3,7 @@ import { MaterialModule } from '../../shared/ui/material-modules';
 import {MatDrawer, MatSidenavModule} from '@angular/material/sidenav';
 import { SettingsMenu } from "../../shared/components/settings-menu/settings-menu";
 import { ActivatedRoute, RouterOutlet } from '@angular/router';
-import { DrawerMenu } from "../../shared/components/drawer-menu/drawer-menu";
+import { DrawerMenu } from "../../shared/components/sidebar-menu/sidebar-menu";
 import { ScreenSize } from '../../core/services/screen-size';
 import { ThemeSelector } from "../../shared/components/theme-selector/theme-selector";
 @Component({

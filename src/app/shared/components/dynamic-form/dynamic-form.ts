@@ -9,7 +9,7 @@ import { MaterialModule } from '../../ui/material-modules';
   selector: 'app-dynamic-form',
   imports: [CommonModule, ReactiveFormsModule, MaterialModule],
   templateUrl: './dynamic-form.html',
-  styleUrl: './dynamic-form.css',
+  styleUrl: './dynamic-form.scss',
 })
 export class DynamicFormComponent implements OnInit{
 

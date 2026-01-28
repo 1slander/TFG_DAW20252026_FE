@@ -6,7 +6,7 @@ import { LOGIN_FORM } from '../../../forms/login-form';
   selector: 'app-login',
   imports: [DynamicFormComponent],
   templateUrl: './login.html',
-  styleUrl: './login.css',
+  styleUrl: './login.scss',
 })
 export class LoginComponent {
 
