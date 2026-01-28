@@ -34,6 +34,6 @@ export const dashboardChildrenRoutes: Routes = [
   {
     path: 'drawer',
     loadChildren: () =>
-      import('../../features/dashboard-sections/drawer.routes').then(m => m.drawerRoutes),
+      import('../../features/sidebar-sections/drawer.routes').then(m => m.drawerRoutes),
   },
 ];
