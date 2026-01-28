@@ -4,11 +4,11 @@ import { Home } from '../../features/home/home';
 import { dashboardChildrenRoutes } from '../../shared/routes/dashboard.children.routes';
 //import { UserProfileComponent } from '../pages/user/user-profile.component';
 
-export const userRoutes: Routes = [
+export const apiRoutes: Routes = [
   {
     path: 'dashboard',
     component: Dashboard,
-    data: { area: 'user' },
+    data: { area: 'api' },
     children: [
        ...dashboardChildrenRoutes,
 
