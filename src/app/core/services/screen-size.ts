@@ -8,6 +8,7 @@ export class ScreenSize {
   private mobileQuery: MediaQueryList;
   private readonly _isMobile = signal(false);
 
+
   constructor(private mediaMatcher: MediaMatcher) {
     this.mobileQuery = mediaMatcher.matchMedia('(max-width: 600px)');
 
