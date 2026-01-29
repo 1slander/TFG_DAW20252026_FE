@@ -1,0 +1,16 @@
+.admin-main-container {
+  padding: var(--space-xxl);
+  background-color: var(--principal-background);
+  min-height: 100vh;
+}
+
+span {
+  padding: 4px 10px;
+  border-radius: 6px;
+  display: inline-block;
+
+  &.admin {
+    color: var(--principal-accent);
+    border: 1px solid var(--principal-accent);
+  }
+}
