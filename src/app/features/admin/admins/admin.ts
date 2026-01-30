@@ -38,7 +38,7 @@ export class Admin {
    {name:"username", label:"Nombre de usuario",type:"text",required:true},
    {name:"email", label:"Email",type:"email",required:true},
    {name:"password", label:"Contraseña",type:"password",required:true},
-   {name:"role", label:"Rol",type:"select",required:true,options:[{value:"admin",label:"Admin"}]}
+   {name:"role", label:"Rol",type:"select",required:true,options:[{value:"ADMIN",label:"Admin"}]}
   ]
 
   swapCreateForm(){
