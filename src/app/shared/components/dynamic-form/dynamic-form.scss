@@ -1,41 +1,33 @@
 :host {
   display: block;
-  color: var(--principal-text);
 }
 
-/* Card / panel del formulario */
+/* ====== CONTENEDOR ====== */
+/* Por defecto: ocupa todo el ancho del padre */
 .form-shell {
-  /* Fondo verde-azulado (tu color principal) pero suave */
-  background: color-mix(in srgb, var(--principal-color) 18%, var(--principal-white));
-
-  /* Borde “tirando a negro” usando vuestro texto principal (muy oscuro) */
-  border: 2px solid color-mix(in srgb, var(--principal-text) 85%, #000);
-
-  border-radius: 14px;
-  padding: var(--space-xl);
-
-  max-width: 920px;
   width: 100%;
+  border-radius: 14px;
+  padding: var(--space-lg);
+  box-shadow: none;
 
-  /* Sombra discreta */
-  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.12);
+  /* Importante: elimina el “bloque centrado” */
+  max-width: none;
 }
 
-/* Cabecera */
+/* Header */
 .form-header {
-  margin-bottom: var(--space-lg);
+  margin-bottom: var(--space-md);
 }
 
 .form-header .title {
-  font-size: 1.6rem;
+  font-size: 1.35rem;
   font-weight: 800;
-  color: var(--principal-text);
+  letter-spacing: -0.01em;
 }
 
 .form-header .subtitle {
   margin-top: var(--space-xxs);
   font-size: 0.95rem;
-  color: color-mix(in srgb, var(--principal-text) 70%, transparent);
 }
 
 /* Grid */
@@ -64,78 +56,126 @@
   justify-content: flex-end;
 }
 
-/* Botones */
+/* Botones (neutros, el tema ajusta lo demás) */
 .btn-primary {
   border-radius: 10px;
-  font-weight: 700;
-  color: var(--principal-white) !important;
-  background: var(--principal-color) !important;
-}
-
-.btn-primary:hover {
-  background: var(--secondary-color) !important;
+  font-weight: 800;
 }
 
 .btn-secondary {
   border-radius: 10px;
-  font-weight: 700;
-  color: var(--principal-text) !important;
-  border-color: color-mix(in srgb, var(--principal-text) 80%, transparent) !important;
+  font-weight: 800;
 }
 
-/* --- Angular Material overrides --- */
+/* ====== ANGULAR MATERIAL BASE ====== */
 :host ::ng-deep .mat-mdc-form-field {
   width: 100%;
 }
 
-/* Inputs blancos encima del fondo teal suave */
-:host ::ng-deep .mat-mdc-text-field-wrapper {
-  background: var(--principal-white);
+/* =========================
+   THEME: DARK
+   ========================= */
+
+:host-context(body[data-theme='dark']) .form-shell {
+  background: rgba(8, 14, 14, 0.55);
+  border: 1px solid rgba(0, 168, 150, 0.18);
+}
+
+:host-context(body[data-theme='dark']) .form-header .title {
+  color: rgba(250, 255, 254, 0.92);
+}
+
+:host-context(body[data-theme='dark']) .form-header .subtitle {
+  color: rgba(250, 255, 254, 0.55);
+}
+
+/* Inputs dark (NO blancos) */
+:host-context(body[data-theme='dark']) ::ng-deep .mat-mdc-text-field-wrapper {
+  background: rgba(0, 0, 0, 0.22);
   border-radius: 10px;
 }
 
-/* Texto del input/select */
-:host ::ng-deep .mat-mdc-input-element,
-:host ::ng-deep .mat-mdc-select-value-text {
-  color: var(--principal-text) !important;
-  font-weight: 600;
+/* Texto */
+:host-context(body[data-theme='dark']) ::ng-deep .mat-mdc-input-element,
+:host-context(body[data-theme='dark']) ::ng-deep .mat-mdc-select-value-text {
+  color: rgba(250, 255, 254, 0.82) !important;
+  font-weight: 650;
 }
 
 /* Label */
-:host ::ng-deep .mdc-floating-label,
-:host ::ng-deep .mat-mdc-form-field-label {
-  color: color-mix(in srgb, var(--principal-text) 65%, transparent) !important;
-  font-weight: 600;
+:host-context(body[data-theme='dark']) ::ng-deep .mdc-floating-label,
+:host-context(body[data-theme='dark']) ::ng-deep .mat-mdc-form-field-label {
+  color: rgba(250, 255, 254, 0.55) !important;
+  font-weight: 650;
 }
 
-/* Outline por defecto */
-:host ::ng-deep .mdc-notched-outline__leading,
-:host ::ng-deep .mdc-notched-outline__notch,
-:host ::ng-deep .mdc-notched-outline__trailing {
-  border-color: color-mix(in srgb, var(--principal-text) 25%, transparent) !important;
+/* Outline */
+:host-context(body[data-theme='dark']) ::ng-deep .mdc-notched-outline__leading,
+:host-context(body[data-theme='dark']) ::ng-deep .mdc-notched-outline__notch,
+:host-context(body[data-theme='dark']) ::ng-deep .mdc-notched-outline__trailing {
+  border-color: rgba(0, 168, 150, 0.22) !important;
 }
 
-/* Hover: más oscuro */
-:host ::ng-deep .mat-mdc-form-field:hover .mdc-notched-outline__leading,
-:host ::ng-deep .mat-mdc-form-field:hover .mdc-notched-outline__notch,
-:host ::ng-deep .mat-mdc-form-field:hover .mdc-notched-outline__trailing {
-  border-color: color-mix(in srgb, var(--principal-text) 55%, transparent) !important;
+/* Hover */
+:host-context(body[data-theme='dark']) ::ng-deep .mat-mdc-form-field:hover .mdc-notched-outline__leading,
+:host-context(body[data-theme='dark']) ::ng-deep .mat-mdc-form-field:hover .mdc-notched-outline__notch,
+:host-context(body[data-theme='dark']) ::ng-deep .mat-mdc-form-field:hover .mdc-notched-outline__trailing {
+  border-color: rgba(0, 168, 150, 0.38) !important;
 }
 
-/* Focus: verde principal */
-:host ::ng-deep .mat-mdc-form-field.mat-focused .mdc-notched-outline__leading,
-:host ::ng-deep .mat-mdc-form-field.mat-focused .mdc-notched-outline__notch,
-:host ::ng-deep .mat-mdc-form-field.mat-focused .mdc-notched-outline__trailing {
+/* Focus */
+:host-context(body[data-theme='dark']) ::ng-deep .mat-mdc-form-field.mat-focused .mdc-notched-outline__leading,
+:host-context(body[data-theme='dark']) ::ng-deep .mat-mdc-form-field.mat-focused .mdc-notched-outline__notch,
+:host-context(body[data-theme='dark']) ::ng-deep .mat-mdc-form-field.mat-focused .mdc-notched-outline__trailing {
   border-color: var(--principal-color) !important;
 }
 
-:host ::ng-deep .mat-mdc-form-field.mat-focused .mdc-floating-label {
+:host-context(body[data-theme='dark']) ::ng-deep .mat-mdc-form-field.mat-focused .mdc-floating-label {
   color: var(--principal-color) !important;
 }
 
-/* Error (ojo con el typo de la variable) */
-:host ::ng-deep .mat-mdc-form-field-error,
-:host ::ng-deep .mat-mdc-form-field-error-wrapper {
-  color: var(--principal-accent) !important;
-  font-weight: 600;
+/* Botones dark */
+:host-context(body[data-theme='dark']) .btn-primary {
+  color: #001f1b !important;
+  background: var(--principal-color) !important;
+}
+
+:host-context(body[data-theme='dark']) .btn-secondary {
+  color: rgba(250, 255, 254, 0.78) !important;
+  border-color: rgba(250, 255, 254, 0.28) !important;
+}
+
+/* Error */
+:host-context(body[data-theme='dark']) ::ng-deep .mat-mdc-form-field-error,
+:host-context(body[data-theme='dark']) ::ng-deep .mat-mdc-form-field-error-wrapper {
+  color: rgba(255, 90, 105, 0.95) !important;
+  font-weight: 650;
+}
+
+/* =========================
+   THEME: LIGHT
+   ========================= */
+
+:host-context(body[data-theme='light']) .form-shell {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.08);
+}
+
+:host-context(body[data-theme='light']) .form-header .title {
+  color: var(--principal-text);
+}
+
+:host-context(body[data-theme='light']) .form-header .subtitle {
+  color: rgba(0, 51, 46, 0.65);
+}
+
+:host-context(body[data-theme='light']) .btn-primary {
+  color: var(--principal-white) !important;
+  background: var(--principal-color) !important;
+}
+
+:host-context(body[data-theme='light']) .btn-secondary {
+  color: var(--principal-text) !important;
+  border-color: rgba(0, 51, 46, 0.35) !important;
 }

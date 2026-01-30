@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, ElementRef, inject, ViewChild } from '@angular/core';
 import { MaterialModule  } from '../../../shared/ui/material-modules'
 import { CommonModule } from '@angular/common';
 import { AdminService } from '../../../core/services/admin.service';
@@ -48,7 +48,7 @@ export class Admin {
   onCreateAdmin(value:any){
     this.adminService.createAdmin(value);
     this.admins = this.adminService.getAdmins();
-    this.swapCreateForm();
+    this.showCreateForm = false;
   }
 
 }
