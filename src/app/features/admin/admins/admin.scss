@@ -71,12 +71,10 @@ mat-expansion-panel {
 }
 
 ::ng-deep .mat-expansion-panel-body {
-  padding: var(--space-lg);
+  padding: var(--space-lg) !important;
 }
 
-:host ::ng-deep mat-expansion-panel .mat-expansion-panel-content .mat-expansion-panel-body {
-  padding-top: calc(var(--space-lg) + var(--space-md)) !important;
-}
+
 
 /* Tabla */
 .table-wrapper {
