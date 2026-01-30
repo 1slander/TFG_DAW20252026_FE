@@ -44,7 +44,10 @@ export class AdminService {
   //recogemos todos los datos menos el Id, 
   //que lo vamos a generar nosotros por ahora
   createAdmin(admin:Omit<AdminInterface,'id'>){
-    const maxId = Math.max(...this.adminList.map(item => item.id)) + 1
+    const maxId = this.adminList.length === 0
+    ? 1
+    : Math.max(...this.adminList.map(item => item.id)) + 1
+    
     const newAdmin : AdminInterface = {
       id : maxId,
       username : admin.username,
