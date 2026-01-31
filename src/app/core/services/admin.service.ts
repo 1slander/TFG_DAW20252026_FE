@@ -8,7 +8,7 @@ export class AdminService {
 
   //nos creamos un array de admins en local para probar
   private adminList: AdminInterface[] =[
-      {
+  {
     "id": 1,
     "username": "admin_master",
     "email": "admin.master@restaurant.com",
