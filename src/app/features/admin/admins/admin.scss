@@ -108,9 +108,17 @@ button[mat-icon-button] {
    DARK THEME
    ========================= */
 :host-context(body[data-theme='dark']) .admin-main-container {
+<<<<<<< HEAD
   background: radial-gradient(1200px 600px at 30% 0%,
       rgba(0, 168, 150, 0.10),
       transparent 55%),
+=======
+  background: radial-gradient(
+      1200px 600px at 30% 0%,
+      rgba(0, 168, 150, 0.10),
+      transparent 55%
+    ),
+>>>>>>> 983e1e65b784a593d8a4c0ad6b1d9f18a6eb2547
     linear-gradient(180deg, #0c1413 0%, #0a1010 100%);
 }
 
@@ -168,7 +176,10 @@ button[mat-icon-button] {
 :host-context(body[data-theme='dark']) button[mat-icon-button] mat-icon {
   color: rgba(250, 255, 254, 0.82);
 }
+<<<<<<< HEAD
 
+=======
+>>>>>>> 983e1e65b784a593d8a4c0ad6b1d9f18a6eb2547
 :host-context(body[data-theme='dark']) .delete-icon mat-icon {
   color: rgba(168, 0, 18, 0.9);
 }
@@ -242,7 +253,10 @@ button[mat-icon-button] {
 :host-context(body[data-theme='light']) button[mat-icon-button] mat-icon {
   color: rgba(0, 51, 46, 0.75);
 }
+<<<<<<< HEAD
 
+=======
+>>>>>>> 983e1e65b784a593d8a4c0ad6b1d9f18a6eb2547
 :host-context(body[data-theme='light']) .delete-icon mat-icon {
   color: rgba(168, 0, 18, 0.85);
 }
@@ -264,6 +278,7 @@ button[mat-icon-button] {
 ::ng-deep .no-subscript .mat-mdc-form-field-subscript-wrapper {
   display: none !important;
 }
+<<<<<<< HEAD
 
 ::ng-deep .no-subscript .mat-mdc-text-field-wrapper {
   padding-bottom: 0 !important;
@@ -300,3 +315,8 @@ button[mat-icon-button] {
   --mdc-snackbar-supporting-text-color: #ffffff;
   font-weight: 600;
 }
+=======
+::ng-deep .no-subscript .mat-mdc-text-field-wrapper {
+  padding-bottom: 0 !important;
+}
+>>>>>>> 983e1e65b784a593d8a4c0ad6b1d9f18a6eb2547

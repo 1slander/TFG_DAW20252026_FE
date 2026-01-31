@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /* =========================
    BASE (Simetría total con Admin)
    ========================= */
@@ -16,10 +17,37 @@
       flex-direction: column;
       align-items: flex-start;
       gap: var(--space-md);
+=======
+.roles-main-container {
+  padding: var(--space-xxl);
+  background-color: var(--principal-background);
+  min-height: 100vh;
+
+  /* RESPONSIVE USANDO TU SERVICE */
+  &.is-mobile {
+    padding: var(--space-md);
+
+    .roles-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 20px;
+    }
+
+    .roles-actions {
+      width: 100%;
+      justify-content: flex-start;
+      gap: 15px;
+    }
+
+    .btn-add-role {
+      padding: 0 15px !important;
+      height: 50px !important;
+>>>>>>> 983e1e65b784a593d8a4c0ad6b1d9f18a6eb2547
     }
   }
 }
 
+<<<<<<< HEAD
 .admin-header {
   display: flex;
   justify-content: space-between;
@@ -72,10 +100,74 @@ mat-expansion-panel {
 }
 
 table[mat-table] {
+=======
+.roles-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  /* Alineamos arriba para controlar el desfase */
+  margin-bottom: var(--space-xxl);
+}
+
+.roles-actions {
+  display: flex;
+  align-items: flex-start;
+  /* Alineación superior */
+  gap: 2rem;
+}
+
+/* AJUSTE MAESTRO PARA EL BOTÓN */
+.btn-add-role {
+  background-color: var(--principal-color) !important;
+  color: var(--principal-text) !important;
+  height: 52px !important;
+  border-radius: 12px !important;
+
+  /* 👇 ESTE ES EL AJUSTE PARA SUBIRLO */
+  margin-top: 0px !important;
+
+  /* Si ves que sube demasiado, prueba con -10px o -8px */
+
+  font-weight: 600 !important;
+  box-shadow: 0 4px 20px rgba(0, 168, 150, 0.25) !important;
+  transition: transform 0.2s ease;
+
+  &:active {
+    transform: scale(0.95);
+  }
+}
+
+/* LIMPIEZA DE ESPACIOS DE MATERIAL */
+::v-deep {
+  .no-subscript {
+    .mat-mdc-form-field-subscript-wrapper {
+      display: none !important;
+      /* Quita el hueco de abajo */
+    }
+
+    .mat-mdc-text-field-wrapper {
+      padding-bottom: 0 !important;
+    }
+  }
+}
+
+.roles-title {
+  color: var(--principal-color);
+  font-family: var(--font-principal);
+  font-weight: 700;
+  margin: 0;
+  line-height: 56px;
+  /* Centra el texto del título con la altura del botón */
+}
+
+/* TABLA Y BADGES */
+.roles-table {
+>>>>>>> 983e1e65b784a593d8a4c0ad6b1d9f18a6eb2547
   width: 100%;
   background: transparent !important;
 }
 
+<<<<<<< HEAD
 /* Badge rol (Redondeado 8px como Admin) */
 .table-wrapper span {
   display: inline-flex;
@@ -202,4 +294,35 @@ table[mat-table] {
 /* --- Comunes --- */
 ::ng-deep .no-subscript .mat-mdc-form-field-subscript-wrapper {
   display: none !important;
+=======
+.mat-mdc-header-cell {
+  color: var(--principal-white) !important;
+  border-bottom: 2px solid var(--secondary-color) !important;
+}
+
+.mat-mdc-cell {
+  color: var(--secondary-white) !important;
+  border-bottom: 1px solid rgba(0, 168, 150, 0.1) !important;
+}
+
+b {
+  padding: 4px 10px;
+  border-radius: 6px;
+  display: inline-block;
+
+  &.admin {
+    color: var(--principal-accent);
+    border: 1px solid var(--principal-accent);
+  }
+
+  &.owner {
+    color: var(--status-color_pendiente);
+    border: 1px solid var(--status-color_pendiente);
+  }
+
+  &.employee {
+    color: var(--status-color_disponible);
+    border: 1px solid var(--status-color_disponible);
+  }
+>>>>>>> 983e1e65b784a593d8a4c0ad6b1d9f18a6eb2547
 }

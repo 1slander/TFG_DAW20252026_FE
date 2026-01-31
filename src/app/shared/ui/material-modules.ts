@@ -14,13 +14,20 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
 import { MatDialogModule } from '@angular/material/dialog';
+<<<<<<< HEAD
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+=======
+import {MatExpansionModule} from '@angular/material/expansion';
+>>>>>>> 983e1e65b784a593d8a4c0ad6b1d9f18a6eb2547
 
 @NgModule({
   exports: [
     MatTableModule,
+<<<<<<< HEAD
     MatSnackBarModule,
+=======
+>>>>>>> 983e1e65b784a593d8a4c0ad6b1d9f18a6eb2547
     MatDialogModule,
     MatToolbarModule,
     MatButtonModule,
