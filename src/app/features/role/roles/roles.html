@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 <div class="admin-main-container" [class.is-mobile]="screenSize.isMobile()">
 
   <div class="admin-header">
@@ -50,61 +49,13 @@
         <th mat-header-cell *matHeaderCellDef>Acciones</th>
         <td mat-cell *matCellDef="let role">
           <button mat-icon-button (click)="deleteRole(role.id)" class="delete-icon">
-=======
-<div class="roles-main-container" [class.is-mobile]="screenSize.isMobile()">
-
-  <div class="roles-header" [class.is-mobile]="screenSize.isMobile()">
-    <h2 class="roles-title">Gestión de Roles</h2>
-
-    <div class="roles-actions">
-      <mat-form-field appearance="outline" class="filter-field">
-        <mat-label>Filtrar por Nivel</mat-label>
-        <mat-select [value]="selectedCategory()" (selectionChange)="onCategoryChange($event.value)">
-          <mat-option value="ALL">--- TODOS ---</mat-option>
-          <mat-option value="ADMIN">Admin System</mat-option>
-          <mat-option value="OWNER">Owner</mat-option>
-          <mat-option value="EMPLOYEE">Employee</mat-option>
-        </mat-select>
-      </mat-form-field>
-
-      <button mat-fab extended (click)="openAddRoleDialog()" class="btn-add-role">
-        <mat-icon>add</mat-icon>
-        <span class="btn-label">Nuevo Rol</span>
-      </button>
-    </div>
-  </div>
-
-  <div class="table-wrapper">
-    <table mat-table [dataSource]="dataSource" class="roles-table mat-elevation-z2">
-
-      <ng-container matColumnDef="category">
-        <th mat-header-cell *matHeaderCellDef> Nivel </th>
-        <td mat-cell *matCellDef="let element">
-          <b [class]="element.category.toLowerCase()">{{element.category}}</b>
-        </td>
-      </ng-container>
-
-      <ng-container matColumnDef="roleName">
-        <th mat-header-cell *matHeaderCellDef> Identificador </th>
-        <td mat-cell *matCellDef="let element"> {{element.roleName}} </td>
-      </ng-container>
-
-      <ng-container matColumnDef="actions">
-        <th mat-header-cell *matHeaderCellDef> Acciones </th>
-        <td mat-cell *matCellDef="let element">
-          <button mat-icon-button (click)="deleteRole(element.idRole)" class="delete-icon">
->>>>>>> 983e1e65b784a593d8a4c0ad6b1d9f18a6eb2547
             <mat-icon>delete</mat-icon>
           </button>
         </td>
       </ng-container>
 
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-<<<<<<< HEAD
       <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-=======
-      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
->>>>>>> 983e1e65b784a593d8a4c0ad6b1d9f18a6eb2547
     </table>
   </div>
 </div>
