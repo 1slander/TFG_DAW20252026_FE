@@ -1,0 +1,9 @@
+    <h2 mat-dialog-title>Confirmar eliminación</h2>
+    <mat-dialog-content>
+      ¿Estás seguro de que deseas desactivar este usuario?
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+      <button mat-raised-button color="warn" [mat-dialog-close]="true">Sí</button>
+
+      <button mat-button (click)="onNoClick()">No</button>
+    </mat-dialog-actions>
