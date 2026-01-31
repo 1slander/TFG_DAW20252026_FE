@@ -1,123 +1,205 @@
-.roles-main-container {
+/* =========================
+   BASE (Simetría total con Admin)
+   ========================= */
+.admin-main-container {
   padding: var(--space-xxl);
-  background-color: var(--principal-background);
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl);
 
-  /* RESPONSIVE USANDO TU SERVICE */
   &.is-mobile {
     padding: var(--space-md);
+    gap: var(--space-lg);
 
-    .roles-header {
+    .admin-header {
       flex-direction: column;
       align-items: flex-start;
-      gap: 20px;
-    }
-
-    .roles-actions {
-      width: 100%;
-      justify-content: flex-start;
-      gap: 15px;
-    }
-
-    .btn-add-role {
-      padding: 0 15px !important;
-      height: 50px !important;
+      gap: var(--space-md);
     }
   }
 }
 
-.roles-header {
+.admin-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  /* Alineamos arriba para controlar el desfase */
-  margin-bottom: var(--space-xxl);
+  gap: var(--space-lg);
 }
 
-.roles-actions {
-  display: flex;
-  align-items: flex-start;
-  /* Alineación superior */
-  gap: 2rem;
-}
-
-/* AJUSTE MAESTRO PARA EL BOTÓN */
-.btn-add-role {
-  background-color: var(--principal-color) !important;
-  color: var(--principal-text) !important;
-  height: 52px !important;
-  border-radius: 12px !important;
-
-  /* 👇 ESTE ES EL AJUSTE PARA SUBIRLO */
-  margin-top: 0px !important;
-
-  /* Si ves que sube demasiado, prueba con -10px o -8px */
-
-  font-weight: 600 !important;
-  box-shadow: 0 4px 20px rgba(0, 168, 150, 0.25) !important;
-  transition: transform 0.2s ease;
-
-  &:active {
-    transform: scale(0.95);
-  }
-}
-
-/* LIMPIEZA DE ESPACIOS DE MATERIAL */
-::v-deep {
-  .no-subscript {
-    .mat-mdc-form-field-subscript-wrapper {
-      display: none !important;
-      /* Quita el hueco de abajo */
-    }
-
-    .mat-mdc-text-field-wrapper {
-      padding-bottom: 0 !important;
-    }
-  }
-}
-
-.roles-title {
-  color: var(--principal-color);
-  font-family: var(--font-principal);
-  font-weight: 700;
+.admin-title {
   margin: 0;
-  line-height: 56px;
-  /* Centra el texto del título con la altura del botón */
+  font-family: var(--font-principal);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  font-size: 2.15rem;
+  color: var(--principal-color);
 }
 
-/* TABLA Y BADGES */
-.roles-table {
+/* Panel - Estilo exacto Admin (14px) */
+mat-accordion {
+  display: block;
+}
+
+mat-expansion-panel {
+  border-radius: 14px !important;
+  overflow: hidden;
+}
+
+::ng-deep .mat-expansion-panel-header {
+  min-height: 64px !important;
+  padding: 0 var(--space-lg);
+}
+
+::ng-deep .panel-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 800;
+
+  mat-icon {
+    color: var(--principal-color);
+    font-size: 22px;
+  }
+}
+
+/* Tabla - Estilo exacto Admin (14px y líneas sutiles) */
+.table-wrapper {
+  width: 100%;
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+table[mat-table] {
   width: 100%;
   background: transparent !important;
 }
 
-.mat-mdc-header-cell {
-  color: var(--principal-white) !important;
-  border-bottom: 2px solid var(--secondary-color) !important;
+/* Badge rol (Redondeado 8px como Admin) */
+.table-wrapper span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 12px;
+  border-radius: 8px;
+  /* <--- VALOR EXACTO DE ADMIN */
+  font-weight: 800;
+  font-size: 0.82rem;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
 }
 
-.mat-mdc-cell {
-  color: var(--secondary-white) !important;
-  border-bottom: 1px solid rgba(0, 168, 150, 0.1) !important;
+/* =========================
+   DARK THEME
+   ========================= */
+:host-context(body[data-theme='dark']) {
+  .admin-main-container {
+    background: radial-gradient(1200px 600px at 30% 0%, rgba(0, 168, 150, 0.10), transparent 55%),
+      linear-gradient(180deg, #0c1413 0%, #0a1010 100%);
+  }
+
+  mat-expansion-panel,
+  .table-wrapper {
+    background: rgba(8, 14, 14, 0.85);
+    border: 1px solid rgba(0, 168, 150, 0.28);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35);
+  }
+
+  .mat-mdc-header-row {
+    background: rgba(0, 0, 0, 0.10);
+  }
+
+  .mat-mdc-header-cell {
+    color: rgba(250, 255, 254, 0.90) !important;
+    font-weight: 800 !important;
+    border-bottom: 2px solid rgba(0, 168, 150, 0.35) !important;
+  }
+
+  .mat-mdc-cell {
+    color: rgba(250, 255, 254, 0.78) !important;
+    border-bottom: 1px solid rgba(0, 168, 150, 0.10) !important;
+  }
+
+  /* Colores de Badges Dark */
+  span.admin {
+    border: 1px solid rgba(168, 0, 18, 0.55);
+    color: rgba(168, 0, 18, 0.95);
+    background: rgba(168, 0, 18, 0.10);
+  }
+
+  span.owner {
+    border: 1px solid rgba(255, 152, 0, 0.55);
+    color: #ffb74d;
+    background: rgba(255, 152, 0, 0.10);
+  }
+
+  span.employee {
+    border: 1px solid rgba(0, 168, 150, 0.35);
+    color: rgba(0, 168, 150, 0.95);
+    background: rgba(0, 168, 150, 0.08);
+  }
+
+  mat-icon {
+    color: rgba(250, 255, 254, 0.82);
+  }
 }
 
-b {
-  padding: 4px 10px;
-  border-radius: 6px;
-  display: inline-block;
-
-  &.admin {
-    color: var(--principal-accent);
-    border: 1px solid var(--principal-accent);
+/* =========================
+   LIGHT THEME
+   ========================= */
+:host-context(body[data-theme='light']) {
+  .admin-main-container {
+    background: linear-gradient(180deg, #f7fbfb 0%, #f2f7f7 100%);
   }
 
-  &.owner {
-    color: var(--status-color_pendiente);
-    border: 1px solid var(--status-color_pendiente);
+  mat-expansion-panel,
+  .table-wrapper {
+    background: #ffffff;
+    border: 1px solid rgba(0, 51, 46, 0.10);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
   }
 
-  &.employee {
-    color: var(--status-color_disponible);
-    border: 1px solid var(--status-color_disponible);
+  .mat-mdc-header-row {
+    background: rgba(0, 168, 150, 0.08);
   }
+
+  .mat-mdc-header-cell {
+    color: rgba(0, 51, 46, 0.92) !important;
+    font-weight: 800 !important;
+    border-bottom: 2px solid rgba(0, 168, 150, 0.22) !important;
+  }
+
+  .mat-mdc-cell {
+    color: rgba(0, 51, 46, 0.86) !important;
+    border-bottom: 1px solid rgba(0, 168, 150, 0.12) !important;
+  }
+
+  /* Colores de Badges Light */
+  span.admin {
+    border: 1px solid rgba(168, 0, 18, 0.35);
+    color: rgba(168, 0, 18, 0.95);
+    background: rgba(168, 0, 18, 0.08);
+  }
+
+  span.owner {
+    border: 1px solid rgba(255, 152, 0, 0.35);
+    color: #e65100;
+    background: rgba(255, 152, 0, 0.08);
+  }
+
+  span.employee {
+    border: 1px solid rgba(0, 168, 150, 0.28);
+    color: rgba(0, 168, 150, 0.95);
+    background: rgba(0, 168, 150, 0.08);
+  }
+
+  mat-icon {
+    color: rgba(0, 51, 46, 0.75);
+  }
+}
+
+/* --- Comunes --- */
+::ng-deep .no-subscript .mat-mdc-form-field-subscript-wrapper {
+  display: none !important;
 }

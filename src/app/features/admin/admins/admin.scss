@@ -108,11 +108,9 @@ button[mat-icon-button] {
    DARK THEME
    ========================= */
 :host-context(body[data-theme='dark']) .admin-main-container {
-  background: radial-gradient(
-      1200px 600px at 30% 0%,
+  background: radial-gradient(1200px 600px at 30% 0%,
       rgba(0, 168, 150, 0.10),
-      transparent 55%
-    ),
+      transparent 55%),
     linear-gradient(180deg, #0c1413 0%, #0a1010 100%);
 }
 
@@ -170,6 +168,7 @@ button[mat-icon-button] {
 :host-context(body[data-theme='dark']) button[mat-icon-button] mat-icon {
   color: rgba(250, 255, 254, 0.82);
 }
+
 :host-context(body[data-theme='dark']) .delete-icon mat-icon {
   color: rgba(168, 0, 18, 0.9);
 }
@@ -243,6 +242,7 @@ button[mat-icon-button] {
 :host-context(body[data-theme='light']) button[mat-icon-button] mat-icon {
   color: rgba(0, 51, 46, 0.75);
 }
+
 :host-context(body[data-theme='light']) .delete-icon mat-icon {
   color: rgba(168, 0, 18, 0.85);
 }
@@ -264,6 +264,39 @@ button[mat-icon-button] {
 ::ng-deep .no-subscript .mat-mdc-form-field-subscript-wrapper {
   display: none !important;
 }
+
 ::ng-deep .no-subscript .mat-mdc-text-field-wrapper {
   padding-bottom: 0 !important;
+}
+
+
+.search-field {
+  width: 300px;
+
+  mat-icon {
+    margin-right: 8px;
+    color: var(--principal-color);
+  }
+}
+
+/* En móvil se pone debajo del título y al 100% */
+.admin-main-container.is-mobile {
+  .search-field {
+    width: 100%;
+    margin-top: 10px;
+  }
+}
+
+/* Éxito: Verde esmeralda (siguiendo tu estilo premium) */
+::ng-deep .snackbar-success {
+  --mdc-snackbar-container-color: #00a896;
+  --mdc-snackbar-supporting-text-color: #ffffff;
+  font-weight: 600;
+}
+
+/* Error: Rojo carmesí */
+::ng-deep .snackbar-error {
+  --mdc-snackbar-container-color: #a80012;
+  --mdc-snackbar-supporting-text-color: #ffffff;
+  font-weight: 600;
 }

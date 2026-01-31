@@ -1,10 +1,8 @@
-export type RoleCategory = 'ADMIN'|'OWNER'|'EMPLOYEE'
+export type RoleCategory = 'ADMIN' | 'OWNER' | 'EMPLOYEE';
+export type RoleName = 'OWNER' | 'MANAGER' | 'ASSISTANT_MANAGER' | 'TEAM_LEADER' | 'EMPLOYEE';
 
-//DE DONDE SALE? LO PONEMOS COMO OPTIONAL??
-export type RoleName = 'OWNER'|'MANAGER'| 'ASSISTANT_MANAGER'|'TEAM_LEADER'|'EMPLOYEE'
-
-export interface RoleInterface{
-    id:number;
-    roleName: RoleName;
-    roleCategory?: RoleCategory
+export interface RoleInterface {
+  id: number;
+  roleName: string;
+  roleCategory: RoleCategory; // O usa tu tipo RoleCategory
 }

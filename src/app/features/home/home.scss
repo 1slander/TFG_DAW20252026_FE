@@ -1,28 +1,53 @@
-.example-card {
-  max-width: 400px;
-}
-
-.example-card-footer {
-  padding: 16px;
-}
-
+/* 1. Contenedor: Un poco más de aire para que no esté pegado arriba */
 .container {
-  padding: 2px;
+  padding: var(--space-xl);
+  display: flex;
+  justify-content: center;
 }
 
+/* 2. Grid: Tarjetas un poco más anchas que antes */
 .responsive-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 14px;
+  /* Subimos el mínimo de 300px a 360px para que sean "un poco más grandes" */
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  gap: 20px;
+  width: 100%;
+  max-width: 1300px;
 }
 
-mat-card:hover {
-  background-color: var(--mat-sys-on-primary);
-  cursor: pointer;
-  transform: translateY(-3px) scale(1.03);
-  box-shadow: 0 4px 20px rgba(126, 35, 165, 0.2);
+/* 3. La Tarjeta: Quitamos el max-width de 400px para que respire */
+.example-card {
+  width: 100%;
+  max-width: none !important;
+  display: flex;
+  flex-direction: column;
+  /* Reducimos la altura para que no sobre espacio abajo */
+  min-height: auto;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+/* 4. Ajuste de ESPACIOS (Paddings compactos) */
+mat-card-header {
+  padding: 16px 16px 8px 16px; // Padding reducido
 }
 
 mat-card-content {
-  flex-grow: 1;
+  padding: 8px 16px 16px 16px !important; // Contenido más pegado al título
+  flex-grow: 0; // Para que la tarjeta no se estire si no hay texto
+  font-size: 1rem;
+}
+
+.example-card-footer {
+  padding: 0 16px 16px 16px; // Footer compacto
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* 5. Tu Hover original pero refinado */
+mat-card:hover {
+  background-color: var(--mat-sys-on-primary);
+  cursor: pointer;
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(0, 168, 150, 0.15);
 }
