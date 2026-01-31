@@ -12,7 +12,7 @@ import { CommonModule } from '@angular/common';
 import { MaterialModule } from '../../ui/material-modules';
 
 @Component({
-  selector: 'app-drawer-menu',
+  selector: 'app-sidebar-menu',
   imports: [MaterialModule, CommonModule, RouterModule],
   templateUrl: './sidebar-menu.html',
   styleUrl: './sidebar-menu.scss',

@@ -23,7 +23,7 @@
     [opened]="!isMobile()"
     position="start"
   >
-    <app-drawer-menu [isMobile]="isMobile()" [area]="area" (itemClicked)="onNavigate()" />
+    <app-sidebar-menu [isMobile]="isMobile()" [area]="area" (itemClicked)="onNavigate()" />
   </mat-drawer>
   <mat-drawer-content style="padding: 5px">
     <router-outlet />
