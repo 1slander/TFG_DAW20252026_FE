@@ -9,6 +9,7 @@ export class RoleService {
     { id: 3, roleName: 'ASSISTANT_MANAGER', roleCategory: 'EMPLOYEE' },
     { id: 4, roleName: 'TEAM_LEADER', roleCategory: 'EMPLOYEE' },
     { id: 5, roleName: 'EMPLOYEE', roleCategory: 'EMPLOYEE' },
+    { id: 6, roleName: 'ADMIN', roleCategory: 'ADMIN' },
   ];
 
   getRoles() { return [...this.roleList]; }
