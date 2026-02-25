@@ -1,6 +1,9 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { MaterialModule } from '../../ui/material-modules';
 import { RouterLink } from '@angular/router';
+import { AuthService } from '../../../core/services/auth.service';
+import { inject } from '@angular/core';
+
 @Component({
   selector: 'app-settings-menu',
   imports: [MaterialModule, RouterLink],
@@ -9,5 +12,5 @@ import { RouterLink } from '@angular/router';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SettingsMenu {
-
+  authService = inject(AuthService);
 }
