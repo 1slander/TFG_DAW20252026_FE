@@ -8,7 +8,7 @@ export const adminRoutes: Routes = [
   },
   {
     path: 'admins',
-    loadComponent: () => import('./admins/admin').then((m) => m.Admin),
+    loadComponent: () => import('./admin').then((m) => m.AdminComponent),
     title: 'Admins',
   },
   {

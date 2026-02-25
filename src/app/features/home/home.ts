@@ -1,10 +1,9 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { MaterialModule } from '../../shared/ui/material-modules';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, RouterLink } from '@angular/router';
-
-
-type Area = 'admin' | 'api';
+import { RouterLink } from '@angular/router';
+import { AuthService } from '../../core/services/auth.service';
+import { inject } from '@angular/core';
 
 @Component({
   selector: 'app-home',
@@ -15,69 +14,51 @@ type Area = 'admin' | 'api';
 })
 
 
-export class Home {
+export class HomeComponent {
 
-  area: Area = 'api';
-  base = '/api/dashboard';
+  public authService = inject(AuthService);
+  base = '/dashboard';
 
-  constructor(private route: ActivatedRoute) {
-    // Home cuelga de /{area}/dashboard -> el data.area está en el padre (dashboard)
-    this.area = (this.route.parent?.snapshot.data['area'] ?? 'api') as Area;
-    this.base = `/${this.area}/dashboard`;
-  }
-
-  private allModules: Array<{
-    title: string;
-    description: string;
-    // traits: string[];
-    areas: Area[];
-    route: () => string;
-  }> = [
-      {
-        title: 'Admins',
-        description: 'Lista de todos los Administradores.',
-        //traits: ['charming', 'graceful', 'sassy'],
-        areas: ['admin'],
-        route: () => `${this.base}/admin/admins`,
-      },
-      {
-        title: 'Usarios',
-        description: 'Vista de todos los usuarios.',
-        //traits: ['fluffy', 'alert', 'intelligent'],
-        areas: ['admin'],
-        route: () => `${this.base}/user/users`,
-      },
-      {
-        title: 'Roles',
-        description: 'Vista para insertar nuevos roles.',
-        //traits: ['charming', 'graceful', 'sassy'],
-        areas: ['admin'],
-        route: () => `${this.base}/role`,
-      },
-      {
-        title: 'Viewer',
-        description: 'Vista de todos los usuarios.',
-        // traits: ['fluffy', 'alert', 'intelligent'],
-        areas: ['api'],
-        route: () => `${this.base}/viewer`,
-      },
-      {
-        title: 'Cars',
-        description: 'This is the module for cars.',
-        // traits: ['charming', 'graceful', 'sassy'],
-        areas: ['api'],
-        route: () => `${this.base}/car`,
-      },
-      {
-        title: 'Articles',
-        description: 'This is the module for articles.',
-        //traits: ['fluffy', 'alert', 'intelligent'],
-        areas: ['api'],
-        route: () => `${this.base}/article`,
-      },
-    ];
+  private allModules = [
+    {
+      title: 'Administradores',
+      description: 'Lista de todos los Administradores.',
+      rolesAllowed: ['ADMIN'],
+      route: () => `${this.base}/admin`,
+    },
+    {
+      title: 'Roles',
+      description: 'Vista para insertar nuevos roles.',
+      rolesAllowed: ['ADMIN'], // Owner will no longer see this as requested: "Admin solo deberá ver Roles, Admins y Users"
+      route: () => `${this.base}/role`,
+    },
+    {
+      title: 'Usuarios',
+      description: 'Vista de todos los usuarios.',
+      rolesAllowed: ['ADMIN'], // ONLY ADMIN as requested
+      route: () => `${this.base}/user`,
+    },
+    {
+      title: 'Empleados',
+      description: 'Gestión y listado de empleados.',
+      rolesAllowed: ['OWNER'],
+      route: () => `${this.base}/employee`,
+    },
+    {
+      title: 'Restaurantes',
+      description: 'Módulo para la gestión de locales.',
+      rolesAllowed: ['OWNER'],
+      route: () => `${this.base}/restaurant`,
+    },
+    {
+      title: 'Turnos',
+      description: 'Módulo para la gestión de turnos.',
+      rolesAllowed: ['OWNER', 'EMPLOYEE'],
+      route: () => `${this.base}/shift`,
+    },
+  ];
 
   get modules() {
-    return this.allModules.filter(m => m.areas.includes(this.area));
+    return this.allModules.filter(m => m.rolesAllowed.includes(this.authService.roleValue));
   }
 }
