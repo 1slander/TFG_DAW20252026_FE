@@ -22,18 +22,11 @@ export class SideBarMenu {
   @Input() isMobile = false;
   @Output() itemClicked = new EventEmitter<void>();
 
-  subMenuOpen = signal<string | null>(null);
-
-  toggleSubMenu(menu: string) {
-    this.subMenuOpen.set(this.subMenuOpen() === menu ? null : menu);
-  }
-
   handleItemClick() {
     if (this.isMobile) {
       this.itemClicked.emit();
     }
   }
 
-  @Input() area: 'admin' | 'api' = 'api';
-
+  @Input() userRole: string = 'EMPLOYEE';
 }

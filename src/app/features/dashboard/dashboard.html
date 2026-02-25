@@ -1,29 +1,19 @@
 <mat-toolbar>
-  <button
-    matIconButton
-    class="example-icon"
-    aria-label="Example icon-button with menu icon"
-    matTooltip="Menu"
-    matTooltipPosition="below"
-    (click)="drawer.toggle()"
-  >
+  <button matIconButton class="example-icon" aria-label="Example icon-button with menu icon" matTooltip="Menu"
+    matTooltipPosition="below" (click)="drawer.toggle()">
     <mat-icon>menu</mat-icon>
   </button>
-  <span>{{ area === 'admin' ? 'Admin Dashboard' : 'User Dashboard' }}</span>
+  <span>{{ authService.roleValue === 'ADMIN' ? 'Admin Dashboard' : 'User Dashboard' }} (Rol: {{ authService.roleValue
+    }})</span>
   <span class="example-spacer"></span>
 
-  <app-theme-selector/>
+  <app-theme-selector />
   <app-settings-menu />
 </mat-toolbar>
 
 <mat-drawer-container class="example-container">
-  <mat-drawer
-    #drawer
-    [mode]="isMobile() ? 'over' : 'side'"
-    [opened]="!isMobile()"
-    position="start"
-  >
-    <app-sidebar-menu [isMobile]="isMobile()" [area]="area" (itemClicked)="onNavigate()" />
+  <mat-drawer #drawer [mode]="isMobile() ? 'over' : 'side'" [opened]="!isMobile()" position="start">
+    <app-sidebar-menu [isMobile]="isMobile()" [userRole]="authService.roleValue" (itemClicked)="onNavigate()" />
   </mat-drawer>
   <mat-drawer-content style="padding: 5px">
     <router-outlet />

@@ -5,53 +5,54 @@
       Home
     </span>
   </mat-list-item>
-  <mat-list-item routerLink="sidebar-sections/table" routerLinkActive="activelink" (click)="handleItemClick()"
-    tabindex="-1">
+
+  @if (userRole === 'ADMIN') {
+  <mat-list-item routerLink="admin" routerLinkActive="activelink" (click)="handleItemClick()" tabindex="-1">
     <span class="icon-and-text">
-      <mat-icon class="icon-margin">phone</mat-icon>
-      Table
-    </span>
-  </mat-list-item>
-  <mat-list-item routerLink="sidebar-sections/list" routerLinkActive="activelink" (click)="handleItemClick()"
-    tabindex="-1">
-    <span class="icon-and-text">
-      <mat-icon class="icon-margin">list</mat-icon>
-      List
+      <mat-icon class="icon-margin">admin_panel_settings</mat-icon>
+      Administradores
     </span>
   </mat-list-item>
 
-  <mat-nav-list>
-    <mat-list-item (click)="toggleSubMenu('components')">
-      <span class="icon-and-text">
-        <mat-icon class="icon-margin">https</mat-icon>
-        SubMenu
-        <div class="expand-icon-right">
-          <mat-icon class="expand-icon">
-            {{ subMenuOpen() === "components" ? "expand_less" : "expand_more" }}
-          </mat-icon>
-        </div>
-      </span>
-    </mat-list-item>
+  <mat-list-item routerLink="role" routerLinkActive="activelink" (click)="handleItemClick()" tabindex="-1">
+    <span class="icon-and-text">
+      <mat-icon class="icon-margin">badge</mat-icon>
+      Roles
+    </span>
+  </mat-list-item>
 
-    @if(subMenuOpen() === 'components'){
-    <div>
-      <mat-list-item routerLink="sidebar-sections/buttons" routerLinkActive="activelink" class="submenu-content"
-        (click)="handleItemClick()" tabindex="-1">
-        <span class="icon-and-text">
-          <mat-icon class="icon-margin">rss_feed</mat-icon>
-          Buttons
-        </span>
-      </mat-list-item>
+  <mat-list-item routerLink="user" routerLinkActive="activelink" (click)="handleItemClick()" tabindex="-1">
+    <span class="icon-and-text">
+      <mat-icon class="icon-margin">people</mat-icon>
+      Usuarios
+    </span>
+  </mat-list-item>
+  }
 
-      <mat-list-item routerLink="sidebar-sections/tabs" routerLinkActive="activelink" class="submenu-content"
-        (click)="handleItemClick()" tabindex="-1">
-        <span class="icon-and-text">
-          <mat-icon class="icon-margin">sentiment_satisfied_alt</mat-icon>
-          Tabs
-        </span>
-      </mat-list-item>
-    </div>
+  @if (userRole === 'OWNER') {
+  <mat-list-item routerLink="restaurant" routerLinkActive="activelink" (click)="handleItemClick()" tabindex="-1">
+    <span class="icon-and-text">
+      <mat-icon class="icon-margin">restaurant</mat-icon>
+      Restaurantes
+    </span>
+  </mat-list-item>
+  }
 
-    }
-  </mat-nav-list>
+  @if (userRole === 'OWNER' || userRole === 'EMPLOYEE') {
+  <mat-list-item routerLink="shift" routerLinkActive="activelink" (click)="handleItemClick()" tabindex="-1">
+    <span class="icon-and-text">
+      <mat-icon class="icon-margin">schedule</mat-icon>
+      Turnos
+    </span>
+  </mat-list-item>
+  }
+
+  @if (userRole === 'OWNER') {
+  <mat-list-item routerLink="employee" routerLinkActive="activelink" (click)="handleItemClick()" tabindex="-1">
+    <span class="icon-and-text">
+      <mat-icon class="icon-margin">badge</mat-icon>
+      Empleados
+    </span>
+  </mat-list-item>
+  }
 </mat-nav-list>

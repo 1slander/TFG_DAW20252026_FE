@@ -1,4 +1,4 @@
-import { Roles } from './roles/roles';
+
 import { Routes } from '@angular/router';
 
 
@@ -10,7 +10,7 @@ export const rolesRoutes: Routes = [
   },
   {
     path: 'roles',
-    loadComponent: () => import('./roles/roles').then((m) => m.Roles),
+    loadComponent: () => import('./roles').then((m) => m.RolesComponent),
     title: 'Roles',
   },
   {

@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { Users } from '../../features/user/users/users';
+
 
 export const userRoutes: Routes = [
   {
@@ -9,7 +9,7 @@ export const userRoutes: Routes = [
   },
   {
     path: 'users',
-    loadComponent: () => import('../../features/user/users/users').then((m) => m.Users),
+    loadComponent: () => import('./users').then((m) => m.UsersComponent),
     title: 'Users',
   },
   {
