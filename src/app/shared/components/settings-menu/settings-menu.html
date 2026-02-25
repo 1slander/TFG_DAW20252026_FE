@@ -1,10 +1,5 @@
-<button
-  matIconButton [matMenuTriggerFor]="menu"
-  aria-label="Example icon-button with a menu"
-  matTooltip="Settings"
-  matTooltipPosition="below"
-
->
+<button matIconButton [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu" matTooltip="Settings"
+  matTooltipPosition="below">
   <mat-icon>more_vert</mat-icon>
 </button>
 <mat-menu #menu="matMenu">
@@ -33,7 +28,7 @@
     <span>Settings</span>
   </button>
 
-  <button mat-menu-item>
+  <button mat-menu-item (click)="authService.logout()">
     <mat-icon>logout</mat-icon>
     <span>Logout</span>
   </button>

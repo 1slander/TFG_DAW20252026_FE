@@ -43,4 +43,12 @@ export class AuthService {
     hasAccess(requiredLevel: number): boolean {
         return this.currentLevel >= requiredLevel;
     }
+
+    /**
+     * Cierra la sesión y redirige al login
+     */
+    logout() {
+        // En una app real aquí limpiaríamos tokens/localStorage
+        window.location.href = '/auth/login';
+    }
 }
