@@ -7,7 +7,7 @@ import {
   Validators,
   ValidatorFn,
 } from '@angular/forms';
-import { FormField } from '../../../interfaces/form-field';
+import { FormFieldInterface } from '../../../interfaces/form-field';
 import { MaterialModule } from '../../ui/material-modules';
 
 @Component({
@@ -17,7 +17,7 @@ import { MaterialModule } from '../../ui/material-modules';
   styleUrl: './dynamic-form.scss',
 })
 export class DynamicFormComponent implements OnInit {
-  @Input() fields: FormField[] = [];
+  @Input() fields: FormFieldInterface[] = [];
   @Output() formSubmit = new EventEmitter<any>();
 
   form!: FormGroup;

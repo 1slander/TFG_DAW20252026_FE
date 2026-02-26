@@ -2,14 +2,14 @@ import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MaterialModule } from '../../shared/ui/material-modules';
 import { RoleService } from '../../core/services/role.service';
-import { ScreenSize } from '../../core/services/screen-size';
+import { ScreenSizeService } from '../../core/services/screen-size';
 import { DynamicFormComponent } from '../../shared/components/dynamic-form/dynamic-form';
-import { FormField } from '../../interfaces/form-field';
+import { FormFieldInterface } from '../../interfaces/form-field';
 
 // Servicios para avisos y diálogos
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog } from '@angular/material/dialog';
-import { ConfirmDialog } from '../../shared/components/confirm-dialog/confirm-dialog';
+import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog';
 
 
 @Component({
@@ -21,7 +21,7 @@ import { ConfirmDialog } from '../../shared/components/confirm-dialog/confirm-di
 })
 export class RolesComponent {
   protected roleService = inject(RoleService);
-  public screenSize = inject(ScreenSize);
+  public screenSize = inject(ScreenSizeService);
   private dialog = inject(MatDialog);
   private snackBar = inject(MatSnackBar);
 
@@ -31,7 +31,7 @@ export class RolesComponent {
   selectedCategory = signal<string>('ALL');
   displayedColumns: string[] = ['id', 'roleName', 'roleCategory', 'actions'];
 
-  roleFields: FormField[] = [
+  roleFields: FormFieldInterface[] = [
     { name: "roleName", label: "Identificador del Rol", type: "text", required: true },
     {
       name: "roleCategory",
@@ -67,7 +67,7 @@ export class RolesComponent {
   }
 
   deleteRole(id: number) {
-    const dialogRef = this.dialog.open(ConfirmDialog, { width: '350px' });
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, { width: '350px' });
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {

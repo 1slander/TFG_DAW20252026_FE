@@ -4,11 +4,11 @@ import { EmployeeDetailSidenav } from './components/employee-detail-sidenav/empl
 import { EmployeeService } from '../../core/services/employee.service';
 import { EmployeeInterface } from '../../interfaces/employee';
 import { DynamicFormComponent } from '../../shared/components/dynamic-form/dynamic-form';
-import { FormField } from '../../interfaces/form-field';
-import { ScreenSize } from '../../core/services/screen-size';
+import { FormFieldInterface } from '../../interfaces/form-field';
+import { ScreenSizeService } from '../../core/services/screen-size';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ConfirmDialog } from '../../shared/components/confirm-dialog/confirm-dialog';
+import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog';
 @Component({
   selector: 'app-users',
   standalone: true,
@@ -19,7 +19,7 @@ import { ConfirmDialog } from '../../shared/components/confirm-dialog/confirm-di
 export class UsersComponent {
   //nos traemos el service
   private employeeService = inject(EmployeeService);
-  public screenSize = inject(ScreenSize);
+  public screenSize = inject(ScreenSizeService);
   private dialog = inject(MatDialog);
   private snackBar = inject(MatSnackBar);
 
@@ -34,7 +34,7 @@ export class UsersComponent {
 
   //Formulario
   showCreateForm = false;
-  employeeFields: FormField[] = [
+  employeeFields: FormFieldInterface[] = [
     { name: 'firstName', label: 'Nombre', type: 'text', required: true },
     { name: 'lastName', label: 'Apellidos', type: 'text', required: true },
     { name: 'email', label: 'Email', type: 'email', required: true },
@@ -66,7 +66,7 @@ export class UsersComponent {
   }
 
   onToggleActive(event: { id: number; nextIsActive: boolean }) {
-    const dialogRef = this.dialog.open(ConfirmDialog, { width: '350px' });
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, { width: '350px' });
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         try {

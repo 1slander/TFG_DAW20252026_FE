@@ -4,22 +4,12 @@ import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-confirm-dialog',
-  standalone: true,
   imports: [MatDialogModule, MatButtonModule],
-  template: `
-    <h2 mat-dialog-title>Confirmar eliminación</h2>
-    <mat-dialog-content>
-      ¿Estás seguro de que deseas eliminar este registro? Esta acción no se puede deshacer.
-    </mat-dialog-content>
-    <mat-dialog-actions align="end">
-      <button mat-raised-button color="warn" [mat-dialog-close]="true">Eliminar</button>
-
-      <button mat-button (click)="onNoClick()">Cancelar</button>
-    </mat-dialog-actions>
-  `
+  templateUrl: './confirm-dialog.html',
+  styleUrl:'./confirm-dialog.scss'
 })
-export class ConfirmDialog {
-  private dialogRef = inject(MatDialogRef<ConfirmDialog>);
+export class ConfirmDialogComponent {
+  private dialogRef = inject(MatDialogRef<ConfirmDialogComponent>);
 
   onNoClick(): void {
     this.dialogRef.close(false);

@@ -33,29 +33,29 @@ export const routes: Routes = [
 
       // -- RUTAS PARA OWNER(1) / ADMIN(2) --
       {
-        path: 'admin',
+        path: 'admins',
         loadChildren: () => import('./features/admin/admin.routes').then((m) => m.adminRoutes)
       },
       {
-        path: 'role',
+        path: 'roles',
         loadChildren: () => import('./features/role/role.routes').then((m) => m.rolesRoutes)
       },
       {
-        path: 'user',
+        path: 'users',
         loadChildren: () => import('./features/user/user.routes').then((m) => m.userRoutes)
       },
 
       // -- RUTAS GENERALES / OPERACIONALES --
       {
-        path: 'shift',
+        path: 'shifts',
         loadChildren: () => import('./features/shift/shift.routes').then((m) => m.shiftRoutes)
       },
       {
-        path: 'restaurant',
+        path: 'restaurants',
         loadChildren: () => import('./features/restaurant/restaurant.routes').then((m) => m.restaurantRoutes)
       },
       {
-        path: 'employee',
+        path: 'employees',
         loadChildren: () => import('./features/employee/employee.routes').then(m => m.employeeRoutes)
       },
 

@@ -7,21 +7,21 @@
   </mat-list-item>
 
   @if (userRole === 'ADMIN') {
-  <mat-list-item routerLink="admin" routerLinkActive="activelink" (click)="handleItemClick()" tabindex="-1">
+  <mat-list-item routerLink="admins" routerLinkActive="activelink" (click)="handleItemClick()" tabindex="-1">
     <span class="icon-and-text">
       <mat-icon class="icon-margin">admin_panel_settings</mat-icon>
       Administradores
     </span>
   </mat-list-item>
 
-  <mat-list-item routerLink="role" routerLinkActive="activelink" (click)="handleItemClick()" tabindex="-1">
+  <mat-list-item routerLink="roles" routerLinkActive="activelink" (click)="handleItemClick()" tabindex="-1">
     <span class="icon-and-text">
       <mat-icon class="icon-margin">badge</mat-icon>
       Roles
     </span>
   </mat-list-item>
 
-  <mat-list-item routerLink="user" routerLinkActive="activelink" (click)="handleItemClick()" tabindex="-1">
+  <mat-list-item routerLink="users" routerLinkActive="activelink" (click)="handleItemClick()" tabindex="-1">
     <span class="icon-and-text">
       <mat-icon class="icon-margin">people</mat-icon>
       Usuarios
