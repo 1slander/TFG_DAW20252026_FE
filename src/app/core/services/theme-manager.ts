@@ -1,13 +1,13 @@
 import { computed, effect, Injectable, signal } from '@angular/core';
-import { Theme } from '../../interfaces/theme';
+import { ThemeInterface } from '../../interfaces/theme';
 
 @Injectable({
   providedIn: 'root',
 })
-export class ThemeManager {
+export class ThemeManagerService {
   private appTheme = signal<'light' | 'dark' | 'system'>('system');
 
-  private themes: Theme[] = [
+  private themes: ThemeInterface[] = [
     { name: 'light', icon: 'light_mode' },
     { name: 'dark', icon: 'dark_mode' },
     { name: 'system', icon: 'desktop_windows' },

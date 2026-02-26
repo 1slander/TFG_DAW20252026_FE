@@ -4,7 +4,7 @@ import { Injectable, Signal, signal } from '@angular/core';
 @Injectable({
   providedIn: 'root',
 })
-export class ScreenSize {
+export class ScreenSizeService {
   private mobileQuery: MediaQueryList;
   private readonly _isMobile = signal(false);
 

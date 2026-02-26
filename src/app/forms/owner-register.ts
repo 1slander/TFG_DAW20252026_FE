@@ -1,6 +1,6 @@
-import { FormField } from '../interfaces/form-field';
+import { FormFieldInterface } from '../interfaces/form-field';
 
-export const OWNER_REGISTER_FORM: FormField[] = [
+export const OWNER_REGISTER_FORM: FormFieldInterface[] = [
 
   // USERS
   { name: 'first-name', label: 'Nombre', type: 'text', required: true },

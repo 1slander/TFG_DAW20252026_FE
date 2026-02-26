@@ -2,10 +2,10 @@ import { Component, inject, signal } from '@angular/core';
 import { MaterialModule } from '../../shared/ui/material-modules';
 import { CommonModule } from '@angular/common';
 import { AdminService } from '../../core/services/admin.service';
-import { ScreenSize } from '../../core/services/screen-size';
+import { ScreenSizeService } from '../../core/services/screen-size';
 import { DynamicFormComponent } from '../../shared/components/dynamic-form/dynamic-form';
-import { FormField } from '../../interfaces/form-field';
-import { ConfirmDialog } from '../../shared/components/confirm-dialog/confirm-dialog';
+import { FormFieldInterface } from '../../interfaces/form-field';
+import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 @Component({
@@ -17,7 +17,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 })
 export class AdminComponent {
   protected adminService = inject(AdminService);
-  public screenSize = inject(ScreenSize);
+  public screenSize = inject(ScreenSizeService);
   private dialog = inject(MatDialog);
   private snackBar = inject(MatSnackBar);
   // Lista que se muestra en la tabla
@@ -26,7 +26,7 @@ export class AdminComponent {
 
   // Lógica del Formulario
   showCreateForm = false;
-  adminFields: FormField[] = [
+  adminFields: FormFieldInterface[] = [
     { name: "username", label: "Nombre de usuario", type: "text", required: true },
     { name: "email", label: "Email", type: "email", required: true },
     { name: "password", label: "Contraseña", type: "password", required: true },
@@ -82,7 +82,7 @@ export class AdminComponent {
   }
 
   deleteAdmin(id: number) {
-    const dialogRef = this.dialog.open(ConfirmDialog, { width: '350px' });
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, { width: '350px' });
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {

@@ -8,8 +8,8 @@ import { MatButtonModule } from '@angular/material/button';
   templateUrl: './confirm-dialog.html',
   styleUrl:'./confirm-dialog.scss'
 })
-export class ConfirmDialog {
-  private dialogRef = inject(MatDialogRef<ConfirmDialog>);
+export class ConfirmDialogComponent {
+  private dialogRef = inject(MatDialogRef<ConfirmDialogComponent>);
 
   onNoClick(): void {
     this.dialogRef.close(false);

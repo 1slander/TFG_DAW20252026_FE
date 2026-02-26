@@ -1,6 +1,6 @@
 export type FieldType = 'text' | 'email' | 'password' | 'number' | 'select' | 'date';
 
-export interface FormField {
+export interface FormFieldInterface {
   name: string;
   label: string;
   type: FieldType;

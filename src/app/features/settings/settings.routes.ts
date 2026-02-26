@@ -9,7 +9,7 @@ export const settingsRoutes: Routes = [
   },
   {
     path: 'profile',
-    loadComponent: () => import('./profile/profile').then((m) => m.Profile),
+    loadComponent: () => import('./profile/profile').then((m) => m.ProfileComponent),
     title: 'Profile',
   },
   {

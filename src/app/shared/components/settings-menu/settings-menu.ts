@@ -11,6 +11,6 @@ import { inject } from '@angular/core';
   styleUrl: './settings-menu.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SettingsMenu {
+export class SettingsMenuComponent {
   authService = inject(AuthService);
 }

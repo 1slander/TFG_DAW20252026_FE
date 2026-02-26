@@ -18,7 +18,7 @@ import { MaterialModule } from '../../ui/material-modules';
   styleUrl: './sidebar-menu.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SideBarMenu {
+export class SideBarMenuComponent {
   @Input() isMobile = false;
   @Output() itemClicked = new EventEmitter<void>();
 

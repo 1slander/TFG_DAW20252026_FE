@@ -3,7 +3,7 @@ import { Component, inject } from '@angular/core';
 
 import { TitleCasePipe } from '@angular/common';
 import { MaterialModule } from '../../ui/material-modules';
-import { ThemeManager } from '../../../core/services/theme-manager';
+import { ThemeManagerService } from '../../../core/services/theme-manager';
 
 @Component({
   selector: 'app-theme-selector',
@@ -11,7 +11,7 @@ import { ThemeManager } from '../../../core/services/theme-manager';
   templateUrl: './theme-selector.html',
   styleUrl: './theme-selector.scss'
 })
-export class ThemeSelector {
-  protected themeService = inject(ThemeManager);
+export class ThemeSelectorComponent {
+  protected themeService = inject(ThemeManagerService);
 
 }
