@@ -8,10 +8,12 @@ import { FormFieldInterface } from '../../interfaces/form-field';
 import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { SearchBoxComponent } from '../../shared/components/search-box/search-box';
+import { CreatePanelComponent } from '../../shared/components/create-panel/create-panel';
 @Component({
   selector: 'app-admin',
   standalone: true, // Asegúrate de que sea standalone
-  imports: [MaterialModule, CommonModule, DynamicFormComponent],
+  imports: [MaterialModule, CommonModule, DynamicFormComponent, SearchBoxComponent, CreatePanelComponent],
   templateUrl: './admin.html',
   styleUrl: './admin.scss',
 })
@@ -34,20 +36,19 @@ export class AdminComponent {
   ];
 
   // FILTRO DE TEXTO
-  applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value.toLowerCase();
-    const allAdmins = this.adminService.getAdmins();
+applyFilter(filterValue: string) {
+  const allAdmins = this.adminService.getAdmins();
 
-    if (!filterValue) {
-      this.admins.set(allAdmins); // Usamos .set() para actualizar
-      return;
-    }
-
-    this.admins.set(allAdmins.filter(admin =>
-      admin.username.toLowerCase().includes(filterValue) ||
-      admin.email.toLowerCase().includes(filterValue)
-    ));
+  if (!filterValue) {
+    this.admins.set(allAdmins);
+    return;
   }
+
+  this.admins.set(allAdmins.filter(admin =>
+    admin.username.toLowerCase().includes(filterValue) ||
+    admin.email.toLowerCase().includes(filterValue)
+  ));
+}
 
   // Función para lanzar el aviso
   private notify(message: string, type: 'success' | 'error' = 'success') {

@@ -14,16 +14,14 @@
     </mat-form-field>
   </div>
 
-  <mat-accordion>
-    <mat-expansion-panel [expanded]="showCreateForm" (expandedChange)="showCreateForm = $event">
-      <mat-expansion-panel-header>
-        <mat-panel-title class="panel-title">
-          <mat-icon>add</mat-icon> Añadir nuevo rol
-        </mat-panel-title>
-      </mat-expansion-panel-header>
-      <app-dynamic-form [fields]="roleFields" (formSubmit)="onCreateRole($event)"></app-dynamic-form>
-    </mat-expansion-panel>
-  </mat-accordion>
+    <app-create-panel 
+      title="Añadir nuevo rol"
+      [expanded]="showCreateForm">
+        <app-dynamic-form
+          [fields]="roleFields"
+          (formSubmit)="onCreateRole($event)"
+        ></app-dynamic-form>
+    </app-create-panel>
 
   <div class="table-wrapper">
     <table mat-table [dataSource]="roles()" [trackBy]="trackById">
