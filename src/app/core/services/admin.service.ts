@@ -1,11 +1,26 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { AdminInterface } from '../../interfaces/admin';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../environment';
+import { tap } from 'rxjs';
+
+interface LoginRequestInterface{
+  username : string;
+  password : string;
+}
+
+interface LoginResponseInterface{
+  token : string;
+}
 
 @Injectable({
   providedIn: 'root',
 })
 export class AdminService {
 
+  
+  private http = inject(HttpClient);
+  
   //nos creamos un array de admins en local para probar
   private adminList: AdminInterface[] =[
   {
@@ -62,5 +77,24 @@ export class AdminService {
     this.adminList = this.adminList.filter((admin) => admin.id!==id)
   }
 
+  //Conexion con el BE 
+  //login de admin 
+  login(credentials: LoginRequestInterface){
+    return this.http.post<LoginResponseInterface>(`${environment.apiUrl}admin/login`, credentials)
+  }
+
+  //refactorizar a LocalStorageService
+
+  saveToken(token: string) {
+  localStorage.setItem('token', token);
+}
+
+getToken(): string | null {
+  return localStorage.getItem('token');
+}
+
+logout() {
+  localStorage.removeItem('token');
+}
 
 }
