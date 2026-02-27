@@ -11,23 +11,24 @@
   <mat-sidenav-content>
     <div class="users-header">
       <h2>Lista de Usuarios</h2>
+
+      <app-search-box
+        label="Buscar por nombre o email"
+        placeholder="Ej: Carlos"
+        (valueChange)="applyFilter($event)"
+      >
+      </app-search-box>
     </div>
 
-    <mat-accordion>
-      <mat-expansion-panel [expanded]="showCreateForm" (expandedChange)="showCreateForm = $event">
-        <mat-expansion-panel-header>
-          <mat-panel-title class="panel-title">
-            <mat-icon>add</mat-icon>
-            Añadir nuevo usuario
-          </mat-panel-title>
-        </mat-expansion-panel-header>
 
+    <app-create-panel 
+      title="Añadir nuevo usuario"
+      [expanded]="showCreateForm">
         <app-dynamic-form
           [fields]="employeeFields"
           (formSubmit)="onCreateOwner($event)"
         ></app-dynamic-form>
-      </mat-expansion-panel>
-    </mat-accordion>
+    </app-create-panel>
 
     <div class="table-wrapper">
       <table mat-table [dataSource]="employees()">
@@ -67,7 +68,11 @@
         </ng-container>
 
         <tr mat-header-row *matHeaderRowDef="displayedColumns()"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns()" [class.inactive-row]="!row.isActive"></tr>
+        <tr
+          mat-row
+          *matRowDef="let row; columns: displayedColumns()"
+          [class.inactive-row]="!row.isActive"
+        ></tr>
       </table>
     </div>
   </mat-sidenav-content>

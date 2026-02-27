@@ -9,10 +9,11 @@ import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/c
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { SearchBoxComponent } from '../../shared/components/search-box/search-box';
+import { CreatePanelComponent } from '../../shared/components/create-panel/create-panel';
 @Component({
   selector: 'app-admin',
   standalone: true, // Asegúrate de que sea standalone
-  imports: [MaterialModule, CommonModule, DynamicFormComponent, SearchBoxComponent],
+  imports: [MaterialModule, CommonModule, DynamicFormComponent, SearchBoxComponent, CreatePanelComponent],
   templateUrl: './admin.html',
   styleUrl: './admin.scss',
 })

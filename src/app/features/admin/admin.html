@@ -10,21 +10,14 @@
     </app-search-box>
   </div>
 
-  <mat-accordion>
-    <mat-expansion-panel [expanded]="showCreateForm" (expandedChange)="showCreateForm = $event">
-      <mat-expansion-panel-header>
-        <mat-panel-title class="panel-title">
-          <mat-icon>add</mat-icon>
-          Añadir nuevo admin
-        </mat-panel-title>
-      </mat-expansion-panel-header>
-
-      <app-dynamic-form
-        [fields]="adminFields"
-        (formSubmit)="onCreateAdmin($event)"
-      ></app-dynamic-form>
-    </mat-expansion-panel>
-  </mat-accordion>
+  <app-create-panel
+    title="Añadir nuevo admin"
+    [expanded]="showCreateForm"
+    (expandedChange)="showCreateForm = $event"
+  >
+    <app-dynamic-form [fields]="adminFields" (formSubmit)="onCreateAdmin($event)">
+    </app-dynamic-form>
+  </app-create-panel>
 
   <div class="table-wrapper">
     <table mat-table [dataSource]="admins()" [trackBy]="trackById">

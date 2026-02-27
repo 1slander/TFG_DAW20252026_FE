@@ -9,10 +9,12 @@ import { ScreenSizeService } from '../../core/services/screen-size';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog';
+import { SearchBoxComponent } from '../../shared/components/search-box/search-box';
+import { CreatePanelComponent } from '../../shared/components/create-panel/create-panel';
 @Component({
   selector: 'app-users',
   standalone: true,
-  imports: [MaterialModule, EmployeeDetailSidenav, DynamicFormComponent],
+  imports: [MaterialModule, EmployeeDetailSidenav, DynamicFormComponent,SearchBoxComponent, CreatePanelComponent],
   templateUrl: './users.html',
   styleUrl: './users.scss',
 })
@@ -43,6 +45,23 @@ export class UsersComponent {
     { name: 'hireDate', label: 'Fecha de contratación', type: 'date', required: true },
     { name: 'hourlyWage', label: 'Salario por hora', type: 'number', required: true },
   ];
+
+
+  applyFilter(filterValue: string) {
+  const allEmployees = this.employeeService.getEmployees();
+
+  if (!filterValue) {
+    this.employees.set(allEmployees);
+    return;
+  }
+
+  this.employees.set(allEmployees.filter(employee =>
+    employee.firstName.toLowerCase().includes(filterValue) ||
+    employee.lastName.toLocaleLowerCase().includes(filterValue) ||
+    employee.email.toLowerCase().includes(filterValue)
+  ));
+}
+
 
   private notify(message: string, type: 'success' | 'error' = 'success') {
     this.snackBar.open(message, 'Aceptar', {

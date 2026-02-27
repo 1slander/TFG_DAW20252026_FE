@@ -10,12 +10,13 @@ import { FormFieldInterface } from '../../interfaces/form-field';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog';
+import { CreatePanelComponent } from '../../shared/components/create-panel/create-panel';
 
 
 @Component({
   selector: 'app-roles',
   standalone: true,
-  imports: [CommonModule, MaterialModule, DynamicFormComponent],
+  imports: [CommonModule, MaterialModule, DynamicFormComponent, CreatePanelComponent],
   templateUrl: './roles.html',
   styleUrl: './roles.scss',
 })

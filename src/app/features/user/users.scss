@@ -55,6 +55,14 @@ mat-expansion-panel {
   padding: var(--space-lg) !important;
 }
 
+::ng-deep .no-subscript .mat-mdc-form-field-subscript-wrapper {
+  display: none !important;
+}
+
+::ng-deep .no-subscript .mat-mdc-text-field-wrapper {
+  padding-bottom: 0 !important;
+}
+
 /* Tabla */
 .table-wrapper {
   width: 100%;
