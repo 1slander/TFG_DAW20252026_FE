@@ -23,37 +23,37 @@ export class HomeComponent {
     {
       title: 'Administradores',
       description: 'Lista de todos los Administradores.',
-      rolesAllowed: ['ADMIN'],
+      rolesAllowed: ['ROLE_ADMIN'],
       route: () => `${this.base}/admins`,
     },
     {
       title: 'Roles',
       description: 'Vista para insertar nuevos roles.',
-      rolesAllowed: ['ADMIN'], // Owner will no longer see this as requested: "Admin solo deberá ver Roles, Admins y Users"
+      rolesAllowed: ['ROLE_ADMIN'], // Owner will no longer see this as requested: "Admin solo deberá ver Roles, Admins y Users"
       route: () => `${this.base}/roles`,
     },
     {
       title: 'Usuarios',
       description: 'Vista de todos los usuarios.',
-      rolesAllowed: ['ADMIN'], // ONLY ADMIN as requested
+      rolesAllowed: ['ROLE_ADMIN'], // ONLY ADMIN as requested
       route: () => `${this.base}/users`,
     },
     {
       title: 'Empleados',
       description: 'Gestión y listado de empleados.',
-      rolesAllowed: ['OWNER'],
+      rolesAllowed: ['ROLE_OWNER'],
       route: () => `${this.base}/employees`,
     },
     {
       title: 'Restaurantes',
       description: 'Módulo para la gestión de locales.',
-      rolesAllowed: ['OWNER'],
+      rolesAllowed: ['ROLE_OWNER'],
       route: () => `${this.base}/restaurants`,
     },
     {
       title: 'Turnos',
       description: 'Módulo para la gestión de turnos.',
-      rolesAllowed: ['OWNER', 'EMPLOYEE'],
+      rolesAllowed: ['ROLE_OWNER', 'ROLE_EMPLOYEE'],
       route: () => `${this.base}/shifts`,
     },
   ];

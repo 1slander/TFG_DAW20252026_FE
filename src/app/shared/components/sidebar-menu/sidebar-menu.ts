@@ -28,5 +28,5 @@ export class SideBarMenuComponent {
     }
   }
 
-  @Input() userRole: string = 'EMPLOYEE';
+  @Input() userRole: string = 'ROLE_EMPLOYEE';
 }
