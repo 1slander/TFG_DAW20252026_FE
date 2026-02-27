@@ -270,22 +270,7 @@ button[mat-icon-button] {
 }
 
 
-.search-field {
-  width: 300px;
 
-  mat-icon {
-    margin-right: 8px;
-    color: var(--principal-color);
-  }
-}
-
-/* En móvil se pone debajo del título y al 100% */
-.admin-main-container.is-mobile {
-  .search-field {
-    width: 100%;
-    margin-top: 10px;
-  }
-}
 
 /* Éxito: Verde esmeralda (siguiendo tu estilo premium) */
 ::ng-deep .snackbar-success {
