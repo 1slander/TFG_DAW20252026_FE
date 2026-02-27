@@ -3,6 +3,7 @@ import { DynamicFormComponent } from '../../../shared/components/dynamic-form/dy
 import { ADMIN_LOGIN_FORM } from '../../../forms/admin-login';
 import { AdminService } from '../../../core/services/admin.service';
 import { Router } from '@angular/router';
+import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-admin-login',
@@ -15,13 +16,14 @@ export class AdminLoginComponent {
   fields = ADMIN_LOGIN_FORM;
 
   private adminService = inject(AdminService);
+  private authService = inject(AuthService);
   private router = inject(Router);
 
   onSubmit(data:any){
     this.adminService.login(data).subscribe({ 
       next: (res) =>{
         console.log(res)
-      this.adminService.saveToken(res.token)
+        this.authService.saveToken(res.token)
         this.router.navigate(["dashboard/home"])
     },
       error: (err) =>{

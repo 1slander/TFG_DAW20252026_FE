@@ -3,8 +3,7 @@
     matTooltipPosition="below" (click)="drawer.toggle()">
     <mat-icon>menu</mat-icon>
   </button>
-  <span>{{ authService.roleValue === 'ADMIN' ? 'Admin Dashboard' : 'User Dashboard' }} (Rol: {{ authService.roleValue
-    }})</span>
+  <span>{{ authService.hasRole("ROLE_ADMIN") ? 'Admin Dashboard' : 'Dashboard' }}</span>
   <span class="example-spacer"></span>
 
   <app-theme-selector />
