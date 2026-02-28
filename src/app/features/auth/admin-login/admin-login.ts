@@ -9,7 +9,7 @@ import { AuthService } from '../../../core/services/auth.service';
   selector: 'app-admin-login',
   imports: [DynamicFormComponent],
   templateUrl: './admin-login.html',
-  styleUrl: './admin-login.css',
+  styleUrl: './admin-login.scss',
 })
 export class AdminLoginComponent {
 
@@ -19,16 +19,15 @@ export class AdminLoginComponent {
   private authService = inject(AuthService);
   private router = inject(Router);
 
-  onSubmit(data:any){
-    this.adminService.login(data).subscribe({ 
-      next: (res) =>{
-        console.log(res)
+  onSubmit(data: any) {
+    this.adminService.login(data).subscribe({
+      next: (res) => {
         this.authService.saveToken(res.token)
         this.router.navigate(["dashboard/home"])
-    },
-      error: (err) =>{
-        console.error("Error login: " , err)
-      } 
+      },
+      error: (err) => {
+        console.error("Error login: ", err)
+      }
     })
   }
 }

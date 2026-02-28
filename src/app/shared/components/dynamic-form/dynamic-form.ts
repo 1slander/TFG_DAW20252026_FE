@@ -71,6 +71,7 @@ export class DynamicFormComponent implements OnInit {
   onSubmit(): void {
     if (this.form.valid) {
       this.formSubmit.emit(this.form.value);
+      this.form.reset(); // Clear the form completely (values and untouched state)
     } else {
       this.form.markAllAsTouched();
     }

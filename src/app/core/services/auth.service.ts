@@ -1,5 +1,8 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, signal, inject } from '@angular/core';
+import { Router } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
 import { jwtDecode } from 'jwt-decode';
+import { environment } from '../../../environment';
 
 interface JwtPayloadInterface {
   sub: string;
@@ -9,12 +12,48 @@ interface JwtPayloadInterface {
 
 export type UserRole = 'ROLE_EMPLOYEE' | 'ROLE_OWNER' | 'ROLE_ADMIN';
 
+export interface LoginCredentials {
+  dni?: string;
+  username?: string; // used by admin login
+  password?: string;
+}
+
+export interface AuthResponse {
+  token: string;
+}
+
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  // Cambiar a 'EMPLOYEE', 'OWNER' o 'ADMIN' para probar la UI
-  private roleSignal = signal<UserRole>("ROLE_ADMIN");
+  private roleSignal = signal<UserRole | null>(null);
+  private usernameSignal = signal<string | null>(null);
+
+  private http = inject(HttpClient);
+  private router = inject(Router);
+
+  constructor() {
+    const role = this.getRole();
+    const tokenPayload = this.getDecodedToken();
+
+    if (role) {
+      this.roleSignal.set(role as UserRole);
+    }
+    if (tokenPayload && tokenPayload.sub) {
+      this.usernameSignal.set(tokenPayload.sub);
+    }
+  }
+
+  get usernameValue(): string | null {
+    return this.usernameSignal();
+  }
+
+  /**
+   * Performs standard user login using DNI and password
+   */
+  login(credentials: LoginCredentials) {
+    return this.http.post<AuthResponse>(`${environment.apiUrl}login`, credentials);
+  }
 
   // Mantenemos los niveles simplificados
   private readonly roleLevels: Record<UserRole, number> = {
@@ -33,7 +72,7 @@ export class AuthService {
   /**
    * Obtiene el valor string del rol para comprobaciones de igualdad directa
    */
-  get roleValue(): UserRole {
+  get roleValue(): UserRole | null {
     return this.roleSignal();
   }
 
@@ -41,7 +80,8 @@ export class AuthService {
    * Obtiene el nivel numérico del rol actual
    */
   get currentLevel(): number {
-    return this.roleLevels[this.roleSignal()];
+    const role = this.roleSignal();
+    return role ? this.roleLevels[role] : -1;
   }
 
   /**
@@ -57,6 +97,13 @@ export class AuthService {
 
   saveToken(token: string) {
     localStorage.setItem('token', token);
+    const decoded = this.getDecodedToken();
+    if (decoded && decoded.role) {
+      this.roleSignal.set(decoded.role as UserRole);
+    }
+    if (decoded && decoded.sub) {
+      this.usernameSignal.set(decoded.sub);
+    }
   }
 
   getToken(): string | null {
@@ -65,6 +112,8 @@ export class AuthService {
 
   logout() {
     localStorage.removeItem('token');
+    this.roleSignal.set(null);
+    this.usernameSignal.set(null);
   }
 
   getDecodedToken(): JwtPayloadInterface | null {

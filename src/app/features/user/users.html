@@ -1,34 +1,28 @@
 <mat-sidenav-container class="users-sidenav-container" [class.is-mobile]="screenSize.isMobile()">
   <mat-sidenav position="end" mode="over" [opened]="sidenavOpen" (closedStart)="closeSidenav()">
-    <app-employee-detail-sidenav
-      [employee]="selectedEmployee"
-      [opened]="sidenavOpen"
-      (close)="closeSidenav()"
-      (toggleActive)="onToggleActive($event)"
-    ></app-employee-detail-sidenav>
+    <app-employee-detail-sidenav [employee]="selectedEmployee" [opened]="sidenavOpen"
+      (close)="closeSidenav()"></app-employee-detail-sidenav>
   </mat-sidenav>
 
   <mat-sidenav-content>
     <div class="users-header">
       <h2>Lista de Usuarios</h2>
 
-      <app-search-box
-        label="Buscar por nombre o email"
-        placeholder="Ej: Carlos"
-        (valueChange)="applyFilter($event)"
-      >
+      <app-search-box label="Buscar por nombre o email" placeholder="Ej: Carlos" (valueChange)="applyFilter($event)">
       </app-search-box>
     </div>
 
-
-    <app-create-panel 
-      title="Añadir nuevo usuario"
-      [expanded]="showCreateForm">
-        <app-dynamic-form
-          [fields]="employeeFields"
-          (formSubmit)="onCreateOwner($event)"
-        ></app-dynamic-form>
+    @if (role() === 'ROLE_ADMIN') {
+    <app-create-panel title="Añadir nuevo usuario" [expanded]="showCreateForm">
+      <app-dynamic-form [fields]="ownerFields" (formSubmit)="onCreateOwner($event)"></app-dynamic-form>
     </app-create-panel>
+
+    }
+    @else {
+    <app-create-panel title="Añadir nuevo usuario" [expanded]="showCreateForm">
+      <app-dynamic-form [fields]="employeeFields" (formSubmit)="onCreateEmployee($event)"></app-dynamic-form>
+    </app-create-panel>
+    }
 
     <div class="table-wrapper">
       <table mat-table [dataSource]="employees()">
@@ -40,22 +34,21 @@
         </ng-container>
 
         @if (!screenSize.isMobile()) {
-          <ng-container matColumnDef="email">
-            <th mat-header-cell *matHeaderCellDef>Email</th>
-            <td mat-cell *matCellDef="let employee">{{ employee.email }}</td>
-          </ng-container>
+        <ng-container matColumnDef="email">
+          <th mat-header-cell *matHeaderCellDef>Email</th>
+          <td mat-cell *matCellDef="let employee">{{ employee.email }}</td>
+        </ng-container>
         }
 
         <ng-container matColumnDef="role">
           <th mat-header-cell *matHeaderCellDef>Rol</th>
-          <td mat-cell *matCellDef="let employee">{{ employee.role.roleName }}</td>
+          <td mat-cell *matCellDef="let employee">{{ employee.role }}</td>
         </ng-container>
 
-        <ng-container matColumnDef="isActive">
-          <th mat-header-cell *matHeaderCellDef>Estado</th>
-          <td mat-cell *matCellDef="let employee">
-            {{ employee.isActive ? 'Activo' : 'Inactivo' }}
-          </td>
+        <ng-container matColumnDef="restaurant">
+          <th mat-header-cell *matHeaderCellDef>Restaurante</th>
+          <td mat-cell *matCellDef="let employee">{{ employee.restaurant === null ? 'No asignado' : employee.restaurant
+            }}</td>
         </ng-container>
 
         <ng-container matColumnDef="actions">
@@ -68,11 +61,7 @@
         </ng-container>
 
         <tr mat-header-row *matHeaderRowDef="displayedColumns()"></tr>
-        <tr
-          mat-row
-          *matRowDef="let row; columns: displayedColumns()"
-          [class.inactive-row]="!row.isActive"
-        ></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns()" [class.inactive-row]="!row.isActive"></tr>
       </table>
     </div>
   </mat-sidenav-content>

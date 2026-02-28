@@ -59,6 +59,8 @@ export class HomeComponent {
   ];
 
   get modules() {
-    return this.allModules.filter(m => m.rolesAllowed.includes(this.authService.roleValue));
+    const role = this.authService.roleValue;
+    if (!role) return [];
+    return this.allModules.filter(m => m.rolesAllowed.includes(role));
   }
 }
