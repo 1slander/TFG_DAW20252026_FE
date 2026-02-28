@@ -11,6 +11,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog';
 import { CreatePanelComponent } from '../../shared/components/create-panel/create-panel';
+import { RoleResponseInterface } from '../../interfaces/role';
 
 
 @Component({
@@ -27,25 +28,15 @@ export class RolesComponent {
   private snackBar = inject(MatSnackBar);
 
   // Usamos Signal para que la UI vuele
-  roles = signal(this.roleService.getRoles());
+  roles = signal<RoleResponseInterface[]>([]);
   showCreateForm = false;
   selectedCategory = signal<string>('ALL');
-  displayedColumns: string[] = ['id', 'roleName', 'roleCategory', 'actions'];
+  displayedColumns: string[] = ['roleName'];
 
   roleFields: FormFieldInterface[] = [
-    { name: "roleName", label: "Identificador del Rol", type: "text", required: true },
-    {
-      name: "roleCategory",
-      label: "Categoría de Nivel",
-      type: "select",
-      required: true,
-      options: [
-        { value: "ADMIN", label: "Admin" },
-        { value: "OWNER", label: "Owner" },
-        { value: "EMPLOYEE", label: "Employee" }
-      ]
-    }
+    { name: "roleName", label: "Nombre del Rol (ej: ADMIN)", type: "text", required: true },
   ];
+
 
   private notify(message: string, type: 'success' | 'error' = 'success') {
     this.snackBar.open(message, 'Aceptar', {
@@ -56,41 +47,51 @@ export class RolesComponent {
     });
   }
 
-  onCreateRole(value: any) {
-    try {
-      this.roleService.createRole(value);
-      this.roles.set(this.roleService.getRoles()); // Actualización limpia
-      this.notify('¡Rol creado correctamente!');
-      this.showCreateForm = false;
-    } catch (error) {
-      this.notify('Error: No se ha podido crear el rol', 'error');
-    }
-  }
-
-  deleteRole(id: number) {
-    const dialogRef = this.dialog.open(ConfirmDialogComponent, { width: '350px' });
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        try {
-          this.roleService.deleteById(id);
-          // Actualización optimista del signal
-          this.roles.update(list => list.filter(r => r.id !== id));
-          this.notify('Rol eliminado con éxito');
-        } catch (error) {
-          this.notify('Error: No se ha podido eliminar el rol', 'error');
-        }
-      }
+  ngOnInit() {
+    this.roleService.getRoles().subscribe({
+      next: (roles) => this.roles.set(roles),
+      error: (err) => console.error(err)
     });
   }
 
-  onCategoryChange(value: string) {
-    this.selectedCategory.set(value);
-    const all = this.roleService.getRoles();
-    this.roles.set(value === 'ALL' ? all : all.filter(r => r.roleCategory === value));
+  onCreateRole(value: any) {
+    console.log(value);
+    this.roleService.createRole(value).subscribe({
+      next: (role) => {
+        this.roles.update(list => [...list, role]);
+        this.notify('¡Rol creado correctamente!');
+        this.showCreateForm = false;
+      },
+      error: () => { this.notify('Error: No se ha podido crear el rol', 'error'); }
+    });
   }
 
+  // deleteRole(id: number) {
+  //   const dialogRef = this.dialog.open(ConfirmDialogComponent, { width: '350px' });
+
+  //   dialogRef.afterClosed().subscribe(result => {
+  //     if (result) {
+  //       this.roleService.deleteById(id).subscribe({
+  //         next: () => {
+  //           this.roles.update(list => list.filter(r => r.idRole !== id));
+  //           this.notify('Rol eliminado con éxito');
+  //         },
+  //         error: (err) => {
+  //           console.error(err);
+  //           this.notify('Error: No se ha podido eliminar el rol', 'error');
+  //         }
+  //       });
+  //     }
+  //   });
+  // }
+
+  // onCategoryChange(value: string) {
+  //   this.selectedCategory.set(value);
+  //   const all = this.roleService.getRoles();
+  //   this.roles.set(value === 'ALL' ? all : all.filter(r => r.roleCategory === value));
+  // }
+
   trackById(index: number, item: any) {
-    return item.id;
+    return item.idRole;
   }
 }

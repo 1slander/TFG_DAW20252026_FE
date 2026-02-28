@@ -6,3 +6,12 @@ export interface RoleInterface {
   roleName: string;
   roleCategory: RoleCategory; // O usa tu tipo RoleCategory
 }
+
+export interface RoleResponseInterface {
+  idRole: number;
+  roleName: string;
+}
+
+export interface RoleCreateInterface {
+  roleName: string;
+}
