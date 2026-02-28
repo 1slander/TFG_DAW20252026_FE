@@ -32,31 +32,6 @@ interface CreateOwnerRequestInterface {
 export class AdminService {
   private http = inject(HttpClient);
 
-  //nos creamos un array de admins en local para probar
-  private adminList: AdminInterface[] = [
-    {
-      id: 1,
-      username: 'admin_master',
-      email: 'admin.master@restaurant.com',
-      password: 'hashed_password_1',
-      role: 'ADMIN',
-    },
-    {
-      id: 2,
-      username: 'admin_julia',
-      email: 'julia.admin@restaurant.com',
-      password: 'hashed_password_2',
-      role: 'ADMIN',
-    },
-    {
-      id: 3,
-      username: 'admin_carlos',
-      email: 'carlos.admin@restaurant.com',
-      password: 'hashed_password_3',
-      role: 'ADMIN',
-    },
-  ];
-
   // CRUD
 
   getAllAdmins() {

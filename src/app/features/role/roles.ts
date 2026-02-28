@@ -12,7 +12,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog';
 import { CreatePanelComponent } from '../../shared/components/create-panel/create-panel';
 import { RoleResponseInterface } from '../../interfaces/role';
-
+import { NotificationService } from '../../core/services/notification.service';
 
 @Component({
   selector: 'app-roles',
@@ -26,6 +26,7 @@ export class RolesComponent {
   public screenSize = inject(ScreenSizeService);
   private dialog = inject(MatDialog);
   private snackBar = inject(MatSnackBar);
+  private notificationService = inject(NotificationService);
 
   // Usamos Signal para que la UI vuele
   roles = signal<RoleResponseInterface[]>([]);
@@ -34,23 +35,13 @@ export class RolesComponent {
   displayedColumns: string[] = ['roleName'];
 
   roleFields: FormFieldInterface[] = [
-    { name: "roleName", label: "Nombre del Rol (ej: ADMIN)", type: "text", required: true },
+    { name: 'roleName', label: 'Nombre del Rol (ej: ADMIN)', type: 'text', required: true },
   ];
-
-
-  private notify(message: string, type: 'success' | 'error' = 'success') {
-    this.snackBar.open(message, 'Aceptar', {
-      duration: 3000,
-      panelClass: type === 'success' ? ['snackbar-success'] : ['snackbar-error'],
-      horizontalPosition: 'end',
-      verticalPosition: 'bottom',
-    });
-  }
 
   ngOnInit() {
     this.roleService.getRoles().subscribe({
       next: (roles) => this.roles.set(roles),
-      error: (err) => console.error(err)
+      error: (err) => console.error(err),
     });
   }
 
@@ -58,11 +49,13 @@ export class RolesComponent {
     console.log(value);
     this.roleService.createRole(value).subscribe({
       next: (role) => {
-        this.roles.update(list => [...list, role]);
-        this.notify('¡Rol creado correctamente!');
+        this.roles.update((list) => [...list, role]);
+        this.notificationService.notify('¡Rol creado correctamente!');
         this.showCreateForm = false;
       },
-      error: () => { this.notify('Error: No se ha podido crear el rol', 'error'); }
+      error: () => {
+        this.notificationService.notify('Error: No se ha podido crear el rol', 'error');
+      },
     });
   }
 
