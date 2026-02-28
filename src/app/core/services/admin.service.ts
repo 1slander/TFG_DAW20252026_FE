@@ -13,6 +13,15 @@ interface LoginResponseInterface {
   token: string;
 }
 
+interface CreateOwnerRequestInterface {
+  email: string;
+  firstName: string;
+  lastName: string;
+  dni: string;
+  password: string;
+  role: string;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -82,5 +91,14 @@ export class AdminService {
 
   //refactorizar a LocalStorageService
 
+  // Crear Usuario ROLE_OWNER
+
+  createOwner(owner: Omit<CreateOwnerRequestInterface, 'role'>) {
+    const payload: CreateOwnerRequestInterface = {
+      ...owner,
+      role: 'ROLE_OWNER'
+    };
+    return this.http.post<CreateOwnerRequestInterface>(`${environment.apiUrl}employees/create`, payload);
+  }
 
 }

@@ -4,12 +4,12 @@ import { RoleInterface } from '../../interfaces/role';
 @Injectable({ providedIn: 'root' })
 export class RoleService {
   private roleList: RoleInterface[] = [
-    { id: 1, roleName: 'OWNER', roleCategory: 'OWNER' },
-    { id: 2, roleName: 'MANAGER', roleCategory: 'EMPLOYEE' },
-    { id: 3, roleName: 'ASSISTANT_MANAGER', roleCategory: 'EMPLOYEE' },
-    { id: 4, roleName: 'TEAM_LEADER', roleCategory: 'EMPLOYEE' },
-    { id: 5, roleName: 'EMPLOYEE', roleCategory: 'EMPLOYEE' },
-    { id: 6, roleName: 'ADMIN', roleCategory: 'ADMIN' },
+    { id: 1, roleName: 'ROLE_OWNER', roleCategory: 'ROLE_OWNER' },
+    { id: 2, roleName: 'MANAGER', roleCategory: 'ROLE_EMPLOYEE' },
+    { id: 3, roleName: 'ASSISTANT_MANAGER', roleCategory: 'ROLE_EMPLOYEE' },
+    { id: 4, roleName: 'TEAM_LEADER', roleCategory: 'ROLE_EMPLOYEE' },
+    { id: 5, roleName: 'ROLE_EMPLOYEE', roleCategory: 'ROLE_EMPLOYEE' },
+    { id: 6, roleName: 'ROLE_ADMIN', roleCategory: 'ROLE_ADMIN' },
   ];
 
   getRoles() { return [...this.roleList]; }
