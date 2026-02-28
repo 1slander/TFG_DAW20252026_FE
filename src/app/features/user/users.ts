@@ -13,11 +13,18 @@ import { SearchBoxComponent } from '../../shared/components/search-box/search-bo
 import { CreatePanelComponent } from '../../shared/components/create-panel/create-panel';
 import { AuthService } from '../../core/services/auth.service';
 import { AdminService } from '../../core/services/admin.service';
+import { NotificationService } from '../../core/services/notification.service';
 
 @Component({
   selector: 'app-users',
   standalone: true,
-  imports: [MaterialModule, EmployeeDetailSidenav, DynamicFormComponent, SearchBoxComponent, CreatePanelComponent],
+  imports: [
+    MaterialModule,
+    EmployeeDetailSidenav,
+    DynamicFormComponent,
+    SearchBoxComponent,
+    CreatePanelComponent,
+  ],
   templateUrl: './users.html',
   styleUrl: './users.scss',
 })
@@ -29,6 +36,7 @@ export class UsersComponent implements OnInit {
   private snackBar = inject(MatSnackBar);
   private authService = inject(AuthService);
   private adminService = inject(AdminService);
+  private notificationService = inject(NotificationService);
 
   // Guardamos todos los empleados originales traídos de base de datos
   private sourceEmployees: EmployeeInterface[] = [];
@@ -40,7 +48,7 @@ export class UsersComponent implements OnInit {
   displayedColumns = computed(() =>
     this.screenSize.isMobile()
       ? ['fullName', 'actions']
-      : ['fullName', 'email', 'role', 'restaurant', 'actions']
+      : ['fullName', 'email', 'role', 'restaurant', 'actions'],
   );
 
   // Formulario
@@ -50,7 +58,15 @@ export class UsersComponent implements OnInit {
     { name: 'lastName', label: 'Apellidos', type: 'text', required: true },
     { name: 'email', label: 'Email', type: 'email', required: true },
     { name: 'password', label: 'Contraseña', type: 'password', required: true },
-    { name: 'dni', label: 'DNI', type: 'text', required: true, maxLength: 9, minLength: 9, pattern: '^[0-9]{8}[A-Z]$' },
+    {
+      name: 'dni',
+      label: 'DNI',
+      type: 'text',
+      required: true,
+      maxLength: 9,
+      minLength: 9,
+      pattern: '^[0-9]{8}[A-Z]$',
+    },
     { name: 'hireDate', label: 'Fecha de contratación', type: 'date', required: true },
     { name: 'hourlyWage', label: 'Salario por hora', type: 'number', required: true },
   ];
@@ -60,7 +76,15 @@ export class UsersComponent implements OnInit {
     { name: 'lastName', label: 'Apellidos', type: 'text', required: true },
     { name: 'email', label: 'Email', type: 'email', required: true },
     { name: 'password', label: 'Contraseña', type: 'password', required: true },
-    { name: 'dni', label: 'DNI', type: 'text', required: true, maxLength: 9, minLength: 9, pattern: '^[0-9]{8}[A-Z]$' },
+    {
+      name: 'dni',
+      label: 'DNI',
+      type: 'text',
+      required: true,
+      maxLength: 9,
+      minLength: 9,
+      pattern: '^[0-9]{8}[A-Z]$',
+    },
   ];
 
   ngOnInit() {
@@ -76,8 +100,8 @@ export class UsersComponent implements OnInit {
       },
       error: (err) => {
         console.error('Error fetching employees', err);
-        this.notify('No se pudo cargar la lista de trabajadores', 'error');
-      }
+        this.notificationService.notify('No se pudo cargar la lista de trabajadores', 'error');
+      },
     });
   }
 
@@ -88,33 +112,27 @@ export class UsersComponent implements OnInit {
     }
 
     const lowerFIlter = filterValue.toLowerCase();
-    this.employees.set(this.sourceEmployees.filter(employee =>
-      employee.firstName.toLowerCase().includes(lowerFIlter) ||
-      employee.lastName.toLowerCase().includes(lowerFIlter) ||
-      employee.email.toLowerCase().includes(lowerFIlter)
-    ));
-  }
-
-  private notify(message: string, type: 'success' | 'error' = 'success') {
-    this.snackBar.open(message, 'Aceptar', {
-      duration: 3000,
-      panelClass: type === 'success' ? ['snackbar-success'] : ['snackbar-error'],
-      horizontalPosition: 'end',
-      verticalPosition: 'bottom',
-    });
+    this.employees.set(
+      this.sourceEmployees.filter(
+        (employee) =>
+          employee.firstName.toLowerCase().includes(lowerFIlter) ||
+          employee.lastName.toLowerCase().includes(lowerFIlter) ||
+          employee.email.toLowerCase().includes(lowerFIlter),
+      ),
+    );
   }
 
   onCreateOwner(value: any) {
     this.adminService.createOwner(value).subscribe({
       next: (res) => {
-        this.notify('¡Dueño creado con éxito!', 'success');
+        this.notificationService.notify('¡Dueño creado con éxito!', 'success');
         this.showCreateForm = false;
         this.loadEmployees();
       },
       error: (error) => {
-        this.notify('Error: no se ha podido crear el dueño', 'error');
+        this.notificationService.notify('Error: no se ha podido crear el dueño', 'error');
         console.error('Error al crear owner', error);
-      }
+      },
     });
   }
 
@@ -125,7 +143,7 @@ export class UsersComponent implements OnInit {
       // this.notify('¡Empleado creado con exito!', 'success')
       // this.showCreateForm = false;
     } catch (error) {
-      this.notify('Error: no se ha podido crear', 'error');
+      this.notificationService.notify('Error: no se ha podido crear', 'error');
       console.error('Error al crear empleado', error);
     }
   }
@@ -140,7 +158,7 @@ export class UsersComponent implements OnInit {
   //         // it won't persist unless 'setActive' also hits an API.
   //         // this.employeeService.setActive(event.id, event.nextIsActive);
 
-  //         // Patch locally to avoid reloading the whole table unnecessarily 
+  //         // Patch locally to avoid reloading the whole table unnecessarily
   //         const patchedSource = this.sourceEmployees.map(emp =>
   //           emp.id === event.id ? { ...emp, isActive: event.nextIsActive } : emp
   //         );

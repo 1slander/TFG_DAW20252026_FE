@@ -12,10 +12,7 @@ import { inject } from '@angular/core';
   styleUrl: './home.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-
-
 export class HomeComponent {
-
   public authService = inject(AuthService);
   base = '/dashboard';
 
@@ -47,7 +44,7 @@ export class HomeComponent {
     {
       title: 'Restaurantes',
       description: 'Módulo para la gestión de locales.',
-      rolesAllowed: ['ROLE_OWNER'],
+      rolesAllowed: ['ROLE_ADMIN', 'ROLE_OWNER'],
       route: () => `${this.base}/restaurants`,
     },
     {
@@ -61,6 +58,6 @@ export class HomeComponent {
   get modules() {
     const role = this.authService.roleValue;
     if (!role) return [];
-    return this.allModules.filter(m => m.rolesAllowed.includes(role));
+    return this.allModules.filter((m) => m.rolesAllowed.includes(role));
   }
 }

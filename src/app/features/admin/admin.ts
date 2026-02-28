@@ -11,6 +11,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { SearchBoxComponent } from '../../shared/components/search-box/search-box';
 import { CreatePanelComponent } from '../../shared/components/create-panel/create-panel';
 import { AdminResponseInterface } from '../../interfaces/admin';
+import { NotificationService } from '../../core/services/notification.service';
 @Component({
   selector: 'app-admin',
   standalone: true, // Asegúrate de que sea standalone
@@ -28,7 +29,8 @@ export class AdminComponent {
   protected adminService = inject(AdminService);
   public screenSize = inject(ScreenSizeService);
   private dialog = inject(MatDialog);
-  private snackBar = inject(MatSnackBar);
+
+  private notificationService = inject(NotificationService);
   // Lista que se muestra en la tabla
   admins = signal<AdminResponseInterface[]>([]);
   allAdmins: AdminResponseInterface[] = [];
@@ -60,7 +62,7 @@ export class AdminComponent {
         this.admins.set(data);
       },
       error: () => {
-        this.notify('Error cargando administradores', 'error');
+        this.notificationService.notify('Error cargando administradores', 'error');
       },
     });
   }
@@ -81,16 +83,6 @@ export class AdminComponent {
     this.admins.set(filtered);
   }
 
-  // Función para lanzar el aviso
-  private notify(message: string, type: 'success' | 'error' = 'success') {
-    this.snackBar.open(message, 'Aceptar', {
-      duration: 3000,
-      panelClass: type === 'success' ? ['snackbar-success'] : ['snackbar-error'],
-      horizontalPosition: 'end',
-      verticalPosition: 'bottom',
-    });
-  }
-
   onCreateAdmin(value: any) {
     this.adminService.createAdmin(value).subscribe({
       next: () => {
@@ -99,16 +91,16 @@ export class AdminComponent {
           next: (data) => {
             this.allAdmins = data;
             this.admins.set(data);
-            this.notify('¡Administrador creado con éxito!', 'success');
+            this.notificationService.notify('¡Administrador creado con éxito!', 'success');
             this.showCreateForm = false;
           },
           error: () => {
-            this.notify('Error recargando administradores', 'error');
+            this.notificationService.notify('Error recargando administradores', 'error');
           },
         });
       },
       error: () => {
-        this.notify('Error: No se ha podido crear el administrador', 'error');
+        this.notificationService.notify('Error: No se ha podido crear el administrador', 'error');
       },
     });
   }
@@ -122,10 +114,13 @@ export class AdminComponent {
           next: () => {
             this.admins.update((list) => list.filter((a) => a.idAdmin !== id));
             this.allAdmins = this.allAdmins.filter((a) => a.idAdmin !== id);
-            this.notify('Administrador borrado correctamente');
+            this.notificationService.notify('Administrador borrado correctamente');
           },
           error: () => {
-            this.notify('Error: No se ha podido borrar el administrador', 'error');
+            this.notificationService.notify(
+              'Error: No se ha podido borrar el administrador',
+              'error',
+            );
           },
         });
       }
