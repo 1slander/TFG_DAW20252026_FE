@@ -1,5 +1,9 @@
 import { inject, Injectable } from '@angular/core';
-import { AdminInterface } from '../../interfaces/admin';
+import {
+  AdminCreateInterface,
+  AdminInterface,
+  AdminResponseInterface,
+} from '../../interfaces/admin';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environment';
 import { tap } from 'rxjs';
@@ -53,52 +57,37 @@ export class AdminService {
     },
   ];
 
-  //este metodo nos devuelve todos los admins,
-  //const adminListResult = [...this.adminList];
-  //lo utilizamos para devolver una copia del array
-  // y que no nos puedan modificar el original
-  getAdmins() {
-    const adminListResult = [...this.adminList];
-    return adminListResult;
+  // CRUD
+
+  getAllAdmins() {
+    return this.http.get<AdminResponseInterface[]>(`${environment.apiUrl}admin`);
   }
 
-  //creamos un admin nuevo y con Omit
-  //recogemos todos los datos menos el Id,
-  //que lo vamos a generar nosotros por ahora
-  createAdmin(admin: Omit<AdminInterface, 'id'>) {
-    const maxId =
-      this.adminList.length === 0 ? 1 : Math.max(...this.adminList.map((item) => item.id)) + 1;
-
-    const newAdmin: AdminInterface = {
-      id: maxId,
-      username: admin.username,
-      email: admin.email,
-      password: admin.password,
-      role: admin.role,
-    };
-    this.adminList.push(newAdmin);
+  createAdmin(newAdmin: AdminCreateInterface) {
+    return this.http.post<AdminCreateInterface>(`${environment.apiUrl}admin/signup`, newAdmin);
   }
 
   deleteById(id: number) {
-    this.adminList = this.adminList.filter((admin) => admin.id !== id);
+    return this.http.delete(`${environment.apiUrl}admin/delete-admin/${id}`, {
+      responseType: 'text',
+    });
   }
 
-  //Conexion con el BE
   //login de admin
   login(credentials: LoginRequestInterface) {
     return this.http.post<LoginResponseInterface>(`${environment.apiUrl}admin/login`, credentials);
   }
-
-  //refactorizar a LocalStorageService
 
   // Crear Usuario ROLE_OWNER
 
   createOwner(owner: Omit<CreateOwnerRequestInterface, 'role'>) {
     const payload: CreateOwnerRequestInterface = {
       ...owner,
-      role: 'ROLE_OWNER'
+      role: 'ROLE_OWNER',
     };
-    return this.http.post<CreateOwnerRequestInterface>(`${environment.apiUrl}employees/create`, payload);
+    return this.http.post<CreateOwnerRequestInterface>(
+      `${environment.apiUrl}employees/create`,
+      payload,
+    );
   }
-
 }
