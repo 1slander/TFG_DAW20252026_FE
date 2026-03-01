@@ -24,6 +24,12 @@ export class HomeComponent {
       route: () => `${this.base}/admins`,
     },
     {
+      title: 'Admisión',
+      description: 'Aprobar o rechazar nuevos Owners.',
+      rolesAllowed: ['ROLE_ADMIN'],
+      route: () => `${this.base}/admision`,
+    },
+    {
       title: 'Roles',
       description: 'Vista para insertar nuevos roles.',
       rolesAllowed: ['ROLE_ADMIN'], // Owner will no longer see this as requested: "Admin solo deberá ver Roles, Admins y Users"

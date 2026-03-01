@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   FormControl,
@@ -18,9 +18,16 @@ import { MaterialModule } from '../../ui/material-modules';
 })
 export class DynamicFormComponent implements OnInit {
   @Input() fields: FormFieldInterface[] = [];
+  @Input() initialValues?: Record<string, any>;
   @Output() formSubmit = new EventEmitter<any>();
 
   form!: FormGroup;
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['initialValues'] && this.form && this.initialValues) {
+      this.form.patchValue(this.initialValues);
+    }
+  }
 
   ngOnInit(): void {
     this.form = new FormGroup({});
@@ -59,7 +66,8 @@ export class DynamicFormComponent implements OnInit {
         validators.push(Validators.pattern(field.pattern));
       }
 
-      this.form.addControl(field.name, new FormControl('', validators));
+      const initialValue = this.initialValues?.[field.name] ?? '';
+      this.form.addControl(field.name, new FormControl(initialValue, validators));
     });
   }
 

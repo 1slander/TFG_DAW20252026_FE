@@ -3,21 +3,20 @@ import { CommonModule } from '@angular/common';
 import { MaterialModule } from '../../shared/ui/material-modules';
 import { RoleService } from '../../core/services/role.service';
 import { ScreenSizeService } from '../../core/services/screen-size';
-import { DynamicFormComponent } from '../../shared/components/dynamic-form/dynamic-form';
+
 import { FormFieldInterface } from '../../interfaces/form-field';
 
 // Servicios para avisos y diálogos
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog } from '@angular/material/dialog';
-import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog';
-import { CreatePanelComponent } from '../../shared/components/create-panel/create-panel';
+
 import { RoleResponseInterface } from '../../interfaces/role';
 import { NotificationService } from '../../core/services/notification.service';
 
 @Component({
   selector: 'app-roles',
   standalone: true,
-  imports: [CommonModule, MaterialModule, DynamicFormComponent, CreatePanelComponent],
+  imports: [CommonModule, MaterialModule],
   templateUrl: './roles.html',
   styleUrl: './roles.scss',
 })

@@ -1,6 +1,9 @@
 import { Component, computed, inject, signal, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MaterialModule } from '../../shared/ui/material-modules';
-import { EmployeeDetailSidenav } from './components/employee-detail-sidenav/employee-detail-sidenav';
+import { DetailViewComponent } from '../../shared/components/detail-view.component/detail-view.component';
+import { RestaurantService } from '../../core/services/restaurant.service';
+import { RestaurantsResponseInterface } from '../../interfaces/restaurant';
 import { EmployeeService } from '../../core/services/employee.service';
 import { EmployeeInterface } from '../../interfaces/employee';
 import { DynamicFormComponent } from '../../shared/components/dynamic-form/dynamic-form';
@@ -20,7 +23,7 @@ import { NotificationService } from '../../core/services/notification.service';
   standalone: true,
   imports: [
     MaterialModule,
-    EmployeeDetailSidenav,
+    DetailViewComponent,
     DynamicFormComponent,
     SearchBoxComponent,
     CreatePanelComponent,
@@ -37,12 +40,16 @@ export class UsersComponent implements OnInit {
   private authService = inject(AuthService);
   private adminService = inject(AdminService);
   private notificationService = inject(NotificationService);
+  private restaurantService = inject(RestaurantService);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
 
   // Guardamos todos los empleados originales traídos de base de datos
   private sourceEmployees: EmployeeInterface[] = [];
 
   // El signal visible en la tabla
   employees = signal<EmployeeInterface[]>([]);
+  restaurants = signal<RestaurantsResponseInterface[]>([]);
   role = signal(this.authService.getRole());
 
   displayedColumns = computed(() =>
@@ -53,6 +60,8 @@ export class UsersComponent implements OnInit {
 
   // Formulario
   showCreateForm = false;
+  initialOwnerData: Record<string, any> = {};
+
   employeeFields: FormFieldInterface[] = [
     { name: 'firstName', label: 'Nombre', type: 'text', required: true },
     { name: 'lastName', label: 'Apellidos', type: 'text', required: true },
@@ -89,6 +98,27 @@ export class UsersComponent implements OnInit {
 
   ngOnInit() {
     this.loadEmployees();
+    this.loadRestaurants();
+
+    // Comprobar parámetros de ruta para la autocompletación desde admisiones
+    this.route.queryParams.subscribe(params => {
+      if (params['action'] === 'createOwner') {
+        this.initialOwnerData = {
+          firstName: params['firstName'] || '',
+          lastName: params['lastName'] || '',
+          email: params['email'] || '',
+          dni: params['dni'] || '',
+        };
+        this.showCreateForm = true;
+      }
+    });
+  }
+
+  loadRestaurants() {
+    this.restaurantService.getAllRestaurants().subscribe({
+      next: (data) => this.restaurants.set(data),
+      error: (err) => console.error('Error fetching restaurants', err)
+    });
   }
 
   loadEmployees() {
@@ -127,6 +157,15 @@ export class UsersComponent implements OnInit {
       next: (res) => {
         this.notificationService.notify('¡Dueño creado con éxito!', 'success');
         this.showCreateForm = false;
+        this.initialOwnerData = {};
+
+        // Limpiamos los query parameters para evitar que se reabra el formulario al recargar
+        this.router.navigate([], {
+          relativeTo: this.route,
+          queryParams: { action: null, firstName: null, lastName: null, email: null, dni: null },
+          queryParamsHandling: 'merge'
+        });
+
         this.loadEmployees();
       },
       error: (error) => {
@@ -175,17 +214,42 @@ export class UsersComponent implements OnInit {
   //   });
   // }
 
-  //añadimos la lsita de employees a una variable de tipo EmployeeInterface[]
-  selectedEmployee: EmployeeInterface | null = null;
-  sidenavOpen = false;
+  //añadimos la lista de employees a una variable de tipo EmployeeInterface[]
+  selectedEmployee = signal<EmployeeInterface | null>(null);
+  sidenavOpen = signal(false);
 
   openSidenav(employee: EmployeeInterface) {
-    this.selectedEmployee = employee;
-    this.sidenavOpen = true;
+    this.selectedEmployee.set(employee);
+    this.sidenavOpen.set(true);
   }
 
   closeSidenav() {
-    this.selectedEmployee = null;
-    this.sidenavOpen = false;
+    this.selectedEmployee.set(null);
+    this.sidenavOpen.set(false);
+  }
+
+  getRestaurantName(employee: EmployeeInterface): string {
+    // If it's already an object with a name (from EmployeeInterface)
+    if (employee.restaurant && (employee.restaurant as any).name) {
+      return (employee.restaurant as any).name;
+    }
+    // If it's a string (old behavior)
+    if (typeof employee.restaurant === 'string') {
+      return employee.restaurant;
+    }
+    // Search in restaurants list by owner ID (for Owners)
+    // We use == for defensive type matching
+    const found = this.restaurants().find(r => r.idOwner == (employee as any).id);
+
+    // Debugging link
+    const isOwner = typeof employee.role === 'string'
+      ? employee.role === 'ROLE_OWNER'
+      : (employee.role as any)?.roleName === 'ROLE_OWNER';
+
+    if (!found && isOwner) {
+      console.warn(`No restaurant found for OWNER ID: ${employee.id}. Available restaurants:`, this.restaurants());
+    }
+
+    return found ? found.restaurantName : 'No asignado';
   }
 }

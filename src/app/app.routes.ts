@@ -43,6 +43,11 @@ export const routes: Routes = [
         path: 'users',
         loadChildren: () => import('./features/user/user.routes').then((m) => m.userRoutes)
       },
+      {
+        path: 'admision',
+        loadComponent: () => import('./features/admision/admision').then(m => m.AdmisionComponent),
+        title: 'Admisión'
+      },
 
       // -- RUTAS GENERALES / OPERACIONALES --
       {

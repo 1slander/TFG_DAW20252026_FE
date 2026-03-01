@@ -10,7 +10,7 @@ import { DetailViewComponent } from '../../shared/components/detail-view.compone
 
 @Component({
   selector: 'app-restaurants',
-  imports: [MaterialModule, SearchBoxComponent, CreatePanelComponent, DetailViewComponent],
+  imports: [MaterialModule, SearchBoxComponent, DetailViewComponent],
   templateUrl: './restaurants.html',
   styleUrl: './restaurants.scss',
 })
@@ -18,6 +18,9 @@ export class RestaurantsComponent {
   public screenSize = inject(ScreenSizeService);
   private restaurantService = inject(RestaurantService);
   private notificationService = inject(NotificationService);
+
+  // Guardamos todos los restaurantes originales
+  private sourceRestaurants: RestaurantsResponseInterface[] = [];
 
   restaurants = signal<RestaurantsResponseInterface[]>([]);
   role = signal('');
@@ -40,6 +43,7 @@ export class RestaurantsComponent {
     this.restaurantService.getAllRestaurants().subscribe({
       next: (data: RestaurantsResponseInterface[]) => {
         console.log(data);
+        this.sourceRestaurants = data;
         this.restaurants.set(data);
       },
       error: (error) => {
@@ -49,16 +53,22 @@ export class RestaurantsComponent {
   }
 
   applyFilter(filterValue: string) {
-    // if (!filterValue) {
-    //   this.employees.set(this.sourceEmployees);
-    //   return;
-    // }
-    // const lowerFIlter = filterValue.toLowerCase();
-    // this.employees.set(this.sourceEmployees.filter(employee =>
-    //   employee.firstName.toLowerCase().includes(lowerFIlter) ||
-    //   employee.lastName.toLowerCase().includes(lowerFIlter) ||
-    //   employee.email.toLowerCase().includes(lowerFIlter)
-    // ));
+    if (!filterValue) {
+      this.restaurants.set(this.sourceRestaurants);
+      return;
+    }
+
+    const lowerFilter = filterValue.toLowerCase();
+    this.restaurants.set(
+      this.sourceRestaurants.filter(
+        (restaurant) =>
+          restaurant.restaurantName.toLowerCase().includes(lowerFilter) ||
+          restaurant.ownerName.toLowerCase().includes(lowerFilter) ||
+          restaurant.cif.toLowerCase().includes(lowerFilter) ||
+          restaurant.address.toLowerCase().includes(lowerFilter) ||
+          restaurant.phone.toString().includes(lowerFilter),
+      ),
+    );
   }
 
   openSidenav(restaurant: RestaurantsResponseInterface) {

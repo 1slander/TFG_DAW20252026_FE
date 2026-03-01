@@ -29,4 +29,5 @@ export class SideBarMenuComponent {
   }
 
   @Input() userRole: string | null = null;
+  @Input() pendingAdmissions: number = 0;
 }
