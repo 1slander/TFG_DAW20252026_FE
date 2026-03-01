@@ -55,6 +55,13 @@ export class AuthService {
     return this.http.post<AuthResponse>(`${environment.apiUrl}login`, credentials);
   }
 
+  /**
+   * Envía la solicitud de registro de un nuevo Owner.
+   */
+  submitRegistration(data: any) {
+    return this.http.post(`${environment.apiUrl}signup`, data);
+  }
+
   // Mantenemos los niveles simplificados
   private readonly roleLevels: Record<UserRole, number> = {
     "ROLE_EMPLOYEE": 0,

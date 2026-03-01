@@ -1,10 +1,5 @@
 <mat-nav-list>
-  <mat-list-item
-    routerLink="home"
-    routerLinkActive="activelink"
-    (click)="handleItemClick()"
-    tabindex="-1"
-  >
+  <mat-list-item routerLink="home" routerLinkActive="activelink" (click)="handleItemClick()" tabindex="-1">
     <span class="icon-and-text">
       <mat-icon class="icon-margin">home</mat-icon>
       Home
@@ -12,82 +7,64 @@
   </mat-list-item>
 
   @if (userRole === 'ROLE_ADMIN') {
-    <mat-list-item
-      routerLink="admins"
-      routerLinkActive="activelink"
-      (click)="handleItemClick()"
-      tabindex="-1"
-    >
-      <span class="icon-and-text">
-        <mat-icon class="icon-margin">admin_panel_settings</mat-icon>
-        Administradores
-      </span>
-    </mat-list-item>
+  <mat-list-item routerLink="admins" routerLinkActive="activelink" (click)="handleItemClick()" tabindex="-1">
+    <span class="icon-and-text">
+      <mat-icon class="icon-margin">admin_panel_settings</mat-icon>
+      Administradores
+    </span>
+  </mat-list-item>
 
-    <mat-list-item
-      routerLink="roles"
-      routerLinkActive="activelink"
-      (click)="handleItemClick()"
-      tabindex="-1"
-    >
-      <span class="icon-and-text">
-        <mat-icon class="icon-margin">badge</mat-icon>
-        Roles
-      </span>
-    </mat-list-item>
+  <mat-list-item routerLink="roles" routerLinkActive="activelink" (click)="handleItemClick()" tabindex="-1">
+    <span class="icon-and-text">
+      <mat-icon class="icon-margin">badge</mat-icon>
+      Roles
+    </span>
+  </mat-list-item>
 
-    <mat-list-item
-      routerLink="users"
-      routerLinkActive="activelink"
-      (click)="handleItemClick()"
-      tabindex="-1"
-    >
-      <span class="icon-and-text">
-        <mat-icon class="icon-margin">people</mat-icon>
-        Usuarios
+  <mat-list-item routerLink="users" routerLinkActive="activelink" (click)="handleItemClick()" tabindex="-1">
+    <span class="icon-and-text">
+      <mat-icon class="icon-margin">people</mat-icon>
+      Usuarios
+    </span>
+  </mat-list-item>
+  <mat-list-item routerLink="admision" routerLinkActive="activelink" (click)="handleItemClick()" tabindex="-1">
+    <span class="icon-and-text"
+      style="display: flex; justify-content: space-between; width: 100%; align-items: center;">
+      <span style="display: flex; align-items: center;">
+        <mat-icon class="icon-margin">how_to_reg</mat-icon>
+        Admisión
       </span>
-    </mat-list-item>
+      @if (pendingAdmissions > 0) {
+      <span class="badge">{{ pendingAdmissions }}</span>
+      }
+    </span>
+  </mat-list-item>
   }
 
   @if (userRole === 'ROLE_OWNER' || userRole === 'ROLE_ADMIN') {
-    <mat-list-item
-      routerLink="restaurants"
-      routerLinkActive="activelink"
-      (click)="handleItemClick()"
-      tabindex="-1"
-    >
-      <span class="icon-and-text">
-        <mat-icon class="icon-margin">restaurant</mat-icon>
-        Restaurantes
-      </span>
-    </mat-list-item>
+  <mat-list-item routerLink="restaurants" routerLinkActive="activelink" (click)="handleItemClick()" tabindex="-1">
+    <span class="icon-and-text">
+      <mat-icon class="icon-margin">restaurant</mat-icon>
+      Restaurantes
+    </span>
+  </mat-list-item>
   }
 
   @if (userRole === 'ROLE_OWNER' || userRole === 'ROLE_EMPLOYEE') {
-    <mat-list-item
-      routerLink="shift"
-      routerLinkActive="activelink"
-      (click)="handleItemClick()"
-      tabindex="-1"
-    >
-      <span class="icon-and-text">
-        <mat-icon class="icon-margin">schedule</mat-icon>
-        Turnos
-      </span>
-    </mat-list-item>
+  <mat-list-item routerLink="shift" routerLinkActive="activelink" (click)="handleItemClick()" tabindex="-1">
+    <span class="icon-and-text">
+      <mat-icon class="icon-margin">schedule</mat-icon>
+      Turnos
+    </span>
+  </mat-list-item>
   }
 
   @if (userRole === 'ROLE_OWNER') {
-    <mat-list-item
-      routerLink="employee"
-      routerLinkActive="activelink"
-      (click)="handleItemClick()"
-      tabindex="-1"
-    >
-      <span class="icon-and-text">
-        <mat-icon class="icon-margin">badge</mat-icon>
-        Empleados
-      </span>
-    </mat-list-item>
+  <mat-list-item routerLink="employee" routerLinkActive="activelink" (click)="handleItemClick()" tabindex="-1">
+    <span class="icon-and-text">
+      <mat-icon class="icon-margin">badge</mat-icon>
+      Empleados
+    </span>
+  </mat-list-item>
   }
 </mat-nav-list>

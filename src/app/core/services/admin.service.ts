@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import {
   AdminCreateInterface,
   AdminInterface,
@@ -63,6 +63,34 @@ export class AdminService {
     return this.http.post<CreateOwnerRequestInterface>(
       `${environment.apiUrl}employees/create`,
       payload,
+    );
+  }
+
+  // --- ADMISIONES ---
+
+  pendingAdmissionsCount = signal<number>(0);
+
+  getPendingAdmissions() {
+    // This should fetch users/owners with a 'PENDING' status or similar
+    // For now, using a hypothetical endpoint based on the requirement
+    return this.http.get<any[]>(`${environment.apiUrl}admin/signup-requests`);
+  }
+
+  updatePendingAdmissionsCount() {
+    this.getPendingAdmissions().subscribe({
+      next: (admissions) => {
+        if (admissions && Array.isArray(admissions)) {
+          const pendingCount = admissions.filter(a => a.status === 'PENDING').length;
+          this.pendingAdmissionsCount.set(pendingCount);
+        }
+      }
+    });
+  }
+
+  processAdmission(id: number, approved: boolean) {
+    const action = approved ? 'approve' : 'reject';
+    return this.http.post(`${environment.apiUrl}admin/signup-requests/${id}/${action}`, {}).pipe(
+      tap(() => this.updatePendingAdmissionsCount())
     );
   }
 }

@@ -1,21 +1,42 @@
-import { Component } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
+import { Router, RouterLink } from '@angular/router';
+import { CommonModule } from '@angular/common';
 import { DynamicFormComponent } from '../../../shared/components/dynamic-form/dynamic-form';
 import { OWNER_REGISTER_FORM } from '../../../forms/owner-register';
+import { AuthService } from '../../../core/services/auth.service';
+import { NotificationService } from '../../../core/services/notification.service';
+import { MaterialModule } from '../../../shared/ui/material-modules';
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [DynamicFormComponent],
+  imports: [DynamicFormComponent, CommonModule, MaterialModule, RouterLink],
   templateUrl: './register.html',
   styleUrl: './register.scss'
 })
 export class RegisterComponent {
-
+  private authService = inject(AuthService);
+  private notificationService = inject(NotificationService);
+  private router = inject(Router);
 
   fields = OWNER_REGISTER_FORM;
+  isSubmitting = signal(false);
+  registrationSuccess = signal(false);
 
   onSubmit(data: any) {
-    console.log('Datos enviados:', data);
-    // aquí irá el backend más adelante
+    if (this.isSubmitting()) return;
+    this.isSubmitting.set(true);
+
+    this.authService.submitRegistration(data).subscribe({
+      next: () => {
+        this.registrationSuccess.set(true);
+        this.isSubmitting.set(false);
+      },
+      error: (err) => {
+        console.error('Registration error', err);
+        this.notificationService.notify('No se pudo completar el registro. Verifica los datos.', 'error');
+        this.isSubmitting.set(false);
+      }
+    });
   }
 }

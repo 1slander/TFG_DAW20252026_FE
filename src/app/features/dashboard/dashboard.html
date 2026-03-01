@@ -18,7 +18,8 @@
 
 <mat-drawer-container class="example-container">
   <mat-drawer #drawer [mode]="isMobile() ? 'over' : 'side'" [opened]="!isMobile()" position="start">
-    <app-sidebar-menu [isMobile]="isMobile()" [userRole]="authService.roleValue" (itemClicked)="onNavigate()" />
+    <app-sidebar-menu [isMobile]="isMobile()" [userRole]="authService.roleValue"
+      [pendingAdmissions]="pendingAdmissionsCount()" (itemClicked)="onNavigate()" />
   </mat-drawer>
   <mat-drawer-content style="padding: 5px">
     <router-outlet />
