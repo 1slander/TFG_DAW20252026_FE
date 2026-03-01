@@ -1,7 +1,8 @@
 <div class="page-wrapper">
 
   @if (!registrationSuccess()) {
-  <app-dynamic-form [fields]="fields" (formSubmit)="onSubmit($event)">
+  <app-dynamic-form [fields]="fields" [title]="title" [subtitle]="subtitle" [submitLabel]="submitLabel"
+    (formSubmit)="onSubmit($event)">
   </app-dynamic-form>
   } @else {
   <div class="success-card form-shell">

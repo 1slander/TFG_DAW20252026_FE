@@ -20,6 +20,9 @@ export class RegisterComponent {
   private router = inject(Router);
 
   fields = OWNER_REGISTER_FORM;
+  title = "Registro"
+  subtitle = "Completa los datos para registrarte"
+  submitLabel = "Registrarse"
   isSubmitting = signal(false);
   registrationSuccess = signal(false);
 
@@ -34,7 +37,7 @@ export class RegisterComponent {
       },
       error: (err) => {
         console.error('Registration error', err);
-        this.notificationService.notify('No se pudo completar el registro. Verifica los datos.', 'error');
+        this.notificationService.notify('Su solicitud esta pendiente de aprobación.', 'error');
         this.isSubmitting.set(false);
       }
     });

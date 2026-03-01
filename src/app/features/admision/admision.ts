@@ -105,7 +105,7 @@ export class AdmisionComponent implements OnInit {
     displayedColumns = computed(() =>
         this.screenSize.isMobile()
             ? ['fullName', 'status', 'actions']
-            : ['fullName', 'email', 'dni', 'restaurantName', 'status', 'actions'],
+            : ['fullName', 'email', 'dni', 'status', 'actions'],
     );
 
     ngOnInit() {
@@ -160,8 +160,7 @@ export class AdmisionComponent implements OnInit {
             filtered = filtered.filter(req =>
                 (req.firstName || '').toLowerCase().includes(text) ||
                 (req.lastName || '').toLowerCase().includes(text) ||
-                (req.email || '').toLowerCase().includes(text) ||
-                (req.restaurantName || '').toLowerCase().includes(text)
+                (req.email || '').toLowerCase().includes(text)
             );
         }
 

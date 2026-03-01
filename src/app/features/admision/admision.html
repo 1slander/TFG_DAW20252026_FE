@@ -10,7 +10,6 @@
                 <p><strong>Email: </strong> {{selectedRequest()?.email}} </p>
                 <p><strong>DNI: </strong> {{selectedRequest()?.dni}} </p>
                 <p><strong>Teléfono: </strong> {{selectedRequest()?.phone || 'No especificado'}} </p>
-                <p><strong>Restaurante: </strong> {{selectedRequest()?.restaurantName || 'Pendiente de asignar'}} </p>
                 <p><strong>Mensaje: </strong> {{selectedRequest()?.message || 'Sin mensaje'}} </p>
                 <p><strong>Estado: </strong>
                     <span class="status-badge" [ngClass]="'status-' + (selectedRequest()?.status | lowercase)">
@@ -88,11 +87,6 @@
                 <ng-container matColumnDef="dni">
                     <th mat-header-cell *matHeaderCellDef>DNI</th>
                     <td mat-cell *matCellDef="let request">{{ request.dni }}</td>
-                </ng-container>
-
-                <ng-container matColumnDef="restaurantName">
-                    <th mat-header-cell *matHeaderCellDef>Restaurante</th>
-                    <td mat-cell *matCellDef="let request">{{ request.restaurantName }}</td>
                 </ng-container>
                 }
 

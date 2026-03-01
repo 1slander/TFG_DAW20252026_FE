@@ -19,6 +19,9 @@ import { MaterialModule } from '../../ui/material-modules';
 export class DynamicFormComponent implements OnInit {
   @Input() fields: FormFieldInterface[] = [];
   @Input() initialValues?: Record<string, any>;
+  @Input() title: string = '';
+  @Input() subtitle: string = '';
+  @Input() submitLabel: string = 'Enviar';
   @Output() formSubmit = new EventEmitter<any>();
 
   form!: FormGroup;

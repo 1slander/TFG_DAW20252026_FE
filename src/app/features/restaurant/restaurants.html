@@ -25,6 +25,15 @@
       </app-search-box>
     </div>
 
+    @if (role() === 'ROLE_OWNER' && !hasRestaurant()) {
+    <app-create-panel title="Añadir nuevo restaurante" [expanded]="showCreateForm">
+      <app-dynamic-form [fields]="restaurantFields" [title]="'Añadir Restaurante'"
+        [subtitle]="'Rellena la información de tu restaurante'" [submitLabel]="'Añadir Restaurante'"
+        (formSubmit)="onCreateRestaurant($event)">
+      </app-dynamic-form>
+    </app-create-panel>
+    }
+
     <div class="table-wrapper">
       <table mat-table [dataSource]="restaurants()">
         <ng-container matColumnDef="cif">

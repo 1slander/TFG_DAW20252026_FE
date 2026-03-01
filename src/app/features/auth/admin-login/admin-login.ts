@@ -14,6 +14,9 @@ import { AuthService } from '../../../core/services/auth.service';
 export class AdminLoginComponent {
 
   fields = ADMIN_LOGIN_FORM;
+  title = "Iniciar Sesión"
+  subtitle = "Completa los datos para iniciar sesión"
+  submitLabel = "Login"
 
   private adminService = inject(AdminService);
   private authService = inject(AuthService);
