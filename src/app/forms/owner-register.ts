@@ -8,8 +8,5 @@ export const OWNER_REGISTER_FORM: FormFieldInterface[] = [
   { name: 'email', label: 'Email', type: 'email', required: true },
   { name: 'phone', label: 'Teléfono', type: 'text', maxLength: 30 },
   { name: 'dni', label: 'DNI', type: 'text', required: true, minLength: 9, maxLength: 9 },
-
-  // RESTAURANT
-  { name: 'restaurantName', label: 'Nombre del restaurante', type: 'text', maxLength: 255 },
   { name: 'message', label: 'Mensaje (Opcional)', type: 'text' }
 ];

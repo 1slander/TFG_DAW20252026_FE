@@ -1,8 +1,7 @@
 <div class="form-shell">
-  <!--TODO:Añadir titulo de manera dinamica desde la creacion del componente-->
   <div class="form-header">
-    <div class="title">Registrar</div>
-    <div class="subtitle">Completa los datos para continuar</div>
+    <div class="title">{{ title }}</div>
+    <div class="subtitle">{{ subtitle }}</div>
   </div>
 
   <form class="form" [formGroup]="form" (ngSubmit)="onSubmit()">
@@ -31,7 +30,7 @@
     }
 
     <div class="actions">
-      <button mat-raised-button class="btn-primary" type="submit">Crear</button>
+      <button mat-raised-button class="btn-primary" type="submit">{{ submitLabel }}</button>
     </div>
   </form>
 </div>
