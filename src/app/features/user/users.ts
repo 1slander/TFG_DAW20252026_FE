@@ -101,7 +101,7 @@ export class UsersComponent implements OnInit {
     this.loadRestaurants();
 
     // Comprobar parámetros de ruta para la autocompletación desde admisiones
-    this.route.queryParams.subscribe(params => {
+    this.route.queryParams.subscribe((params) => {
       if (params['action'] === 'createOwner') {
         this.initialOwnerData = {
           firstName: params['firstName'] || '',
@@ -117,12 +117,12 @@ export class UsersComponent implements OnInit {
   loadRestaurants() {
     this.restaurantService.getAllRestaurants().subscribe({
       next: (data) => this.restaurants.set(data),
-      error: (err) => console.error('Error fetching restaurants', err)
+      error: (err) => console.error('Error fetching restaurants', err),
     });
   }
 
   loadEmployees() {
-    this.employeeService.getEmployees().subscribe({
+    this.employeeService.getEmployeesForAdmin().subscribe({
       next: (data: EmployeeInterface[]) => {
         console.log(data);
         this.sourceEmployees = data;
@@ -163,7 +163,7 @@ export class UsersComponent implements OnInit {
         this.router.navigate([], {
           relativeTo: this.route,
           queryParams: { action: null, firstName: null, lastName: null, email: null, dni: null },
-          queryParamsHandling: 'merge'
+          queryParamsHandling: 'merge',
         });
 
         this.loadEmployees();
@@ -239,15 +239,19 @@ export class UsersComponent implements OnInit {
     }
     // Search in restaurants list by owner ID (for Owners)
     // We use == for defensive type matching
-    const found = this.restaurants().find(r => r.idOwner == (employee as any).id);
+    const found = this.restaurants().find((r) => r.idOwner == (employee as any).id);
 
     // Debugging link
-    const isOwner = typeof employee.role === 'string'
-      ? employee.role === 'ROLE_OWNER'
-      : (employee.role as any)?.roleName === 'ROLE_OWNER';
+    const isOwner =
+      typeof employee.role === 'string'
+        ? employee.role === 'ROLE_OWNER'
+        : (employee.role as any)?.roleName === 'ROLE_OWNER';
 
     if (!found && isOwner) {
-      console.warn(`No restaurant found for OWNER ID: ${employee.id}. Available restaurants:`, this.restaurants());
+      console.warn(
+        `No restaurant found for OWNER ID: ${employee.id}. Available restaurants:`,
+        this.restaurants(),
+      );
     }
 
     return found ? found.restaurantName : 'No asignado';

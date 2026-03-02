@@ -1,1 +1,70 @@
-<p>employees works!</p>
+<div class="admin-main-container" [class.is-mobile]="screenSize.isMobile()">
+  <div class="admin-header">
+    <h2 class="admin-title">{{ restaurantName() }}</h2>
+
+    <app-search-box
+      label="Buscar por nombre o email"
+      placeholder="Ej: Carlos"
+      (valueChange)="applyFilter($event)"
+    >
+    </app-search-box>
+  </div>
+
+  <app-create-panel
+    title="Añadir nuevo empleado"
+    [expanded]="showCreateForm"
+    (expandedChange)="showCreateForm = $event"
+  >
+    <app-dynamic-form [fields]="employeeFields" (formSubmit)="onCreateEmployee($event)">
+    </app-dynamic-form>
+  </app-create-panel>
+
+  <div class="table-wrapper">
+    <table mat-table [dataSource]="employees()">
+      <!-- <ng-container matColumnDef="id">
+        <th mat-header-cell *matHeaderCellDef>Identificador</th>
+        <td mat-cell *matCellDef="let admin">{{ admin.id }}</td>
+      </ng-container> -->
+
+      <ng-container matColumnDef="firstName">
+        <th mat-header-cell *matHeaderCellDef>Nombre</th>
+        <td mat-cell *matCellDef="let employee">{{ employee.firstName }}</td>
+      </ng-container>
+      <ng-container matColumnDef="lastName">
+        <th mat-header-cell *matHeaderCellDef>Apellidos</th>
+        <td mat-cell *matCellDef="let employee">{{ employee.lastName }}</td>
+      </ng-container>
+      <ng-container matColumnDef="dni">
+        <th mat-header-cell *matHeaderCellDef>DNI</th>
+        <td mat-cell *matCellDef="let employee">{{ employee.dni }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="email">
+        <th mat-header-cell *matHeaderCellDef>Email</th>
+        <td mat-cell *matCellDef="let employee">{{ employee.email }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="role">
+        <th mat-header-cell *matHeaderCellDef>Rol</th>
+        <td mat-cell *matCellDef="let employee">
+          <span [class]="employee.role.toLowerCase()">{{ employee.role }}</span>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>Acciones</th>
+        <td mat-cell *matCellDef="let employee">
+          <!-- <button mat-icon-button (click)="viewemployee(employee.id)">
+            <mat-icon>visibility</mat-icon>
+          </button> -->
+          <button mat-icon-button (click)="deleteEmployee(employee.idemployee)" class="delete-icon">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+  </div>
+</div>
