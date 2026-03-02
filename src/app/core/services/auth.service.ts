@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { jwtDecode } from 'jwt-decode';
 import { environment } from '../../../environment';
+import { Role } from '../models/RoleEnum';
 
 interface JwtPayloadInterface {
   sub: string;
@@ -26,7 +27,7 @@ export interface AuthResponse {
   providedIn: 'root',
 })
 export class AuthService {
-  private roleSignal = signal<UserRole | null>(null);
+  private roleSignal = signal<Role | null>(null);
   private usernameSignal = signal<string | null>(null);
 
   private http = inject(HttpClient);
@@ -37,7 +38,7 @@ export class AuthService {
     const tokenPayload = this.getDecodedToken();
 
     if (role) {
-      this.roleSignal.set(role as UserRole);
+      this.roleSignal.set(role as Role);
     }
     if (tokenPayload && tokenPayload.sub) {
       this.usernameSignal.set(tokenPayload.sub);
@@ -63,10 +64,13 @@ export class AuthService {
   }
 
   // Mantenemos los niveles simplificados
-  private readonly roleLevels: Record<UserRole, number> = {
-    "ROLE_EMPLOYEE": 0,
-    "ROLE_OWNER": 1,
-    "ROLE_ADMIN": 2,
+  private readonly roleLevels: Record<Role, number> = {
+    ROLE_EMPLOYEE: 0,
+    ROLE_TEAM_LEADER: 1,
+    ROLE_ASSISTANT_MANAGER: 2,
+    ROLE_MANAGER: 3,
+    ROLE_OWNER: 4,
+    ROLE_ADMIN: 5,
   };
 
   /**
@@ -79,7 +83,7 @@ export class AuthService {
   /**
    * Obtiene el valor string del rol para comprobaciones de igualdad directa
    */
-  get roleValue(): UserRole | null {
+  get roleValue(): Role | null {
     return this.roleSignal();
   }
 
@@ -106,7 +110,7 @@ export class AuthService {
     localStorage.setItem('token', token);
     const decoded = this.getDecodedToken();
     if (decoded && decoded.role) {
-      this.roleSignal.set(decoded.role as UserRole);
+      this.roleSignal.set(decoded.role as Role);
     }
     if (decoded && decoded.sub) {
       this.usernameSignal.set(decoded.sub);
@@ -129,13 +133,16 @@ export class AuthService {
     return jwtDecode<JwtPayloadInterface>(token);
   }
 
-  getRole(): string | null {
-    // const role = this.getDecodedToken()?.role ?? null; 
-    // this.roleSignal.set(role === null ? "ROLE_EMPLOYEE" : role) 
-    return this.getDecodedToken()?.role ?? null;
+  getRole(): Role | null {
+    //return this.getDecodedToken()?.role ?? null;
+    const role = this.getDecodedToken()?.role;
+    return role ? (role as Role) : null;
   }
 
-  hasRole(role: string): boolean {
-    return this.getRole() === role;
+  // hasRole(role: string): boolean {
+  //   return this.getRole() === role;
+  // }
+  hasRole(role: Role): boolean {
+    return this.roleValue === role;
   }
 }

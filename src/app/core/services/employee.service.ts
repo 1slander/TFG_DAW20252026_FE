@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { EmployeeInterface } from '../../interfaces/employee';
+import { EmployeeCreateInterface, EmployeeInterface } from '../../interfaces/employee';
 import { RoleService } from './role.service';
 import { environment } from '../../../environment';
 
@@ -8,15 +8,25 @@ import { environment } from '../../../environment';
   providedIn: 'root',
 })
 export class EmployeeService {
-
   private roleService = inject(RoleService);
   private http = inject(HttpClient);
 
   // Variable para almacenar el estado local si es necesario (cache)
   private employeeList: EmployeeInterface[] = [];
 
-  getEmployees() {
+  getEmployeesForAdmin() {
     return this.http.get<EmployeeInterface[]>(`${environment.apiUrl}employees`);
+  }
+
+  getEmployees() {
+    return this.http.get<EmployeeInterface[]>(`${environment.apiUrl}employees/restaurant`);
+  }
+
+  createEmployees(employee: EmployeeCreateInterface) {
+    return this.http.post<EmployeeCreateInterface>(
+      `${environment.apiUrl}employees/create`,
+      employee,
+    );
   }
 
   // createOwner(owner: Omit<EmployeeInterface, 'id' | 'role' | 'isActive' | 'createdAt' | 'updatedAt'>) {
@@ -51,6 +61,4 @@ export class EmployeeService {
   //     emp.isActive = isActive;
   //     emp.updatedAt = new Date().toISOString().split('T')[0]
   //   }
-
-
 }
