@@ -8,6 +8,8 @@ import { ThemeSelectorComponent } from "../../shared/components/theme-selector/t
 import { SideBarMenuComponent } from '../../shared/components/sidebar-menu/sidebar-menu';
 import { AuthService } from '../../core/services/auth.service';
 import { AdminService } from '../../core/services/admin.service';
+import { Role } from '../../core/models/RoleEnum';
+
 
 @Component({
   selector: 'app-dashboard',
@@ -21,6 +23,8 @@ export class DashboardComponent implements OnInit {
   private readonly screenSizeService = inject(ScreenSizeService);
   public authService = inject(AuthService); // Injecting AuthService directly
   private adminService = inject(AdminService);
+  protected readonly Role = Role;
+
 
   isMobile = this.screenSizeService.isMobile;
   pendingAdmissionsCount = this.adminService.pendingAdmissionsCount;

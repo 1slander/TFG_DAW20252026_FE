@@ -4,8 +4,10 @@
     <mat-icon>menu</mat-icon>
   </button>
   <span>
-    {{ authService.hasRole("ROLE_ADMIN") ? 'Admin' : (authService.roleValue ? authService.roleValue.replace('ROLE_', '')
+    {{ authService.hasRole(Role.ROLE_ADMIN) ? 'Admin' : (authService.roleValue ? authService.roleValue.replace('ROLE_',
+    '')
     : 'User') }} Dashboard
+
     @if (authService.usernameValue) {
     | Hola, {{ authService.usernameValue }}
     }
