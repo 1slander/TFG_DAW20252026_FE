@@ -2,30 +2,18 @@
   <div class="admin-header">
     <h2 class="admin-title">{{ restaurantName() }}</h2>
 
-    <app-search-box
-      label="Buscar por nombre o email"
-      placeholder="Ej: Carlos"
-      (valueChange)="applyFilter($event)"
-    >
+    <app-search-box label="Buscar por nombre o email" placeholder="Ej: Carlos" (valueChange)="applyFilter($event)">
     </app-search-box>
   </div>
 
-  <app-create-panel
-    title="Añadir nuevo empleado"
-    [expanded]="showCreateForm"
-    (expandedChange)="showCreateForm = $event"
-  >
+  <app-create-panel title="Añadir nuevo empleado" [expanded]="showCreateForm"
+    (expandedChange)="showCreateForm = $event">
     <app-dynamic-form [fields]="employeeFields" (formSubmit)="onCreateEmployee($event)">
     </app-dynamic-form>
   </app-create-panel>
 
   <div class="table-wrapper">
-    <table mat-table [dataSource]="employees()">
-      <!-- <ng-container matColumnDef="id">
-        <th mat-header-cell *matHeaderCellDef>Identificador</th>
-        <td mat-cell *matCellDef="let admin">{{ admin.id }}</td>
-      </ng-container> -->
-
+    <table mat-table [dataSource]="filteredEmployees()">
       <ng-container matColumnDef="firstName">
         <th mat-header-cell *matHeaderCellDef>Nombre</th>
         <td mat-cell *matCellDef="let employee">{{ employee.firstName }}</td>
@@ -47,18 +35,27 @@
       <ng-container matColumnDef="role">
         <th mat-header-cell *matHeaderCellDef>Rol</th>
         <td mat-cell *matCellDef="let employee">
-          <span [class]="employee.role.toLowerCase()">{{ employee.role }}</span>
+          @if (employee.role) {
+          @if (employee.role.roleName) {
+          <span [class]="employee.role.roleName.toLowerCase()">{{ employee.role.roleName.replace('ROLE_', '') }}</span>
+          } @else if (employee.role.name) {
+          <span [class]="employee.role.name.toLowerCase()">{{ employee.role.name.replace('ROLE_', '') }}</span>
+          } @else {
+          <span [class]="employee.role.toString().toLowerCase()">{{ employee.role.toString().replace('ROLE_', '')
+            }}</span>
+          }
+          } @else {
+          <span class="role-none">N/A</span>
+          }
         </td>
       </ng-container>
 
       <ng-container matColumnDef="actions">
         <th mat-header-cell *matHeaderCellDef>Acciones</th>
         <td mat-cell *matCellDef="let employee">
-          <!-- <button mat-icon-button (click)="viewemployee(employee.id)">
-            <mat-icon>visibility</mat-icon>
-          </button> -->
-          <button mat-icon-button (click)="deleteEmployee(employee.idemployee)" class="delete-icon">
-            <mat-icon>delete</mat-icon>
+          <button mat-icon-button (click)="deleteEmployee(employee.idemployee || employee.id)" class="delete-icon"
+            matTooltip="Eliminar empleado">
+            <mat-icon>delete_outline</mat-icon>
           </button>
         </td>
       </ng-container>

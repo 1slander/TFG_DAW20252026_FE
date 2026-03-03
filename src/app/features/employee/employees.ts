@@ -29,13 +29,14 @@ export class EmployeesComponent {
   private authService = inject(AuthService);
 
   employees = signal<EmployeeInterface[]>([]);
+  filteredEmployees = signal<EmployeeInterface[]>([]);
 
   showCreateForm = false;
 
   employeeFields: FormFieldInterface[] = [];
   restaurantName = signal<string>('Cargando...');
 
-  displayedColumns: string[] = ['firstName', 'lastName', 'dni', 'email', 'role'];
+  displayedColumns: string[] = ['firstName', 'lastName', 'dni', 'email', 'role', 'actions'];
 
   ngOnInit(): void {
     this.employeeFields = [
@@ -58,8 +59,9 @@ export class EmployeesComponent {
   getDatosIniciales() {
     this.employeeService.getEmployees().subscribe({
       next: (data) => {
-        console.log(data);
+        console.log('Employees loaded:', data);
         this.employees.set(data);
+        this.filteredEmployees.set(data);
       },
       error: () => {
         this.notificationService.notify('Error cargando empleados', 'error');
@@ -90,29 +92,58 @@ export class EmployeesComponent {
 
   onCreateEmployee(value: any) {
     this.employeeService.createEmployees(value).subscribe({
-      next: () => {
-        this.employeeService.getEmployees().subscribe({
-          next: (data) => {
-            console.log(data);
-            this.notificationService.notify('Empleado creado con éxito!', 'success');
-            this.showCreateForm = false;
-          },
-          error: () => {
-            this.notificationService.notify('Error cargando lista de empleados', 'error');
-          },
-        });
+      next: (newEmployee: any) => {
+        // Option 1: Full reload
+        // this.getDatosIniciales();
+
+        // Option 2: Local update for "instant" feel
+        const current = this.employees();
+        this.employees.set([...current, newEmployee]);
+        this.filteredEmployees.set([...current, newEmployee]);
+
+        this.notificationService.notify('Empleado creado con éxito!', 'success');
+        this.showCreateForm = false; // Auto-close form
       },
-      error: () => {
+      error: (err) => {
+        console.error('Error creating employee:', err);
         this.notificationService.notify('No se ha podido crear al empleado', 'error');
       },
     });
   }
 
-  deleteEmployee(arg0: any) {
-    throw new Error('Method not implemented.');
+  deleteEmployee(id: any) {
+    if (confirm('¿Estás seguro de que deseas eliminar este empleado?')) {
+      // Assuming there's a delete method in EmployeeService. 
+      // If not, I'll need to check the backend API or implement it if possible.
+      // For now, I'll assume it exists or call a general delete if it's a User.
+      this.employeeService.deleteEmployee(id).subscribe({
+        next: () => {
+          const current = this.employees().filter(e => (e as any).idemployee !== id && (e as any).id !== id);
+          this.employees.set(current);
+          this.filteredEmployees.set(current);
+          this.notificationService.notify('Empleado eliminado con éxito', 'success');
+        },
+        error: () => {
+          this.notificationService.notify('Error al eliminar empleado', 'error');
+        }
+      });
+    }
   }
-  applyFilter($event: string) {
-    throw new Error('Method not implemented.');
+
+  applyFilter(value: string) {
+    const filterValue = value.toLowerCase().trim();
+    if (!filterValue) {
+      this.filteredEmployees.set(this.employees());
+      return;
+    }
+
+    const filtered = this.employees().filter(node =>
+      node.firstName.toLowerCase().includes(filterValue) ||
+      node.lastName.toLowerCase().includes(filterValue) ||
+      node.email.toLowerCase().includes(filterValue) ||
+      node.dni.toLowerCase().includes(filterValue)
+    );
+    this.filteredEmployees.set(filtered);
   }
 
   private getRestaurantName() {

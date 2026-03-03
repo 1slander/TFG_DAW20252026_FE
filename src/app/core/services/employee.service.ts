@@ -29,6 +29,10 @@ export class EmployeeService {
     );
   }
 
+  deleteEmployee(id: number) {
+    return this.http.delete(`${environment.apiUrl}employees/${id}`);
+  }
+
   // createOwner(owner: Omit<EmployeeInterface, 'id' | 'role' | 'isActive' | 'createdAt' | 'updatedAt'>) {
   //   const maxId = this.employeeList.length === 0
   //     ? 1

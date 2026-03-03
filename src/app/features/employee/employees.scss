@@ -122,6 +122,24 @@ button[mat-icon-button] {
   border: 1px solid rgba(0, 168, 150, 0.35);
   color: rgba(0, 168, 150, 0.95);
   background: rgba(0, 168, 150, 0.08);
+
+  &.role_owner {
+    border-color: rgba(255, 215, 0, 0.4);
+    color: #ffd700;
+    background: rgba(255, 215, 0, 0.05);
+  }
+
+  &.role_manager {
+    border-color: rgba(64, 224, 208, 0.4);
+    color: #40e0d0;
+    background: rgba(64, 224, 208, 0.05);
+  }
+
+  &.role_employee {
+    border-color: rgba(0, 168, 150, 0.4);
+    color: #00a896;
+    background: rgba(0, 168, 150, 0.05);
+  }
 }
 
 :host-context(body[data-theme='dark']) .table-wrapper span.admin {
