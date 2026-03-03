@@ -51,7 +51,7 @@
   }
 
   @if (userRole === 'ROLE_OWNER' || userRole === 'ROLE_EMPLOYEE') {
-  <mat-list-item routerLink="shift" routerLinkActive="activelink" (click)="handleItemClick()" tabindex="-1">
+  <mat-list-item routerLink="shifts" routerLinkActive="activelink" (click)="handleItemClick()" tabindex="-1">
     <span class="icon-and-text">
       <mat-icon class="icon-margin">schedule</mat-icon>
       Turnos
@@ -60,7 +60,7 @@
   }
 
   @if (userRole === 'ROLE_OWNER') {
-  <mat-list-item routerLink="employee" routerLinkActive="activelink" (click)="handleItemClick()" tabindex="-1">
+  <mat-list-item routerLink="employees" routerLinkActive="activelink" (click)="handleItemClick()" tabindex="-1">
     <span class="icon-and-text">
       <mat-icon class="icon-margin">badge</mat-icon>
       Empleados
