@@ -59,6 +59,18 @@ export class HomeComponent {
       rolesAllowed: ['ROLE_OWNER', 'ROLE_EMPLOYEE'],
       route: () => `${this.base}/shifts`,
     },
+    {
+      title: 'Mesas',
+      description: 'Módulo para la gestión de mesas.',
+      rolesAllowed: [
+        'ROLE_OWNER',
+        'ROLE_MANAGER',
+        'ROLE_ASSISTANT_MANAGER',
+        'ROLE_TEAM_LEADER',
+        'ROLE_EMPLOYEE',
+      ],
+      route: () => `${this.base}/tables`,
+    },
   ];
 
   get modules() {
