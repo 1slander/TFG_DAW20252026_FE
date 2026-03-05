@@ -10,10 +10,18 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { SearchBoxComponent } from '../../shared/components/search-box/search-box';
 import { CreatePanelComponent } from '../../shared/components/create-panel/create-panel';
+import { AdminResponseInterface } from '../../interfaces/admin';
+import { NotificationService } from '../../core/services/notification.service';
 @Component({
   selector: 'app-admin',
   standalone: true, // Asegúrate de que sea standalone
-  imports: [MaterialModule, CommonModule, DynamicFormComponent, SearchBoxComponent, CreatePanelComponent],
+  imports: [
+    MaterialModule,
+    CommonModule,
+    DynamicFormComponent,
+    SearchBoxComponent,
+    CreatePanelComponent,
+  ],
   templateUrl: './admin.html',
   styleUrl: './admin.scss',
 })
@@ -21,89 +29,105 @@ export class AdminComponent {
   protected adminService = inject(AdminService);
   public screenSize = inject(ScreenSizeService);
   private dialog = inject(MatDialog);
-  private snackBar = inject(MatSnackBar);
+
+  private notificationService = inject(NotificationService);
   // Lista que se muestra en la tabla
-  admins = signal(this.adminService.getAdmins());
-  displayedColumns: string[] = ['id', 'username', 'email', 'role', 'actions'];
+  admins = signal<AdminResponseInterface[]>([]);
+  allAdmins: AdminResponseInterface[] = [];
+
+  displayedColumns: string[] = ['username', 'email', 'actions'];
 
   // Lógica del Formulario
   showCreateForm = false;
   adminFields: FormFieldInterface[] = [
-    { name: "username", label: "Nombre de usuario", type: "text", required: true },
-    { name: "email", label: "Email", type: "email", required: true },
-    { name: "password", label: "Contraseña", type: "password", required: true },
-    { name: "role", label: "Rol", type: "select", required: true, options: [{ value: "ADMIN", label: "Admin" }] }
+    { name: 'username', label: 'Nombre de usuario', type: 'text', required: true },
+    { name: 'email', label: 'Email', type: 'email', required: true },
+    { name: 'password', label: 'Contraseña', type: 'password', required: true },
+    // {
+    //   name: 'role',
+    //   label: 'Rol',
+    //   type: 'select',
+    //   required: true,
+    //   options: [{ value: 'ADMIN', label: 'Admin' }],
+    // },
   ];
 
-  // FILTRO DE TEXTO
-applyFilter(filterValue: string) {
-  const allAdmins = this.adminService.getAdmins();
+  // Al iniciar
 
-  if (!filterValue) {
-    this.admins.set(allAdmins);
-    return;
-  }
-
-  this.admins.set(allAdmins.filter(admin =>
-    admin.username.toLowerCase().includes(filterValue) ||
-    admin.email.toLowerCase().includes(filterValue)
-  ));
-}
-
-  // Función para lanzar el aviso
-  private notify(message: string, type: 'success' | 'error' = 'success') {
-    this.snackBar.open(message, 'Aceptar', {
-      duration: 3000,
-      panelClass: type === 'success' ? ['snackbar-success'] : ['snackbar-error'],
-      horizontalPosition: 'end',
-      verticalPosition: 'bottom',
+  ngOnInit() {
+    this.adminService.getAllAdmins().subscribe({
+      next: (data) => {
+        console.log(data);
+        this.allAdmins = data;
+        this.admins.set(data);
+      },
+      error: () => {
+        this.notificationService.notify('Error cargando administradores', 'error');
+      },
     });
   }
 
-  onCreateAdmin(value: any) {
-    try {
-      // 1. Llamamos al servicio para guardar los datos
-      this.adminService.createAdmin(value);
-
-      // 2. Actualizamos el Signal de la tabla inmediatamente
-      // Obtenemos la lista actualizada del servicio y la seteamos
-      this.admins.set(this.adminService.getAdmins());
-
-      // 3. Notificación de éxito
-      this.notify('¡Administrador creado con éxito!', 'success');
-
-      // 4. Cerramos el acordeón del formulario automáticamente
-      this.showCreateForm = false;
-
-    } catch (error) {
-      // 5. Si algo falla (ej. error de validación), mostramos el aviso en rojo
-      this.notify('Error: No se ha podido crear el administrador', 'error');
-      console.error('Error al crear admin:', error);
+  // FILTRO DE TEXTO
+  applyFilter(filterValue: string) {
+    if (!filterValue) {
+      this.admins.set(this.allAdmins);
+      return;
     }
+
+    const filtered = this.allAdmins.filter(
+      (admin) =>
+        admin.username.toLowerCase().includes(filterValue.toLowerCase()) ||
+        admin.email.toLowerCase().includes(filterValue.toLowerCase()),
+    );
+
+    this.admins.set(filtered);
+  }
+
+  onCreateAdmin(value: any) {
+    this.adminService.createAdmin(value).subscribe({
+      next: () => {
+        // Refrescamos la lista después de que el backend confirme creación
+        this.adminService.getAllAdmins().subscribe({
+          next: (data) => {
+            this.allAdmins = data;
+            this.admins.set(data);
+            this.notificationService.notify('¡Administrador creado con éxito!', 'success');
+            this.showCreateForm = false;
+          },
+          error: () => {
+            this.notificationService.notify('Error recargando administradores', 'error');
+          },
+        });
+      },
+      error: () => {
+        this.notificationService.notify('Error: No se ha podido crear el administrador', 'error');
+      },
+    });
   }
 
   deleteAdmin(id: number) {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, { width: '350px' });
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        try {
-          // Intentamos borrar
-          this.adminService.deleteById(id);
-
-          // Si el service no lanza error, actualizamos UI y avisamos
-          this.admins.update(list => list.filter(a => a.id !== id));
-          this.notify('Administrador borrado correctamente');
-        } catch (error) {
-          // Si algo sale mal en el service
-          this.notify('Error: No se ha podido borrar el administrador', 'error');
-        }
+        this.adminService.deleteById(id).subscribe({
+          next: () => {
+            this.admins.update((list) => list.filter((a) => a.idAdmin !== id));
+            this.allAdmins = this.allAdmins.filter((a) => a.idAdmin !== id);
+            this.notificationService.notify('Administrador borrado correctamente');
+          },
+          error: () => {
+            this.notificationService.notify(
+              'Error: No se ha podido borrar el administrador',
+              'error',
+            );
+          },
+        });
       }
     });
   }
-  trackById(index: number, item: any) {
-    return item.id;
+
+  trackById(index: number, item: AdminResponseInterface): number {
+    return item.idAdmin;
   }
 }
-
-
