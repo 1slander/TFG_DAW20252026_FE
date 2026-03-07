@@ -1,29 +1,53 @@
-import { Injectable } from '@angular/core';
-import { RoleInterface } from '../../interfaces/role';
+import { inject, Injectable } from '@angular/core';
+import { RoleCreateInterface, RoleInterface, RoleResponseInterface } from '../../interfaces/role';
+import { environment } from '../../../environment';
+import { HttpClient } from '@angular/common/http';
+import { Role } from '../models/RoleEnum';
 
 @Injectable({ providedIn: 'root' })
 export class RoleService {
-  private roleList: RoleInterface[] = [
-    { id: 1, roleName: 'OWNER', roleCategory: 'OWNER' },
-    { id: 2, roleName: 'MANAGER', roleCategory: 'EMPLOYEE' },
-    { id: 3, roleName: 'ASSISTANT_MANAGER', roleCategory: 'EMPLOYEE' },
-    { id: 4, roleName: 'TEAM_LEADER', roleCategory: 'EMPLOYEE' },
-    { id: 5, roleName: 'EMPLOYEE', roleCategory: 'EMPLOYEE' },
-    { id: 6, roleName: 'ADMIN', roleCategory: 'ADMIN' },
-  ];
+  private roleList: RoleInterface[] = [];
 
-  getRoles() { return [...this.roleList]; }
+  private http = inject(HttpClient);
 
-  getRoleByName(name: string) {
-    return this.roleList.find(r => r.roleName === name);
+  private readonly creationPermissions: Record<Role, Role[]> = {
+    [Role.ROLE_ADMIN]: [
+      Role.ROLE_ADMIN,
+      Role.ROLE_OWNER,
+      Role.ROLE_MANAGER,
+      Role.ROLE_ASSISTANT_MANAGER,
+      Role.ROLE_TEAM_LEADER,
+      Role.ROLE_EMPLOYEE,
+    ],
+    [Role.ROLE_OWNER]: [
+      Role.ROLE_MANAGER,
+      Role.ROLE_ASSISTANT_MANAGER,
+      Role.ROLE_TEAM_LEADER,
+      Role.ROLE_EMPLOYEE,
+    ],
+    [Role.ROLE_MANAGER]: [Role.ROLE_ASSISTANT_MANAGER, Role.ROLE_TEAM_LEADER, Role.ROLE_EMPLOYEE],
+    [Role.ROLE_ASSISTANT_MANAGER]: [Role.ROLE_TEAM_LEADER, Role.ROLE_EMPLOYEE],
+    [Role.ROLE_TEAM_LEADER]: [Role.ROLE_EMPLOYEE],
+    [Role.ROLE_EMPLOYEE]: [],
+  };
+
+  getRoles() {
+    return this.http.get<RoleResponseInterface[]>(`${environment.apiUrl}admin/roles`);
   }
 
-  createRole(role: Omit<RoleInterface, 'id'>) {
-    const maxId = this.roleList.length === 0 ? 1 : Math.max(...this.roleList.map(r => r.id)) + 1;
-    this.roleList.push({ id: maxId, ...role });
+  getRoleByName(name: string) {
+    return this.roleList.find((r) => r.roleName === name);
+  }
+
+  createRole(role: RoleCreateInterface) {
+    return this.http.post<RoleResponseInterface>(`${environment.apiUrl}admin/crear-role`, role);
   }
 
   deleteById(id: number) {
-    this.roleList = this.roleList.filter(r => r.id !== id);
+    return this.http.delete(`${environment.apiUrl}admin/roles/${id}`, { responseType: 'text' });
+  }
+
+  getAssignableRoles(currentRole: Role): Role[] {
+    return this.creationPermissions[currentRole] ?? [];
   }
 }

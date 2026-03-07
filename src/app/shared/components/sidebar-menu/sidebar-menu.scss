@@ -12,9 +12,11 @@
   margin-left: auto;
   margin-right: 0;
 }
+
 .expand-icon {
   color: var(--mat-sys-primary);
 }
+
 .submenu-content {
   padding-left: 40px;
 }
@@ -26,4 +28,18 @@
 mat-list-item {
   border-radius: 10px !important;
   margin-bottom: 4px;
+}
+
+.badge {
+  background-color: var(--status-color_ocupado, #e53935);
+  /* Utilizando el rojo de estados si existe */
+  color: white;
+  border-radius: 12px;
+  padding: 2px 8px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  min-width: 20px;
+  text-align: center;
+  margin-left: auto;
+  line-height: 1.2;
 }
