@@ -1,0 +1,119 @@
+.tables-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  gap: 24px;
+  padding: 24px;
+}
+
+.table-card {
+  border-radius: 12px;
+  padding: 16px;
+  background: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+// .table-card:hover {
+//   transform: translateY(-3px);
+//   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+// }
+.table-visual {
+  width: 120px;
+  height: 90px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-weight: 600;
+}
+
+.table-number {
+  font-size: 18px;
+}
+
+.table-capacity {
+  font-size: 13px;
+  opacity: 0.9;
+}
+
+.table-status {
+  margin-top: 8px;
+  font-size: 13px;
+  font-weight: 500;
+}
+.table-actions {
+  margin-top: 14px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+}
+
+.status-btn.disponible {
+  background: var(--status-color_disponible);
+  color: white;
+}
+
+.status-btn.ocupado {
+  background: var(--status-color_ocupado);
+  color: white;
+}
+
+.status-btn.pendiente {
+  background: var(--status-color_pendiente);
+  color: white;
+}
+
+.status-btn.reservado {
+  background: var(--status-color_reservado);
+  color: black;
+}
+.not_booked .table-visual {
+  background: var(--status-color_disponible);
+}
+
+.confirmed .table-visual {
+  background: var(--status-color_ocupado);
+}
+
+.pending .table-visual {
+  background: var(--status-color_pendiente);
+}
+
+.booked .table-visual {
+  background: var(--status-color_reservado);
+}
+
+.capacity-2 .table-visual {
+  width: 100px;
+  height: 100px;
+}
+
+.capacity-4 .table-visual {
+  width: 110px;
+  height: 80px;
+}
+
+.capacity-6 .table-visual {
+  width: 140px;
+  height: 90px;
+}
+
+.capacity-8 .table-visual {
+  width: 170px;
+  height: 100px;
+}
+
+.capacity-4 .table-visual {
+  border-radius: 10px;
+}
+
+.capacity-6 .table-visual {
+  border-radius: 6px;
+}
