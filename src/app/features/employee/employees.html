@@ -1,67 +1,150 @@
-<div class="admin-main-container" [class.is-mobile]="screenSize.isMobile()">
-  <div class="admin-header">
-    <h2 class="admin-title">{{ restaurantName() }}</h2>
+<mat-sidenav-container class="users-sidenav-container" [class.is-mobile]="screenSize.isMobile()">
+  <mat-sidenav position="end" mode="over" [opened]="sidenavOpen()" (closedStart)="closeSidenav()" style="width: 420px">
+    <app-detail-view [data]="selectedEmployee()" (close)="closeSidenav()">
+      <div detail-title>
+        {{ selectedEmployee()?.firstName }} {{ selectedEmployee()?.lastName }}
+      </div>
 
-    <app-search-box label="Buscar por nombre o email" placeholder="Ej: Carlos" (valueChange)="applyFilter($event)">
-    </app-search-box>
-  </div>
+      <div detail-body>
+        @if (!isEditingEmployee()) {
+        <div class="view-mode">
+          <div class="info-grid">
+            <div class="info-item">
+              <span class="label">DNI</span>
+              <span class="value">{{ selectedEmployee()?.dni }}</span>
+            </div>
+            <div class="info-item">
+              <span class="label">Email</span>
+              <span class="value">{{ selectedEmployee()?.email }}</span>
+            </div>
+            <div class="info-item">
+              <span class="label">Salario</span>
+              <span class="value">{{ selectedEmployee()?.hourlyWage }}€/h</span>
+            </div>
+            <div class="info-item">
+              <span class="label">Rol</span>
+              <span class="value">
+                {{ getRoleName(selectedEmployee()) }}
+              </span>
+            </div>
+            <div class="info-item full">
+              <span class="label">Estado</span>
+              <span class="value status" [class.active]="selectedEmployee()?.isActive">
+                {{ selectedEmployee()?.isActive ? 'Activo' : 'Inactivo' }}
+              </span>
+            </div>
+          </div>
 
-  <app-create-panel title="Añadir nuevo empleado" [expanded]="showCreateForm"
-    (expandedChange)="showCreateForm = $event">
-    <app-dynamic-form [fields]="employeeFields" (formSubmit)="onCreateEmployee($event)">
-    </app-dynamic-form>
-  </app-create-panel>
+          <div class="view-actions">
+            <button mat-flat-button color="primary" (click)="toggleEdit()">
+              <mat-icon>edit</mat-icon>
+              Modificar Datos
+            </button>
+            @if (getRoleName(selectedEmployee()) !== 'ROLE_OWNER') {
+            <button mat-stroked-button color="warn" (click)="deleteEmployee(getEmployeeId(selectedEmployee()), true)">
+              <mat-icon>delete</mat-icon>
+              Eliminar
+            </button>
+            }
+          </div>
+        </div>
+        } @else {
+        <div class="edit-mode">
+          <app-dynamic-form [fields]="editEmployeeFields" [initialValues]="editInitialValues"
+            submitLabel="Guardar Cambios" (formSubmit)="onUpdateEmployee($event)">
+          </app-dynamic-form>
+          <button mat-button class="cancel-btn" (click)="toggleEdit()">Cancelar</button>
+        </div>
+        }
+      </div>
 
-  <div class="table-wrapper">
-    <table mat-table [dataSource]="filteredEmployees()">
-      <ng-container matColumnDef="firstName">
-        <th mat-header-cell *matHeaderCellDef>Nombre</th>
-        <td mat-cell *matCellDef="let employee">{{ employee.firstName }}</td>
-      </ng-container>
-      <ng-container matColumnDef="lastName">
-        <th mat-header-cell *matHeaderCellDef>Apellidos</th>
-        <td mat-cell *matCellDef="let employee">{{ employee.lastName }}</td>
-      </ng-container>
-      <ng-container matColumnDef="dni">
-        <th mat-header-cell *matHeaderCellDef>DNI</th>
-        <td mat-cell *matCellDef="let employee">{{ employee.dni }}</td>
-      </ng-container>
+      <div detail-empty>
+        Selecciona un empleado para ver el detalle
+      </div>
+    </app-detail-view>
+  </mat-sidenav>
 
-      <ng-container matColumnDef="email">
-        <th mat-header-cell *matHeaderCellDef>Email</th>
-        <td mat-cell *matCellDef="let employee">{{ employee.email }}</td>
-      </ng-container>
+  <mat-sidenav-content>
+    <div class="users-header">
+      <div class="header-main">
+        <h2>Empleados de {{ restaurantName() }}</h2>
+        <p class="subtitle">Gestiona tu equipo de trabajo</p>
+      </div>
 
-      <ng-container matColumnDef="role">
-        <th mat-header-cell *matHeaderCellDef>Rol</th>
-        <td mat-cell *matCellDef="let employee">
-          @if (employee.role) {
-          @if (employee.role.roleName) {
-          <span [class]="employee.role.roleName.toLowerCase()">{{ employee.role.roleName.replace('ROLE_', '') }}</span>
-          } @else if (employee.role.name) {
-          <span [class]="employee.role.name.toLowerCase()">{{ employee.role.name.replace('ROLE_', '') }}</span>
-          } @else {
-          <span [class]="employee.role.toString().toLowerCase()">{{ employee.role.toString().replace('ROLE_', '')
-            }}</span>
-          }
-          } @else {
-          <span class="role-none">N/A</span>
-          }
-        </td>
-      </ng-container>
+      <app-search-box label="Buscar empleado..." placeholder="Nombre, email o DNI" (valueChange)="applyFilter($event)">
+      </app-search-box>
+    </div>
 
-      <ng-container matColumnDef="actions">
-        <th mat-header-cell *matHeaderCellDef>Acciones</th>
-        <td mat-cell *matCellDef="let employee">
-          <button mat-icon-button (click)="deleteEmployee(employee.idemployee || employee.id)" class="delete-icon"
-            matTooltip="Eliminar empleado">
-            <mat-icon>delete_outline</mat-icon>
-          </button>
-        </td>
-      </ng-container>
+    <app-create-panel title="Añadir nuevo empleado" [(expanded)]="showCreateForm">
+      <app-dynamic-form [fields]="employeeFields" [title]="'Nuevo Empleado'"
+        [subtitle]="'Registra un nuevo miembro en tu equipo'" [submitLabel]="'Crear Empleado'"
+        (formSubmit)="onCreateEmployee($event)">
+      </app-dynamic-form>
+    </app-create-panel>
 
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-    </table>
-  </div>
-</div>
+    <div class="table-wrapper">
+      <table mat-table [dataSource]="filteredEmployees()">
+
+        <!-- Nombre Column -->
+        <ng-container matColumnDef="firstName">
+          <th mat-header-cell *matHeaderCellDef>Nombre</th>
+          <td mat-cell *matCellDef="let employee">{{ employee.firstName }}</td>
+        </ng-container>
+
+        <!-- Apellido Column -->
+        <ng-container matColumnDef="lastName">
+          <th mat-header-cell *matHeaderCellDef>Apellidos</th>
+          <td mat-cell *matCellDef="let employee">{{ employee.lastName }}</td>
+        </ng-container>
+
+        <!-- DNI Column -->
+        <ng-container matColumnDef="dni">
+          <th mat-header-cell *matHeaderCellDef>DNI</th>
+          <td mat-cell *matCellDef="let employee">{{ employee.dni }}</td>
+        </ng-container>
+
+        <!-- Email Column -->
+        <ng-container matColumnDef="email">
+          <th mat-header-cell *matHeaderCellDef>Email</th>
+          <td mat-cell *matCellDef="let employee">{{ employee.email }}</td>
+        </ng-container>
+
+        <!-- Rol Column -->
+        <ng-container matColumnDef="role">
+          <th mat-header-cell *matHeaderCellDef>Rol</th>
+          <td mat-cell *matCellDef="let employee">
+            @let roleName = getRoleName(employee);
+            <span class="role-badge" [class]="roleName | lowercase">
+              {{ roleName }}
+            </span>
+          </td>
+        </ng-container>
+
+        <!-- Acciones Column -->
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef></th>
+          <td mat-cell *matCellDef="let employee">
+            <button mat-icon-button (click)="$event.stopPropagation(); openEmployeeDetail(employee)"
+              matTooltip="Ver detalles/Editar">
+              <mat-icon>chevron_right</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns" (click)="openEmployeeDetail(row)"
+          class="clickable-row"></tr>
+
+        <!-- Row shown when there is no matching data. -->
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell empty-cell" colspan="6">
+            <div class="empty-state">
+              <mat-icon>people_outline</mat-icon>
+              <p>No se han encontrado empleados.</p>
+            </div>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>

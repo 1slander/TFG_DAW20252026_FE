@@ -22,6 +22,10 @@ export class EmployeeService {
     return this.http.get<EmployeeInterface[]>(`${environment.apiUrl}employees/restaurant`);
   }
 
+  getEmployeeById(id: number) {
+    return this.http.get<EmployeeInterface>(`${environment.apiUrl}employees/${id}`);
+  }
+
   createEmployees(employee: EmployeeCreateInterface) {
     return this.http.post<EmployeeCreateInterface>(
       `${environment.apiUrl}employees/create`,
@@ -29,8 +33,12 @@ export class EmployeeService {
     );
   }
 
+  updateEmployee(id: number, employee: any) {
+    return this.http.put<any>(`${environment.apiUrl}employees/update/${id}`, employee);
+  }
+
   deleteEmployee(id: number) {
-    return this.http.delete(`${environment.apiUrl}employees/${id}`);
+    return this.http.delete(`${environment.apiUrl}employees/delete/${id}`, { responseType: 'text' });
   }
 
   // createOwner(owner: Omit<EmployeeInterface, 'id' | 'role' | 'isActive' | 'createdAt' | 'updatedAt'>) {

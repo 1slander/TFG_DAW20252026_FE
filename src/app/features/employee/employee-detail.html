@@ -1,0 +1,58 @@
+<div class="employee-detail-container">
+    <div class="detail-header">
+        <h2>Detalles del Empleado</h2>
+        <div class="header-actions">
+            <button mat-icon-button (click)="onClose()">
+                <mat-icon>close</mat-icon>
+            </button>
+        </div>
+    </div>
+
+    <div class="detail-content">
+        @if (!isEditing()) {
+        <div class="view-mode">
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="label">Nombre</span>
+                    <span class="value">{{ data.employee.firstName }} {{ data.employee.lastName }}</span>
+                </div>
+                <div class="info-item">
+                    <span class="label">Email</span>
+                    <span class="value">{{ data.employee.email }}</span>
+                </div>
+                <div class="info-item">
+                    <span class="label">DNI</span>
+                    <span class="value">{{ data.employee.dni }}</span>
+                </div>
+                <div class="info-item">
+                    <span class="label">Salario</span>
+                    <span class="value">{{ data.employee.hourlyWage }}€/h</span>
+                </div>
+                <div class="info-item">
+                    <span class="label">Estado</span>
+                    <span class="value status" [class.active]="data.employee.isActive">
+                        {{ data.employee.isActive ? 'Activo' : 'Inactivo' }}
+                    </span>
+                </div>
+            </div>
+
+            <div class="view-actions">
+                <button mat-flat-button color="primary" (click)="toggleEdit()">
+                    <mat-icon>edit</mat-icon>
+                    Modificar Datos
+                </button>
+                <button mat-stroked-button color="warn" (click)="onDelete()">
+                    <mat-icon>delete</mat-icon>
+                    Eliminar
+                </button>
+            </div>
+        </div>
+        } @else {
+        <div class="edit-mode">
+            <app-dynamic-form [fields]="employeeFields" [initialValues]="initialValues" submitLabel="Guardar Cambios"
+                (formSubmit)="onUpdate($event)"></app-dynamic-form>
+            <button mat-button class="cancel-btn" (click)="toggleEdit()">Cancelar</button>
+        </div>
+        }
+    </div>
+</div>
