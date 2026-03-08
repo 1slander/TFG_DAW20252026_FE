@@ -27,7 +27,7 @@ export class EmployeeService {
   }
 
   createEmployees(employee: EmployeeCreateInterface) {
-    return this.http.post<EmployeeCreateInterface>(
+    return this.http.post<EmployeeInterface>(
       `${environment.apiUrl}employees/create`,
       employee,
     );

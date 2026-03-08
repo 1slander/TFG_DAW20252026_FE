@@ -54,6 +54,7 @@ export class EmployeesComponent {
       { name: 'dni', label: 'DNI', type: 'text', required: true, minLength: 9, maxLength: 9 },
       { name: 'email', label: 'Email', type: 'email', required: true },
       { name: 'password', label: 'Contraseña', type: 'password', required: true },
+      { name: 'hourlyWage', label: 'Salario por hora', type: 'number', required: true },
       {
         name: 'role',
         label: 'Rol',
@@ -116,7 +117,15 @@ export class EmployeesComponent {
   }
 
   onCreateEmployee(value: any) {
-    this.employeeService.createEmployees(value).subscribe({
+    // Ensure numeric parsing for creation too
+    const payload = {
+      ...value,
+      hourlyWage: (value.hourlyWage !== undefined && value.hourlyWage !== null && value.hourlyWage !== '')
+        ? Number(value.hourlyWage)
+        : 0
+    };
+
+    this.employeeService.createEmployees(payload).subscribe({
       next: (newEmployee: any) => {
         const current = this.employees();
         this.employees.set([...current, newEmployee]);
