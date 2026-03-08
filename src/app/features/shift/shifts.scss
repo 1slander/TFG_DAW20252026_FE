@@ -30,6 +30,17 @@
   justify-content: space-between;
   align-items: flex-start;
   gap: var(--space-lg);
+
+  > * {
+    min-width: 0;
+  }
+}
+
+.shift-header-content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
 }
 
 .shift-title {
@@ -43,16 +54,21 @@
 }
 
 .shift-subtitle {
-  margin: 6px 0 0;
+  margin: 0;
   font-size: 0.98rem;
   line-height: 1.45;
+}
+
+.shift-create-btn {
+  border-radius: 999px;
+  font-weight: 700;
 }
 
 /* Grid principal */
 .shift-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: var(--space-lg);
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 24px;
   align-items: start;
 }
 
@@ -76,12 +92,9 @@
 .shift-card-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   gap: var(--space-md);
   padding: 18px 20px 14px;
-}
-.shift-header > * {
-  min-width: 0;
 }
 
 .shift-card-title {
@@ -90,7 +103,17 @@
   font-weight: 800;
   font-size: 1.05rem;
   letter-spacing: 0.02em;
-    min-width: 0;
+  line-height: 1.2;
+  min-width: 0;
+  flex: 1;
+}
+
+.shift-card-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+  flex-wrap: nowrap;
 }
 
 .shift-badge {
@@ -103,7 +126,7 @@
   font-size: 0.78rem;
   letter-spacing: 0.03em;
   white-space: nowrap;
-    flex-shrink: 0;
+  flex-shrink: 0;
 }
 
 .shift-card-body {
@@ -113,21 +136,28 @@
   gap: 12px;
 }
 
-/* Lista de empleados */
-
-.employee-action-btn {
-  flex-shrink: 0;
-  border-radius: 10px;
+.shift-create-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding-top: 8px;
 }
 
+.shift-type-option {
+  border-radius: 12px;
+  font-weight: 700;
+}
+
+/* Lista de empleados */
 .employee-list {
   display: flex;
   flex-direction: column;
   gap: 12px;
+  margin-top: 10px;
 }
 
 .employee-item {
-    display: flex;
+  display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
@@ -148,6 +178,7 @@
   flex-direction: column;
   gap: 4px;
   min-width: 0;
+  flex: 1;
 }
 
 .employee-name {
@@ -166,6 +197,11 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.employee-action-btn {
+  flex-shrink: 0;
+  border-radius: 10px;
 }
 
 .empty-state {
@@ -223,6 +259,24 @@
   background: rgba(0, 168, 150, 0.08);
 }
 
+:host-context(body[data-theme='dark']) .shift-card-actions button mat-icon {
+  color: rgba(250, 255, 254, 0.72);
+}
+
+:host-context(body[data-theme='dark']) .shift-card-actions button:hover mat-icon {
+  color: rgba(250, 255, 254, 0.92);
+}
+
+:host-context(body[data-theme='dark']) .shift-type-option {
+  border-color: rgba(0, 168, 150, 0.28) !important;
+  color: rgba(250, 255, 254, 0.88) !important;
+  background: rgba(0, 168, 150, 0.04);
+}
+
+:host-context(body[data-theme='dark']) .shift-type-option:hover {
+  background: rgba(0, 168, 150, 0.08);
+}
+
 :host-context(body[data-theme='dark']) .employee-item {
   background: rgba(255, 255, 255, 0.025);
   border: 1px solid rgba(0, 168, 150, 0.1);
@@ -241,13 +295,27 @@
   color: rgba(250, 255, 254, 0.6);
 }
 
+:host-context(body[data-theme='dark']) .employee-action-btn mat-icon {
+  color: rgba(250, 255, 254, 0.78);
+}
+
 :host-context(body[data-theme='dark']) .empty-state {
   border: 1px dashed rgba(0, 168, 150, 0.2);
   background: rgba(255, 255, 255, 0.02);
   color: rgba(250, 255, 254, 0.58);
 }
-:host-context(body[data-theme='dark']) .employee-action-btn mat-icon {
-  color: rgba(250, 255, 254, 0.78);
+
+:host-context(body[data-theme='dark']) ::ng-deep .mat-mdc-menu-panel {
+  background: rgba(12, 20, 19, 0.96) !important;
+  border: 1px solid rgba(0, 168, 150, 0.18);
+}
+
+:host-context(body[data-theme='dark']) ::ng-deep .mat-mdc-menu-item {
+  color: rgba(250, 255, 254, 0.88) !important;
+}
+
+:host-context(body[data-theme='dark']) ::ng-deep .mat-mdc-menu-item:hover {
+  background: rgba(0, 168, 150, 0.08) !important;
 }
 
 /* =========================
@@ -286,6 +354,24 @@
   background: rgba(0, 168, 150, 0.08);
 }
 
+:host-context(body[data-theme='light']) .shift-card-actions button mat-icon {
+  color: rgba(0, 51, 46, 0.68);
+}
+
+:host-context(body[data-theme='light']) .shift-card-actions button:hover mat-icon {
+  color: rgba(0, 51, 46, 0.92);
+}
+
+:host-context(body[data-theme='light']) .shift-type-option {
+  border-color: rgba(0, 168, 150, 0.22) !important;
+  color: rgba(0, 51, 46, 0.88) !important;
+  background: rgba(0, 168, 150, 0.03);
+}
+
+:host-context(body[data-theme='light']) .shift-type-option:hover {
+  background: rgba(0, 168, 150, 0.06);
+}
+
 :host-context(body[data-theme='light']) .employee-item {
   background: rgba(0, 168, 150, 0.03);
   border: 1px solid rgba(0, 168, 150, 0.1);
@@ -304,11 +390,25 @@
   color: rgba(0, 51, 46, 0.62);
 }
 
+:host-context(body[data-theme='light']) .employee-action-btn mat-icon {
+  color: rgba(0, 51, 46, 0.72);
+}
+
 :host-context(body[data-theme='light']) .empty-state {
   border: 1px dashed rgba(0, 168, 150, 0.2);
   background: rgba(0, 168, 150, 0.04);
   color: rgba(0, 51, 46, 0.62);
 }
-:host-context(body[data-theme='light']) .employee-action-btn mat-icon {
-  color: rgba(0, 51, 46, 0.72);
+
+:host-context(body[data-theme='light']) ::ng-deep .mat-mdc-menu-panel {
+  background: #ffffff !important;
+  border: 1px solid rgba(0, 51, 46, 0.1);
+}
+
+:host-context(body[data-theme='light']) ::ng-deep .mat-mdc-menu-item {
+  color: rgba(0, 51, 46, 0.88) !important;
+}
+
+:host-context(body[data-theme='light']) ::ng-deep .mat-mdc-menu-item:hover {
+  background: rgba(0, 168, 150, 0.06) !important;
 }
