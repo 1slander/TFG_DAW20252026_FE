@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { TableResponseInterface } from '../../interfaces/table';
+import { TableCreateInterface, TableResponseInterface } from '../../interfaces/table';
 import { environment } from '../../../environment';
 
 @Injectable({
@@ -13,7 +13,27 @@ export class TableService {
 
   private tablesList: TableResponseInterface[] = [];
 
-  getTables() {
-    return this.http.get<TableResponseInterface[]>(`${environment.apiUrl}tables`);
+  getTables(idRestaurant: number) {
+    return this.http.get<TableResponseInterface[]>(
+      `${environment.apiUrl}tables/restaurant/${idRestaurant}`,
+    );
+  }
+
+  createTable(idRestaurant: number, table: TableCreateInterface) {
+    return this.http.post<TableResponseInterface>(
+      `${environment.apiUrl}tables/${idRestaurant}`,
+      table,
+    );
+  }
+
+  updateStatus(id: number, status: string) {
+    return this.http.put(`${environment.apiUrl}tables/update/status/${id}?status=${status}`, {});
+  }
+
+  updatePosition(id: number, posX: number, posY: number) {
+    return this.http.put(
+      `${environment.apiUrl}tables/update/position/${id}?posX=${posX}&posY=${posY}`,
+      {},
+    );
   }
 }
