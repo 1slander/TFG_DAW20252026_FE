@@ -1,10 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { EmployeeCreateInterface, EmployeeInterface } from '../../interfaces/employee';
-import { HttpClient } from '@angular/common/http';
-import { EmployeeCreateInterface, EmployeeInterface } from '../../interfaces/employee';
 import { RoleService } from './role.service';
-import { environment } from '../../../environment';
 import { environment } from '../../../environment';
 
 @Injectable({
