@@ -29,4 +29,11 @@ export class TableService {
   updateStatus(id: number, status: string) {
     return this.http.put(`${environment.apiUrl}tables/update/status/${id}?status=${status}`, {});
   }
+
+  updatePosition(id: number, posX: number, posY: number) {
+    return this.http.put(
+      `${environment.apiUrl}tables/update/position/${id}?posX=${posX}&posY=${posY}`,
+      {},
+    );
+  }
 }

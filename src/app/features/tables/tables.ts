@@ -11,10 +11,17 @@ import { RestaurantsResponseInterface } from '../../interfaces/restaurant';
 import { ScreenSizeService } from '../../core/services/screen-size';
 import { CommonModule } from '@angular/common';
 import { TABLE_CREATE_FORM } from '../../forms/table-create';
+import { CdkDragEnd, DragDropModule } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-tables',
-  imports: [CreatePanelComponent, DynamicFormComponent, MaterialModule, CommonModule],
+  imports: [
+    CreatePanelComponent,
+    DynamicFormComponent,
+    MaterialModule,
+    CommonModule,
+    DragDropModule,
+  ],
   templateUrl: './tables.html',
   styleUrl: './tables.scss',
 })
@@ -61,7 +68,15 @@ export class TablesComponent {
 
   loadTables() {
     this.tablesService.getTables(this.idRestaurant()).subscribe({
-      next: (tables) => this.tableList.set(tables),
+      next: (tables) => {
+        this.tableList.set(
+          tables.map((t, i) => ({
+            ...t,
+            posX: t.posX ?? i * 160,
+            posY: t.posY ?? 50,
+          })),
+        );
+      },
       error: () => this.notificationService.notify('Error cargando las mesas', 'error'),
     });
   }
@@ -92,5 +107,21 @@ export class TablesComponent {
         this.notificationService.notify('Error: no se ha podido crear la mesa', 'error');
       },
     });
+  }
+
+  onDragEnd(event: CdkDragEnd, table: TableResponseInterface) {
+    const pos = event.source.getFreeDragPosition();
+
+    const gridSize = 20;
+
+    const newX = Math.round((table.posX! + pos.x) / gridSize) * gridSize;
+    const newY = Math.round((table.posY! + pos.y) / gridSize) * gridSize;
+
+    table.posX = newX;
+    table.posY = newY;
+
+    event.source.reset();
+
+    this.tablesService.updatePosition(table.idTable, newX, newY).subscribe();
   }
 }

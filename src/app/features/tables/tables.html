@@ -13,14 +13,22 @@
       >
       </app-dynamic-form>
     </app-create-panel>
-    <div class="tables-grid">
+    <!-- RESTAURANT FLOOR -->
+    <div class="restaurant-floor">
       <div
         class="table-card mat-elevation-z3"
         *ngFor="let table of tableList()"
+        cdkDrag
+        cdkDragBoundary=".restaurant-floor"
+        (cdkDragEnded)="onDragEnd($event, table)"
         [ngClass]="[table.status.toLowerCase(), 'capacity-' + table.tableCapacity]"
+        [style.left.px]="table.posX || 0"
+        [style.top.px]="table.posY || 0"
       >
+        <!-- TABLE VISUAL -->
         <div class="table-visual">
           <div class="table-number">Mesa {{ table.tableNumber }}</div>
+
           <div class="table-capacity">{{ table.tableCapacity }} personas</div>
         </div>
 

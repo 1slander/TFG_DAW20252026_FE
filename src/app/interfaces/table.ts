@@ -5,6 +5,9 @@ export interface TableResponseInterface {
   status: string;
   idRestaurant: number;
   restaurantName: string;
+
+  posX?: number;
+  posY?: number;
 }
 
 export interface TableCreateInterface {
