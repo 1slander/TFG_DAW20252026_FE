@@ -1,4 +1,4 @@
 export interface ShiftInterface{
-    id:number;
+    idShift:number;
     assignShift:string;
 } 

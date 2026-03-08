@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { MaterialModule } from '../../ui/material-modules';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { inject } from '@angular/core';
 
@@ -13,4 +13,16 @@ import { inject } from '@angular/core';
 })
 export class SettingsMenuComponent {
   authService = inject(AuthService);
+  router = inject(Router);
+
+  logout() {
+    if (this.authService.getRole() === "ROLE_ADMIN") {
+      this.authService.logout();
+      this.router.navigate(['/auth/login/admin']);
+    } else {
+      this.authService.logout();
+      this.router.navigate(['/auth/login']);
+    }
+
+  }
 }

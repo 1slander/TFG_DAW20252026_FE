@@ -1,37 +1,36 @@
 <div class="form-shell">
   <div class="form-header">
-    <div class="title">Registro</div>
-    <div class="subtitle">Completa los datos para continuar</div>
+    <div class="title">{{ title }}</div>
+    <div class="subtitle">{{ subtitle }}</div>
   </div>
 
   <form class="form" [formGroup]="form" (ngSubmit)="onSubmit()">
 
     @for (field of fields; track field.name) {
-      <mat-form-field appearance="outline" class="field">
-        <mat-label>{{ field.label }}</mat-label>
+    <mat-form-field appearance="outline" class="field">
+      <mat-label>{{ field.label }}</mat-label>
 
-        @if (field.type === 'select') {
-          <mat-select [formControlName]="field.name">
-            @for (option of (field.options ?? []); track option.value) {
-              <mat-option [value]="option.value">{{ option.label }}</mat-option>
-            }
-          </mat-select>
-        } @else {
-          <input matInput [type]="field.type" [formControlName]="field.name" />
+      @if (field.type === 'select') {
+      <mat-select [formControlName]="field.name">
+        @for (option of (field.options ?? []); track option.value) {
+        <mat-option [value]="option.value">{{ option.label }}</mat-option>
         }
+      </mat-select>
+      } @else {
+      <input matInput [type]="field.type" [formControlName]="field.name" />
+      }
 
-        @if (isInvalid(field.name)) {
-          <mat-error>
-            @if (form.get(field.name)?.errors?.['required']) { Este campo es obligatorio }
-            @else { Campo inválido }
-          </mat-error>
-        }
-      </mat-form-field>
+      @if (isInvalid(field.name)) {
+      <mat-error>
+        @if (form.get(field.name)?.errors?.['required']) { Este campo es obligatorio }
+        @else { Campo inválido }
+      </mat-error>
+      }
+    </mat-form-field>
     }
 
     <div class="actions">
-      <button mat-raised-button class="btn-primary" type="submit">Guardar</button>
-      <button mat-stroked-button class="btn-secondary" type="button">Cancelar</button>
+      <button mat-raised-button class="btn-primary" type="submit">{{ submitLabel }}</button>
     </div>
   </form>
 </div>

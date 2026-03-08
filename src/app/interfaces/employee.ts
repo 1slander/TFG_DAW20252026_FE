@@ -1,13 +1,25 @@
-import { RestaurantInterface } from "./restaurant";
-import { RoleInterface } from "./role";
-import { ShiftInterface } from "./shift";
-import { UserInterface } from "./user";
+import { RestaurantInterface } from './restaurant';
+import { RoleInterface } from './role';
+import { ShiftInterface } from './shift';
+import { UserInterface } from './user';
 
-export interface EmployeeInterface extends UserInterface{
- dni:string;
- hourlyWage:number;
- hireDate:string;
- role:RoleInterface;
- restaurant?:RestaurantInterface;
- shift?:ShiftInterface
+export interface EmployeeInterface extends UserInterface {
+  idEmployee: number;
+  dni: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  hourlyWage: number;
+  role: string;
+  restaurant?: string;
+  shift?: string;
+}
+
+export interface EmployeeCreateInterface extends UserInterface {
+  dni: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  password: string;
+  role: RoleInterface;
 }
