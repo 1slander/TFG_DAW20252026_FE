@@ -41,6 +41,7 @@ export const routes: Routes = [
         path: 'home',
         loadComponent: () => import('./features/home/home').then((m) => m.HomeComponent),
         title: 'Home',
+
       },
 
       // -- RUTAS PARA OWNER(1) / ADMIN(2) --
@@ -61,6 +62,7 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/admision/admision').then((m) => m.AdmisionComponent),
         title: 'Admisión',
+        loadChildren: () => import('./features/user/user.routes').then((m) => m.userRoutes),
       },
 
       // -- RUTAS GENERALES / OPERACIONALES --

@@ -1,7 +1,10 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { EmployeeCreateInterface, EmployeeInterface } from '../../interfaces/employee';
+import { HttpClient } from '@angular/common/http';
+import { EmployeeCreateInterface, EmployeeInterface } from '../../interfaces/employee';
 import { RoleService } from './role.service';
+import { environment } from '../../../environment';
 import { environment } from '../../../environment';
 
 @Injectable({
@@ -18,6 +21,11 @@ export class EmployeeService {
     return this.http.get<EmployeeInterface[]>(`${environment.apiUrl}employees`);
   }
 
+
+  // Variable para almacenar el estado local si es necesario (cache)
+
+
+
   getEmployees() {
     return this.http.get<EmployeeInterface[]>(`${environment.apiUrl}employees/restaurant`);
   }
@@ -33,11 +41,33 @@ export class EmployeeService {
   //   const maxId = this.employeeList.length === 0
   //     ? 1
   //     : Math.max(...this.employeeList.map(item => item.id)) + 1
+  // createOwner(owner: Omit<EmployeeInterface, 'id' | 'role' | 'isActive' | 'createdAt' | 'updatedAt'>) {
+  //   const maxId = this.employeeList.length === 0
+  //     ? 1
+  //     : Math.max(...this.employeeList.map(item => item.id)) + 1
 
   // const ownerRole = this.roleService.getRoleByName('OWNER')
   // if (!ownerRole)
   //     //   return;
+  // const ownerRole = this.roleService.getRoleByName('OWNER')
+  // if (!ownerRole)
+  //     //   return;
 
+  //     const newOwner: EmployeeInterface = {
+  //       id: maxId,
+  //       firstName: owner.firstName,
+  //       lastName: owner.lastName,
+  //       email: owner.email,
+  //       password: owner.password,
+  //       dni: owner.dni,
+  //       hourlyWage: owner.hourlyWage,
+  //       role: ownerRole,
+  //       isActive: true,
+  //       createdAt: new Date().toISOString().split('T')[0],
+  //       updatedAt: new Date().toISOString().split('T')[0]
+  //     }
+  //     this.employeeList.push(newOwner)
+  //   }
   //     const newOwner: EmployeeInterface = {
   //       id: maxId,
   //       firstName: owner.firstName,
