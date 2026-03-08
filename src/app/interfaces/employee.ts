@@ -4,14 +4,15 @@ import { ShiftInterface } from './shift';
 import { UserInterface } from './user';
 
 export interface EmployeeInterface extends UserInterface {
+  idEmployee: number;
   dni: string;
   email: string;
   firstName: string;
   lastName: string;
   hourlyWage: number;
-  role: RoleInterface;
-  restaurant?: RestaurantInterface;
-  shift?: ShiftInterface;
+  role: string;
+  restaurant?: string;
+  shift?: string;
 }
 
 export interface EmployeeCreateInterface extends UserInterface {

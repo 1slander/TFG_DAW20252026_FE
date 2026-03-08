@@ -61,4 +61,11 @@ export class EmployeeService {
   //     emp.isActive = isActive;
   //     emp.updatedAt = new Date().toISOString().split('T')[0]
   //   }
+
+assignShiftToEmployee(employeeId: number, shiftId: number) {
+  return this.http.put(
+    `${environment.apiUrl}employees/${employeeId}/shift/${shiftId}`,
+    {}
+  );
+}
 }
