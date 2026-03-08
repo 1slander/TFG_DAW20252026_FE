@@ -20,9 +20,8 @@ export const routes: Routes = [
   {
     path: 'register',
     component: RegisterComponent,
-
   },
-  
+
   //RUTAS DE AUTH DE ADMINISTRADOR
   {
     path: 'admin/login',
@@ -41,7 +40,6 @@ export const routes: Routes = [
         path: 'home',
         loadComponent: () => import('./features/home/home').then((m) => m.HomeComponent),
         title: 'Home',
-
       },
 
       // -- RUTAS PARA OWNER(1) / ADMIN(2) --
@@ -79,6 +77,10 @@ export const routes: Routes = [
         path: 'employees',
         loadChildren: () =>
           import('./features/employee/employee.routes').then((m) => m.employeeRoutes),
+      },
+      {
+        path: 'tables',
+        loadChildren: () => import('./features/tables/tables.routes').then((m) => m.tablesRoutes),
       },
 
       // CONFIGURACIÓN PROPIA
