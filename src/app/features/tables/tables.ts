@@ -10,16 +10,11 @@ import { RestaurantService } from '../../core/services/restaurant.service';
 import { RestaurantsResponseInterface } from '../../interfaces/restaurant';
 import { ScreenSizeService } from '../../core/services/screen-size';
 import { CommonModule } from '@angular/common';
+import { TABLE_CREATE_FORM } from '../../forms/table-create';
 
 @Component({
   selector: 'app-tables',
-  imports: [
-    CreatePanelComponent,
-    DynamicFormComponent,
-    SearchBoxComponent,
-    MaterialModule,
-    CommonModule,
-  ],
+  imports: [CreatePanelComponent, DynamicFormComponent, MaterialModule, CommonModule],
   templateUrl: './tables.html',
   styleUrl: './tables.scss',
 })
@@ -33,6 +28,10 @@ export class TablesComponent {
   restaurants = signal<RestaurantsResponseInterface[]>([]);
   restaurantName = signal<string>('Cargando...');
   idRestaurant = signal<number>(0);
+
+  showCreateForm = false;
+
+  tableFields = TABLE_CREATE_FORM;
 
   displayedColumns: string[] = ['tableNumber', 'tableCapacity', 'status'];
 
@@ -80,4 +79,18 @@ export class TablesComponent {
   }
 
   deleteTable(id: number) {}
+
+  onCreateMesa(tableData: any) {
+    this.tablesService.createTable(this.idRestaurant(), tableData).subscribe({
+      next: (res) => {
+        this.notificationService.notify('Mesa creada con éxito', 'success');
+        this.showCreateForm = false;
+        this.loadTables();
+      },
+      error: (err) => {
+        console.error('Error creando mesa', 'err');
+        this.notificationService.notify('Error: no se ha podido crear la mesa', 'error');
+      },
+    });
+  }
 }

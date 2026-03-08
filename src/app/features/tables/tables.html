@@ -3,6 +3,16 @@
     <div class="users-header">
       <h2>{{ restaurantName() }}</h2>
     </div>
+    <app-create-panel title="Añadir nueva mesa" [expanded]="showCreateForm">
+      <app-dynamic-form
+        [fields]="tableFields"
+        [title]="'Añadir Mesas'"
+        [subtitle]="'Rellena la información de tu mesa'"
+        [submitLabel]="'Añadir Mesa'"
+        (formSubmit)="onCreateMesa($event)"
+      >
+      </app-dynamic-form>
+    </app-create-panel>
     <div class="tables-grid">
       <div
         class="table-card mat-elevation-z3"
@@ -14,7 +24,22 @@
           <div class="table-capacity">{{ table.tableCapacity }} personas</div>
         </div>
 
-        <div class="table-status"></div>
+        <div class="table-status">
+          @switch (table.status) {
+            @case ('BOOKED') {
+              Ocupada
+            }
+            @case ('PENDING') {
+              Pendiente de confirmación
+            }
+            @case ('CONFIRMED') {
+              Reservada
+            }
+            @default {
+              Libre
+            }
+          }
+        </div>
 
         <div class="table-actions">
           <button

@@ -7,4 +7,7 @@ export interface TableResponseInterface {
   restaurantName: string;
 }
 
-export interface TableStatusInterface {}
+export interface TableCreateInterface {
+  tableNumber: number;
+  tableCapacity: number;
+}

@@ -13,7 +13,13 @@ import { CreatePanelComponent } from '../../shared/components/create-panel/creat
 
 @Component({
   selector: 'app-restaurants',
-  imports: [MaterialModule, SearchBoxComponent, DetailViewComponent, DynamicFormComponent, CreatePanelComponent],
+  imports: [
+    MaterialModule,
+    SearchBoxComponent,
+    DetailViewComponent,
+    DynamicFormComponent,
+    CreatePanelComponent,
+  ],
   templateUrl: './restaurants.html',
   styleUrl: './restaurants.scss',
 })
@@ -57,7 +63,10 @@ export class RestaurantsComponent {
           this.restaurants.set(this.sourceRestaurants);
         },
         error: (error) => {
-          this.notificationService.notify('Error no se ha podido cargar los restaurantes.', 'error');
+          this.notificationService.notify(
+            'Error no se ha podido cargar los restaurantes.',
+            'error',
+          );
         },
       });
     } else {
@@ -87,7 +96,7 @@ export class RestaurantsComponent {
           this.sourceRestaurants = [];
           this.restaurants.set([]);
           this.hasRestaurant.set(false);
-        }
+        },
       });
     }
   }
@@ -132,9 +141,9 @@ export class RestaurantsComponent {
         this.loadRestaurnts();
       },
       error: (err) => {
-        console.error('Error creating restaurant', err);
+        console.error('Error creando restaurante', err);
         this.notificationService.notify('Error: no se ha podido crear el restaurante', 'error');
-      }
+      },
     });
   }
 }
