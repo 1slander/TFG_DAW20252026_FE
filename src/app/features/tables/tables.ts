@@ -124,4 +124,28 @@ export class TablesComponent {
 
     this.tablesService.updatePosition(table.idTable, newX, newY).subscribe();
   }
+
+  resetLayout() {
+    if (!confirm('¿Quieres reorganizar todas las mesas?')) return;
+    const spacingX = 180;
+    const spacingY = 140;
+
+    const startX = 20;
+    const startY = 20;
+
+    const maxColumns = 6;
+
+    this.tableList().forEach((table, index) => {
+      const col = index % maxColumns;
+      const row = Math.floor(index / maxColumns);
+
+      const posX = startX + col * spacingX;
+      const posY = startY + row * spacingY;
+
+      table.posX = posX;
+      table.posY = posY;
+
+      this.tablesService.updatePosition(table.idTable, posX, posY).subscribe();
+    });
+  }
 }

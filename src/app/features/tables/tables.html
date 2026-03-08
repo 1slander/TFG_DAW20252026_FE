@@ -1,103 +1,133 @@
 <mat-sidenav-container class="users-sidenav-container" [class.is-mobile]="screenSize.isMobile()">
   <mat-sidenav-content>
-    <div class="users-header">
-      <h2>{{ restaurantName() }}</h2>
-    </div>
-    <app-create-panel title="Añadir nueva mesa" [expanded]="showCreateForm">
-      <app-dynamic-form
-        [fields]="tableFields"
-        [title]="'Añadir Mesas'"
-        [subtitle]="'Rellena la información de tu mesa'"
-        [submitLabel]="'Añadir Mesa'"
-        (formSubmit)="onCreateMesa($event)"
-      >
-      </app-dynamic-form>
-    </app-create-panel>
-    <!-- RESTAURANT FLOOR -->
-    <div class="restaurant-floor">
-      <div
-        class="table-card mat-elevation-z3"
-        *ngFor="let table of tableList()"
-        cdkDrag
-        cdkDragBoundary=".restaurant-floor"
-        (cdkDragEnded)="onDragEnd($event, table)"
-        [ngClass]="[table.status.toLowerCase(), 'capacity-' + table.tableCapacity]"
-        [style.left.px]="table.posX || 0"
-        [style.top.px]="table.posY || 0"
-      >
-        <!-- TABLE VISUAL -->
-        <div class="table-visual">
-          <div class="table-number">Mesa {{ table.tableNumber }}</div>
+    <div class="tables-layout">
+      <div class="users-header">
+        <h2>{{ restaurantName() }}</h2>
+      </div>
+      <app-create-panel title="Añadir nueva mesa" [expanded]="showCreateForm">
+        <app-dynamic-form
+          [fields]="tableFields"
+          [title]="'Añadir Mesas'"
+          [subtitle]="'Rellena la información de tu mesa'"
+          [submitLabel]="'Añadir Mesa'"
+          (formSubmit)="onCreateMesa($event)"
+        >
+        </app-dynamic-form>
+      </app-create-panel>
 
-          <div class="table-capacity">{{ table.tableCapacity }} personas</div>
+      <!-- STATUS LEGEND -->
+      <div class="tables-legend">
+        <div class="legend-item">
+          <span class="legend-dot disponible"></span>
+          Libre
         </div>
 
-        <div class="table-status">
-          @switch (table.status) {
-            @case ('BOOKED') {
-              Ocupada
-            }
-            @case ('PENDING') {
-              Pendiente de confirmación
-            }
-            @case ('CONFIRMED') {
-              Reservada
-            }
-            @default {
-              Libre
-            }
-          }
+        <div class="legend-item">
+          <span class="legend-dot reservado"></span>
+          Reservada
         </div>
 
-        <div class="table-actions">
-          <button
-            mat-mini-fab
-            class="status-btn disponible"
-            (click)="updateStatus(table.idTable, 'NOT_BOOKED')"
-            [disabled]="table.status === 'NOT_BOOKED'"
-            matTooltip="Disponible"
-          >
-            <mat-icon>event_seat</mat-icon>
-          </button>
+        <div class="legend-item">
+          <span class="legend-dot ocupado"></span>
+          Ocupada
+        </div>
 
-          <button
-            mat-mini-fab
-            class="status-btn reservado"
-            (click)="updateStatus(table.idTable, 'BOOKED')"
-            [disabled]="table.status === 'BOOKED'"
-            matTooltip="Reservar"
-          >
-            <mat-icon>bookmark</mat-icon>
-          </button>
+        <div class="legend-item">
+          <span class="legend-dot pendiente"></span>
+          Pendiente
+        </div>
 
-          <button
-            mat-mini-fab
-            class="status-btn ocupado"
-            (click)="updateStatus(table.idTable, 'CONFIRMED')"
-            [disabled]="table.status === 'CONFIRMED'"
-            matTooltip="Confirmada / Ocupada"
-          >
-            <mat-icon>restaurant</mat-icon>
-          </button>
+        <button mat-stroked-button color="primary" (click)="resetLayout()">
+          <mat-icon>grid_view</mat-icon>
+          Reorganizar mesas
+        </button>
+      </div>
+      <!-- RESTAURANT FLOOR -->
+      <div class="restaurant-floor">
+        <div
+          class="table-card mat-elevation-z3"
+          *ngFor="let table of tableList()"
+          cdkDrag
+          cdkDragBoundary=".restaurant-floor"
+          (cdkDragEnded)="onDragEnd($event, table)"
+          [ngClass]="[table.status.toLowerCase(), 'capacity-' + table.tableCapacity]"
+          [style.left.px]="table.posX || 0"
+          [style.top.px]="table.posY || 0"
+        >
+          <!-- TABLE VISUAL -->
+          <div class="table-visual">
+            <div class="table-number">Mesa {{ table.tableNumber }}</div>
 
-          <button
-            mat-mini-fab
-            class="status-btn pendiente"
-            (click)="updateStatus(table.idTable, 'PENDING')"
-            [disabled]="table.status === 'PENDING'"
-            matTooltip="Pendiente"
-          >
-            <mat-icon>schedule</mat-icon>
-          </button>
+            <div class="table-capacity">{{ table.tableCapacity }} personas</div>
+          </div>
 
-          <button
-            mat-mini-fab
-            color="warn"
-            (click)="deleteTable(table.idTable)"
-            matTooltip="Eliminar mesa"
-          >
-            <mat-icon>delete</mat-icon>
-          </button>
+          <!-- <div class="table-status">
+            @switch (table.status) {
+              @case ('BOOKED') {
+                Ocupada
+              }
+              @case ('PENDING') {
+                Pendiente de confirmación
+              }
+              @case ('CONFIRMED') {
+                Reservada
+              }
+              @default {
+                Libre
+              }
+            }
+          </div> -->
+
+          <div class="table-actions">
+            <button
+              mat-mini-fab
+              class="status-btn disponible"
+              (click)="updateStatus(table.idTable, 'NOT_BOOKED')"
+              [disabled]="table.status === 'NOT_BOOKED'"
+              matTooltip="Disponible"
+            >
+              <mat-icon>event_seat</mat-icon>
+            </button>
+
+            <button
+              mat-mini-fab
+              class="status-btn reservado"
+              (click)="updateStatus(table.idTable, 'BOOKED')"
+              [disabled]="table.status === 'BOOKED'"
+              matTooltip="Reservar"
+            >
+              <mat-icon>bookmark</mat-icon>
+            </button>
+
+            <button
+              mat-mini-fab
+              class="status-btn ocupado"
+              (click)="updateStatus(table.idTable, 'CONFIRMED')"
+              [disabled]="table.status === 'CONFIRMED'"
+              matTooltip="Confirmada / Ocupada"
+            >
+              <mat-icon>restaurant</mat-icon>
+            </button>
+
+            <button
+              mat-mini-fab
+              class="status-btn pendiente"
+              (click)="updateStatus(table.idTable, 'PENDING')"
+              [disabled]="table.status === 'PENDING'"
+              matTooltip="Pendiente"
+            >
+              <mat-icon>schedule</mat-icon>
+            </button>
+
+            <button
+              mat-mini-fab
+              color="warn"
+              (click)="deleteTable(table.idTable)"
+              matTooltip="Eliminar mesa"
+            >
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
         </div>
       </div>
     </div>
