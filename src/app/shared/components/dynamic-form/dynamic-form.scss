@@ -43,8 +43,24 @@
   }
 }
 
-.field {
+.field,
+.checkbox-field {
   width: 100%;
+}
+
+.checkbox-field {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  background: rgba(0, 0, 0, 0.03);
+  border-radius: 10px;
+  height: 56px;
+  /* Match mat-form-field height */
+}
+
+:host-context(body[data-theme='dark']) .checkbox-field {
+  background: rgba(0, 0, 0, 0.22);
+  border: 1px solid rgba(0, 168, 150, 0.22);
 }
 
 /* Acciones */

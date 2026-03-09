@@ -1,4 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { CreatePanelComponent } from '../../shared/components/create-panel/create-panel';
 import { ScreenSizeService } from '../../core/services/screen-size';
 import { NotificationService } from '../../core/services/notification.service';
@@ -10,13 +11,15 @@ import { RoleService } from '../../core/services/role.service';
 import { EmployeeService } from '../../core/services/employee.service';
 import { SearchBoxComponent } from '../../shared/components/search-box/search-box';
 import { EmployeeInterface } from '../../interfaces/employee';
-import { MatIcon } from '@angular/material/icon';
 import { MaterialModule } from '../../shared/ui/material-modules';
 import { RestaurantService } from '../../core/services/restaurant.service';
+import { DetailViewComponent } from '../../shared/components/detail-view.component/detail-view.component';
+import { MatDialog } from '@angular/material/dialog';
+import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog';
 
 @Component({
   selector: 'app-employees',
-  imports: [CreatePanelComponent, DynamicFormComponent, SearchBoxComponent, MaterialModule],
+  imports: [CreatePanelComponent, DynamicFormComponent, SearchBoxComponent, MaterialModule, DetailViewComponent, CommonModule],
   templateUrl: './employees.html',
   styleUrl: './employees.scss',
 })
@@ -27,12 +30,19 @@ export class EmployeesComponent {
   public screenSize = inject(ScreenSizeService);
   private notificationService = inject(NotificationService);
   private authService = inject(AuthService);
+  private dialog = inject(MatDialog);
 
   employees = signal<EmployeeInterface[]>([]);
+  filteredEmployees = signal<EmployeeInterface[]>([]);
+  selectedEmployee = signal<EmployeeInterface | null>(null);
+  sidenavOpen = signal(false);
+  isEditingEmployee = signal(false);
 
   showCreateForm = false;
 
   employeeFields: FormFieldInterface[] = [];
+  editEmployeeFields: FormFieldInterface[] = [];
+  editInitialValues: Record<string, any> = {};
   restaurantName = signal<string>('Cargando...');
 
   displayedColumns: string[] = ['firstName', 'lastName', 'dni', 'email', 'role'];
@@ -44,6 +54,7 @@ export class EmployeesComponent {
       { name: 'dni', label: 'DNI', type: 'text', required: true, minLength: 9, maxLength: 9 },
       { name: 'email', label: 'Email', type: 'email', required: true },
       { name: 'password', label: 'Contraseña', type: 'password', required: true },
+      { name: 'hourlyWage', label: 'Salario por hora', type: 'number', required: true },
       {
         name: 'role',
         label: 'Rol',
@@ -51,6 +62,22 @@ export class EmployeesComponent {
         options: this.buildRoleOptions(),
       },
     ];
+
+    this.editEmployeeFields = [
+      { name: 'firstName', label: 'Nombre', type: 'text', required: true },
+      { name: 'lastName', label: 'Apellidos', type: 'text', required: true },
+      { name: 'email', label: 'Email', type: 'email', required: true },
+      { name: 'hourlyWage', label: 'Salario por hora', type: 'number', required: true },
+      {
+        name: 'role',
+        label: 'Rol',
+        type: 'select',
+        options: this.buildRoleOptions(),
+        required: true
+      },
+      { name: 'isActive', label: 'Activo', type: 'checkbox' },
+    ];
+
     this.getRestaurantName();
     this.getDatosIniciales();
   }
@@ -89,18 +116,23 @@ export class EmployeesComponent {
   }
 
   onCreateEmployee(value: any) {
-    this.employeeService.createEmployees(value).subscribe({
-      next: () => {
-        this.employeeService.getEmployees().subscribe({
-          next: (data) => {
-            console.log(data);
-            this.notificationService.notify('Empleado creado con éxito!', 'success');
-            this.showCreateForm = false;
-          },
-          error: () => {
-            this.notificationService.notify('Error cargando lista de empleados', 'error');
-          },
-        });
+    // Ensure numeric parsing for creation too
+    const payload = {
+      ...value,
+      hourlyWage: (value.hourlyWage !== undefined && value.hourlyWage !== null && value.hourlyWage !== '')
+        ? Number(value.hourlyWage)
+        : 0
+    };
+
+    this.employeeService.createEmployees(payload).subscribe({
+      next: (newEmployee: any) => {
+        const current = this.employees();
+        this.employees.set([...current, newEmployee]);
+        this.filteredEmployees.set([...current, newEmployee]);
+
+        this.notificationService.notify('Empleado creado con éxito!', 'success');
+        this.showCreateForm = false; // Auto-close form
+        this.getDatosIniciales(); // Refresh table
       },
       error: () => {
         this.notificationService.notify('No se ha podido crear al empleado', 'error');
@@ -108,11 +140,126 @@ export class EmployeesComponent {
     });
   }
 
-  deleteEmployee(arg0: any) {
-    throw new Error('Method not implemented.');
+  openEmployeeDetail(employee: EmployeeInterface) {
+    this.selectedEmployee.set(employee);
+    this.isEditingEmployee.set(false);
+    this.sidenavOpen.set(true);
+
+    const isOwnerSelected = this.getRoleName(employee) === 'ROLE_OWNER';
+
+    if (isOwnerSelected) {
+      this.editEmployeeFields = [
+        { name: 'firstName', label: 'Nombre', type: 'text', required: true },
+        { name: 'lastName', label: 'Apellidos', type: 'text', required: true },
+        { name: 'email', label: 'Email', type: 'email', required: true },
+      ];
+    } else {
+      this.editEmployeeFields = [
+        { name: 'firstName', label: 'Nombre', type: 'text', required: true },
+        { name: 'lastName', label: 'Apellidos', type: 'text', required: true },
+        { name: 'email', label: 'Email', type: 'email', required: true },
+        { name: 'hourlyWage', label: 'Salario por hora', type: 'number', required: true },
+        {
+          name: 'role',
+          label: 'Rol',
+          type: 'select',
+          options: this.buildRoleOptions(),
+          required: true
+        },
+        { name: 'isActive', label: 'Activo', type: 'checkbox' },
+      ];
+    }
+
+    this.editInitialValues = {
+      firstName: employee.firstName,
+      lastName: employee.lastName,
+      email: employee.email,
+      isActive: employee.isActive,
+      hourlyWage: employee.hourlyWage,
+      role: this.getRoleName(employee)
+    };
   }
-  applyFilter($event: string) {
-    throw new Error('Method not implemented.');
+
+  closeSidenav() {
+    this.sidenavOpen.set(false);
+    this.selectedEmployee.set(null);
+    this.isEditingEmployee.set(false);
+  }
+
+  toggleEdit() {
+    this.isEditingEmployee.set(!this.isEditingEmployee());
+  }
+
+  onUpdateEmployee(value: any) {
+    const employee = this.selectedEmployee();
+    if (!employee) return;
+
+    const id = this.getEmployeeId(employee);
+    this.employeeService.updateEmployee(id, value).subscribe({
+      next: () => {
+        this.notificationService.notify('Empleado actualizado con éxito', 'success');
+        this.getDatosIniciales();
+        this.closeSidenav();
+      },
+      error: () => this.notificationService.notify('Error al actualizar empleado', 'error'),
+    });
+  }
+
+  deleteEmployee(id: any, confirmNeeded = true) {
+    const performDelete = () => {
+      this.employeeService.deleteEmployee(id).subscribe({
+        next: () => {
+          const current = this.employees().filter((e) => this.getEmployeeId(e) !== id);
+          this.employees.set(current);
+          this.filteredEmployees.set(current);
+          this.notificationService.notify('Empleado eliminado con éxito', 'success');
+          this.closeSidenav();
+        },
+        error: (err) => {
+          console.error('Delete error:', err);
+          const msg = err.error?.message || 'Error al eliminar empleado';
+          this.notificationService.notify(msg, 'error');
+        },
+      });
+    };
+
+    if (confirmNeeded) {
+      const dialogRef = this.dialog.open(ConfirmDialogComponent);
+      dialogRef.afterClosed().subscribe(result => {
+        if (result) {
+          performDelete();
+        }
+      });
+    } else {
+      performDelete();
+    }
+  }
+
+  applyFilter(value: string) {
+    const filterValue = value.toLowerCase().trim();
+    if (!filterValue) {
+      this.filteredEmployees.set(this.employees());
+      return;
+    }
+
+    const filtered = this.employees().filter(node =>
+      node.firstName.toLowerCase().includes(filterValue) ||
+      node.lastName.toLowerCase().includes(filterValue) ||
+      node.email.toLowerCase().includes(filterValue) ||
+      node.dni.toLowerCase().includes(filterValue)
+    );
+    this.filteredEmployees.set(filtered);
+  }
+
+  // Helpers for template safety
+  getEmployeeId(employee: any): number {
+    return employee?.idEmployee || employee?.idemployee || employee?.id || 0;
+  }
+
+  getRoleName(employee: any): string {
+    const role = employee?.role;
+    if (!role) return 'N/A';
+    return role.roleName || role.name || (typeof role === 'string' ? role : 'N/A');
   }
 
   private getRestaurantName() {

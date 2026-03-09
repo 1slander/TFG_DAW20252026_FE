@@ -27,17 +27,32 @@ export class EmployeeService {
     return this.http.get<EmployeeInterface[]>(`${environment.apiUrl}employees/restaurant`);
   }
 
+  getEmployeeById(id: number) {
+    return this.http.get<EmployeeInterface>(`${environment.apiUrl}employees/${id}`);
+  }
+
   createEmployees(employee: EmployeeCreateInterface) {
-    return this.http.post<EmployeeCreateInterface>(
+    return this.http.post<EmployeeInterface>(
       `${environment.apiUrl}employees/create`,
       employee,
     );
   }
 
+<<<<<<< HEAD
   // createOwner(owner: Omit<EmployeeInterface, 'id' | 'role' | 'isActive' | 'createdAt' | 'updatedAt'>) {
   //   const maxId = this.employeeList.length === 0
   //     ? 1
   //     : Math.max(...this.employeeList.map(item => item.id)) + 1
+=======
+  updateEmployee(id: number, employee: any) {
+    return this.http.put<any>(`${environment.apiUrl}employees/update/${id}`, employee);
+  }
+
+  deleteEmployee(id: number) {
+    return this.http.delete(`${environment.apiUrl}employees/delete/${id}`, { responseType: 'text' });
+  }
+
+>>>>>>> feat/jesus
   // createOwner(owner: Omit<EmployeeInterface, 'id' | 'role' | 'isActive' | 'createdAt' | 'updatedAt'>) {
   //   const maxId = this.employeeList.length === 0
   //     ? 1

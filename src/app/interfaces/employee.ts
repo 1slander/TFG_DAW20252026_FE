@@ -22,4 +22,5 @@ export interface EmployeeCreateInterface extends UserInterface {
   lastName: string;
   password: string;
   role: RoleInterface;
+  hourlyWage: number;
 }

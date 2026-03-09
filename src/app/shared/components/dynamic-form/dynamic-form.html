@@ -7,6 +7,11 @@
   <form class="form" [formGroup]="form" (ngSubmit)="onSubmit()">
 
     @for (field of fields; track field.name) {
+    @if (field.type === 'checkbox') {
+    <div class="checkbox-field">
+      <mat-checkbox [formControlName]="field.name">{{ field.label }}</mat-checkbox>
+    </div>
+    } @else {
     <mat-form-field appearance="outline" class="field">
       <mat-label>{{ field.label }}</mat-label>
 
@@ -27,6 +32,7 @@
       </mat-error>
       }
     </mat-form-field>
+    }
     }
 
     <div class="actions">
