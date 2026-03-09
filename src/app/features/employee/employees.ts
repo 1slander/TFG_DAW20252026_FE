@@ -87,6 +87,7 @@ export class EmployeesComponent {
       next: (data) => {
         console.log(data);
         this.employees.set(data);
+        this.filteredEmployees.set(data);
       },
       error: () => {
         this.notificationService.notify('Error cargando empleados', 'error');
@@ -215,7 +216,7 @@ export class EmployeesComponent {
           this.notificationService.notify('Empleado eliminado con éxito', 'success');
           this.closeSidenav();
         },
-        error: (err) => {
+        error: (err: any) => {
           console.error('Delete error:', err);
           const msg = err.error?.message || 'Error al eliminar empleado';
           this.notificationService.notify(msg, 'error');

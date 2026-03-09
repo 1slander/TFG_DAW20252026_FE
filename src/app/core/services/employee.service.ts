@@ -11,17 +11,9 @@ export class EmployeeService {
   private roleService = inject(RoleService);
   private http = inject(HttpClient);
 
-  // Variable para almacenar el estado local si es necesario (cache)
-  private employeeList: EmployeeInterface[] = [];
-
   getEmployeesForAdmin() {
     return this.http.get<EmployeeInterface[]>(`${environment.apiUrl}employees`);
   }
-
-
-  // Variable para almacenar el estado local si es necesario (cache)
-
-
 
   getEmployees() {
     return this.http.get<EmployeeInterface[]>(`${environment.apiUrl}employees/restaurant`);
@@ -38,12 +30,6 @@ export class EmployeeService {
     );
   }
 
-<<<<<<< HEAD
-  // createOwner(owner: Omit<EmployeeInterface, 'id' | 'role' | 'isActive' | 'createdAt' | 'updatedAt'>) {
-  //   const maxId = this.employeeList.length === 0
-  //     ? 1
-  //     : Math.max(...this.employeeList.map(item => item.id)) + 1
-=======
   updateEmployee(id: number, employee: any) {
     return this.http.put<any>(`${environment.apiUrl}employees/update/${id}`, employee);
   }
@@ -52,62 +38,10 @@ export class EmployeeService {
     return this.http.delete(`${environment.apiUrl}employees/delete/${id}`, { responseType: 'text' });
   }
 
->>>>>>> feat/jesus
-  // createOwner(owner: Omit<EmployeeInterface, 'id' | 'role' | 'isActive' | 'createdAt' | 'updatedAt'>) {
-  //   const maxId = this.employeeList.length === 0
-  //     ? 1
-  //     : Math.max(...this.employeeList.map(item => item.id)) + 1
-
-  // const ownerRole = this.roleService.getRoleByName('OWNER')
-  // if (!ownerRole)
-  //     //   return;
-  // const ownerRole = this.roleService.getRoleByName('OWNER')
-  // if (!ownerRole)
-  //     //   return;
-
-  //     const newOwner: EmployeeInterface = {
-  //       id: maxId,
-  //       firstName: owner.firstName,
-  //       lastName: owner.lastName,
-  //       email: owner.email,
-  //       password: owner.password,
-  //       dni: owner.dni,
-  //       hourlyWage: owner.hourlyWage,
-  //       role: ownerRole,
-  //       isActive: true,
-  //       createdAt: new Date().toISOString().split('T')[0],
-  //       updatedAt: new Date().toISOString().split('T')[0]
-  //     }
-  //     this.employeeList.push(newOwner)
-  //   }
-  //     const newOwner: EmployeeInterface = {
-  //       id: maxId,
-  //       firstName: owner.firstName,
-  //       lastName: owner.lastName,
-  //       email: owner.email,
-  //       password: owner.password,
-  //       dni: owner.dni,
-  //       hourlyWage: owner.hourlyWage,
-  //       role: ownerRole,
-  //       isActive: true,
-  //       createdAt: new Date().toISOString().split('T')[0],
-  //       updatedAt: new Date().toISOString().split('T')[0]
-  //     }
-  //     this.employeeList.push(newOwner)
-  //   }
-
-  //   setActive(id: number, isActive: boolean) {
-  //     const emp = this.employeeList.find((e) => e.id === id)
-  //     if (!emp)
-  //       return;
-  //     emp.isActive = isActive;
-  //     emp.updatedAt = new Date().toISOString().split('T')[0]
-  //   }
-
-assignShiftToEmployee(employeeId: number, shiftId: number) {
-  return this.http.put(
-    `${environment.apiUrl}employees/${employeeId}/shift/${shiftId}`,
-    {}
-  );
-}
+  assignShiftToEmployee(employeeId: number, shiftId: number) {
+    return this.http.put(
+      `${environment.apiUrl}employees/${employeeId}/shift/${shiftId}`,
+      {}
+    );
+  }
 }
