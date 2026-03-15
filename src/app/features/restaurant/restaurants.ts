@@ -10,6 +10,8 @@ import { DetailViewComponent } from '../../shared/components/detail-view.compone
 import { RESTAURANT_CREATE_FORM } from '../../forms/restaurant-create';
 import { DynamicFormComponent } from '../../shared/components/dynamic-form/dynamic-form';
 import { CreatePanelComponent } from '../../shared/components/create-panel/create-panel';
+import { DynamicTableComponent } from '../../shared/components/dynamic-table/dynamic-table';
+import { DynamicTableAction, DynamicTableColumn } from '../../interfaces/dynamic-table';
 
 @Component({
   selector: 'app-restaurants',
@@ -18,6 +20,7 @@ import { CreatePanelComponent } from '../../shared/components/create-panel/creat
     SearchBoxComponent,
     DetailViewComponent,
     DynamicFormComponent,
+    DynamicTableComponent,
     CreatePanelComponent,
   ],
   templateUrl: './restaurants.html',
@@ -29,24 +32,43 @@ export class RestaurantsComponent {
   private notificationService = inject(NotificationService);
   private authService = inject(AuthService);
 
-  // Guardamos todos los restaurantes originales
   private sourceRestaurants: RestaurantsResponseInterface[] = [];
 
   restaurants = signal<RestaurantsResponseInterface[]>([]);
   role = signal('');
   showCreateForm = false;
-  hasRestaurant = signal(true); // Default it to true to avoid flashing the form before load completes.
+  hasRestaurant = signal(true);
 
   restaurantFields = RESTAURANT_CREATE_FORM;
 
   selectedRestaurant = signal<RestaurantsResponseInterface | null>(null);
   sidenavOpen = signal(false);
 
-  displayedColumns = computed(() =>
+  tableColumns = computed<DynamicTableColumn<RestaurantsResponseInterface>[]>(() =>
     this.screenSize.isMobile()
-      ? ['cif', 'restaurantName', 'ownerName', 'phone', 'actions']
-      : ['cif', 'restaurantName', 'ownerName', 'address', 'country', 'phone', 'actions'],
+      ? [
+          { key: 'cif', label: 'CIF' },
+          { key: 'restaurantName', label: 'Restaurante' },
+          { key: 'ownerName', label: 'Contacto' },
+          { key: 'phone', label: 'Teléfono' },
+        ]
+      : [
+          { key: 'cif', label: 'CIF' },
+          { key: 'restaurantName', label: 'Restaurante' },
+          { key: 'ownerName', label: 'Contacto' },
+          { key: 'address', label: 'Dirección' },
+          { key: 'country', label: 'País' },
+          { key: 'phone', label: 'Teléfono' },
+        ],
   );
+
+  tableActions: DynamicTableAction<RestaurantsResponseInterface>[] = [
+    {
+      id: 'view',
+      icon: 'visibility',
+      tooltip: 'Ver detalle',
+    },
+  ];
 
   ngOnInit() {
     this.role.set(this.authService.getRole() || '');
@@ -62,7 +84,7 @@ export class RestaurantsComponent {
           this.sourceRestaurants = data || [];
           this.restaurants.set(this.sourceRestaurants);
         },
-        error: (error) => {
+        error: () => {
           this.notificationService.notify(
             'Error no se ha podido cargar los restaurantes.',
             'error',
@@ -79,9 +101,9 @@ export class RestaurantsComponent {
           } else {
             this.sourceRestaurants = [];
           }
+
           this.restaurants.set(this.sourceRestaurants);
 
-          // Si es dueño y ya tiene restaurante, nos aseguramos que no se abra el form de creación.
           if (this.sourceRestaurants.length > 0) {
             this.showCreateForm = false;
             this.hasRestaurant.set(true);
@@ -121,7 +143,6 @@ export class RestaurantsComponent {
   }
 
   openSidenav(restaurant: RestaurantsResponseInterface) {
-    console.log(restaurant);
     this.selectedRestaurant.set(restaurant);
     this.sidenavOpen.set(true);
   }
@@ -131,11 +152,18 @@ export class RestaurantsComponent {
     this.sidenavOpen.set(false);
   }
 
+  onTableAction(event: {
+    action: string;
+    row: RestaurantsResponseInterface;
+  }): void {
+    if (event.action === 'view') {
+      this.openSidenav(event.row);
+    }
+  }
+
   onCreateRestaurant(restaurantData: any) {
-    // We already handled assigning owner via Auth backend if well implemented.
-    // Assuming backend receives the payload and ties it to the logged in owner token
     this.restaurantService.createRestaurant(restaurantData).subscribe({
-      next: (res) => {
+      next: () => {
         this.notificationService.notify('¡Restaurante creado con éxito!', 'success');
         this.showCreateForm = false;
         this.loadRestaurnts();
