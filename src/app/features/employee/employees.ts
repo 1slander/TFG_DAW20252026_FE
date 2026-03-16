@@ -216,7 +216,7 @@ export class EmployeesComponent {
           this.notificationService.notify('Empleado eliminado con éxito', 'success');
           this.closeSidenav();
         },
-        error: (err: any) => {
+        error: (err) => {
           console.error('Delete error:', err);
           const msg = err.error?.message || 'Error al eliminar empleado';
           this.notificationService.notify(msg, 'error');

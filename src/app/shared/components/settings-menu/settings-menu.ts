@@ -18,10 +18,10 @@ export class SettingsMenuComponent {
   logout() {
     if (this.authService.getRole() === "ROLE_ADMIN") {
       this.authService.logout();
-      this.router.navigate(['/auth/login/admin']);
+      this.router.navigate(['/admin/login']);
     } else {
       this.authService.logout();
-      this.router.navigate(['/auth/login']);
+      this.router.navigate(['/login']);
     }
 
   }
