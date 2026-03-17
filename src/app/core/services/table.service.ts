@@ -36,4 +36,21 @@ export class TableService {
       {},
     );
   }
+
+  deleteTable(id: number) {
+    return this.http.delete(`${environment.apiUrl}tables/delete/${id}`, { responseType: 'text' });
+  }
+
+  assignEmployee(tableId: number, employeeId: number) {
+    const startTime = new Date().toISOString();
+    return this.http.post(`${environment.apiUrl}table-assignment`, {
+      idTable: tableId,
+      idEmployee: employeeId,
+      startTime: startTime
+    });
+  }
+
+  closeAssignment(idAssignment: number) {
+    return this.http.put(`${environment.apiUrl}table-assignment/close/${idAssignment}`, {});
+  }
 }

@@ -8,6 +8,10 @@ export interface TableResponseInterface {
 
   posX?: number;
   posY?: number;
+
+  idEmployee?: number;
+  employeeName?: string;
+  idAssignment?: number;
 }
 
 export interface TableCreateInterface {

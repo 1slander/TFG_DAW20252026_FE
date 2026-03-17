@@ -4,14 +4,10 @@
       <div class="users-header">
         <h2>{{ restaurantName() }}</h2>
       </div>
-      <app-create-panel title="Añadir nueva mesa" [expanded]="showCreateForm">
-        <app-dynamic-form
-          [fields]="tableFields"
-          [title]="'Añadir Mesas'"
-          [subtitle]="'Rellena la información de tu mesa'"
-          [submitLabel]="'Añadir Mesa'"
-          (formSubmit)="onCreateMesa($event)"
-        >
+      <app-create-panel title="Añadir nueva mesa" [(expanded)]="showCreateForm">
+        <app-dynamic-form [fields]="tableFields" [title]="'Añadir Mesas'"
+          [subtitle]="'Rellena la información de tu mesa'" [submitLabel]="'Añadir Mesa'"
+          (formSubmit)="onCreateMesa($event)">
         </app-dynamic-form>
       </app-create-panel>
 
@@ -41,92 +37,180 @@
           <mat-icon>grid_view</mat-icon>
           Reorganizar mesas
         </button>
+
+        <div class="element-actions">
+          <button mat-flat-button color="accent" [matMenuTriggerFor]="addMenu">
+            <mat-icon>add_circle_outline</mat-icon>
+            Añadir Elemento
+          </button>
+
+          <mat-menu #addMenu="matMenu">
+            <button mat-menu-item (click)="addElement('WALL')">
+              <mat-icon>straighten</mat-icon>
+              <span>Muro</span>
+            </button>
+            <button mat-menu-item (click)="addElement('WINDOW')">
+              <mat-icon>window</mat-icon>
+              <span>Ventana</span>
+            </button>
+            <button mat-menu-item (click)="addElement('DOOR')">
+              <mat-icon>sensor_door</mat-icon>
+              <span>Puerta</span>
+            </button>
+            <button mat-menu-item (click)="addElement('WC')">
+              <mat-icon>wc</mat-icon>
+              <span>Baños</span>
+            </button>
+            <button mat-menu-item (click)="addElement('KITCHEN')">
+              <mat-icon>countertops</mat-icon>
+              <span>Cocina</span>
+            </button>
+            <button mat-menu-item (click)="addElement('COLUMN')">
+              <mat-icon>view_column</mat-icon>
+              <span>Columna</span>
+            </button>
+            <button mat-menu-item (click)="addElement('SOFA')">
+              <mat-icon>weekend</mat-icon>
+              <span>Sofá</span>
+            </button>
+            <button mat-menu-item (click)="addElement('BAR')">
+              <mat-icon>local_bar</mat-icon>
+              <span>Barra</span>
+            </button>
+          </mat-menu>
+        </div>
       </div>
       <!-- RESTAURANT FLOOR -->
-      <div class="restaurant-floor">
-        <div
-          class="table-card mat-elevation-z3"
-          *ngFor="let table of tableList()"
-          cdkDrag
-          cdkDragBoundary=".restaurant-floor"
-          (cdkDragEnded)="onDragEnd($event, table)"
-          [ngClass]="[table.status.toLowerCase(), 'capacity-' + table.tableCapacity]"
-          [style.left.px]="table.posX || 0"
-          [style.top.px]="table.posY || 0"
-        >
-          <!-- TABLE VISUAL -->
-          <div class="table-visual">
-            <div class="table-number">Mesa {{ table.tableNumber }}</div>
+      <div class="floor-container" (wheel)="onWheel($event)" (mousedown)="startPanning($event)">
+        <div class="restaurant-floor"
+          [style.transform]="'translate(' + translateX() + 'px, ' + translateY() + 'px) scale(' + zoom() + ')'"
+          [style.transform-origin]="'0 0'">
+          <!-- DECORATIVE ELEMENTS -->
+          <div *ngFor="let el of elementList()" class="restaurant-element" [ngClass]="el.type" [style.left.px]="el.posX"
+            [style.top.px]="el.posY" [style.width.px]="el.width" [style.height.px]="el.height" cdkDrag
+            [cdkDragScale]="zoom()" cdkDragBoundary=".restaurant-floor" (cdkDragEnded)="onElementDragEnd($event, el)">
+            <!-- Iconos específicos por tipo -->
+            <mat-icon *ngIf="el.type === 'WINDOW'" class="element-icon"
+              [style.rotate]="el.rotation + 'deg'">window</mat-icon>
+            <mat-icon *ngIf="el.type === 'BAR'" class="element-icon"
+              [style.rotate]="el.rotation + 'deg'">local_bar</mat-icon>
+            <mat-icon *ngIf="el.type === 'DOOR'" class="element-icon"
+              [style.rotate]="el.rotation + 'deg'">sensor_door</mat-icon>
+            <mat-icon *ngIf="el.type === 'WC'" class="element-icon"
+              [style.rotate]="el.rotation + 'deg'">wc</mat-icon>
+            <mat-icon *ngIf="el.type === 'KITCHEN'" class="element-icon"
+              [style.rotate]="el.rotation + 'deg'">countertops</mat-icon>
+            <mat-icon *ngIf="el.type === 'COLUMN'" class="element-icon"
+              [style.rotate]="el.rotation + 'deg'">view_column</mat-icon>
+            <mat-icon *ngIf="el.type === 'SOFA'" class="element-icon"
+              [style.rotate]="el.rotation + 'deg'">weekend</mat-icon>
 
-            <div class="table-capacity">{{ table.tableCapacity }} personas</div>
+            <div class="element-controls">
+              <button mat-icon-button class="control-btn rotate-btn"
+                (click)="$event.stopPropagation(); rotateElement(el)" matTooltip="Girar Muro/Elemento">
+                <mat-icon>rotate_right</mat-icon>
+              </button>
+              <button mat-icon-button class="control-btn delete-btn"
+                (click)="$event.stopPropagation(); deleteElement(el.idElement)" matTooltip="Borrar">
+                <mat-icon>delete_outline</mat-icon>
+              </button>
+            </div>
+
+            <div class="resize-handle" (mousedown)="startResize($event, el)"></div>
           </div>
 
-          <!-- <div class="table-status">
-            @switch (table.status) {
-              @case ('BOOKED') {
-                Ocupada
-              }
-              @case ('PENDING') {
-                Pendiente de confirmación
-              }
-              @case ('CONFIRMED') {
-                Reservada
-              }
-              @default {
-                Libre
-              }
-            }
-          </div> -->
+          <!-- TABLES -->
+          <div class="table-card mat-elevation-z3" *ngFor="let table of tableList()" cdkDrag [cdkDragScale]="zoom()"
+            cdkDragBoundary=".restaurant-floor" (cdkDragEnded)="onDragEnd($event, table)"
+            [ngClass]="[table.status.toLowerCase(), 'capacity-' + table.tableCapacity]"
+            [style.left.px]="table.posX || 0" [style.top.px]="table.posY || 0">
+            <!-- TABLE VISUAL -->
+            <div class="table-visual">
+              <div class="table-number">{{ table.tableNumber }}</div>
+              <div class="table-capacity">{{ table.tableCapacity }} pers</div>
 
-          <div class="table-actions">
-            <button
-              mat-mini-fab
-              class="status-btn disponible"
-              (click)="updateStatus(table.idTable, 'NOT_BOOKED')"
-              [disabled]="table.status === 'NOT_BOOKED'"
-              matTooltip="Disponible"
-            >
-              <mat-icon>event_seat</mat-icon>
-            </button>
+              <!-- EMPLOYEE ASSIGNMENT -->
+              <div class="employee-assignment">
+                <!-- If employee assigned -->
+                <div *ngIf="table.idEmployee" class="employee-badge" [matTooltip]="'Asignado: ' + table.employeeName"
+                  (click)="$event.stopPropagation()" [matMenuTriggerFor]="employeeActionMenu">
+                  {{ getInitials(table.employeeName) }}
+                </div>
 
-            <button
-              mat-mini-fab
-              class="status-btn reservado"
-              (click)="updateStatus(table.idTable, 'BOOKED')"
-              [disabled]="table.status === 'BOOKED'"
-              matTooltip="Reservar"
-            >
-              <mat-icon>bookmark</mat-icon>
-            </button>
+                <!-- If NO employee assigned -->
+                <button *ngIf="!table.idEmployee" mat-icon-button class="add-employee-btn"
+                  (click)="$event.stopPropagation()" [matMenuTriggerFor]="assignMenu" matTooltip="Asignar empleado">
+                  <mat-icon>person_add</mat-icon>
+                </button>
 
-            <button
-              mat-mini-fab
-              class="status-btn ocupado"
-              (click)="updateStatus(table.idTable, 'CONFIRMED')"
-              [disabled]="table.status === 'CONFIRMED'"
-              matTooltip="Confirmada / Ocupada"
-            >
-              <mat-icon>restaurant</mat-icon>
-            </button>
+                <!-- Menu to assign -->
+                <mat-menu #assignMenu="matMenu" class="employee-select-menu">
+                  <div class="menu-title">Asignar Empleado</div>
+                  <button mat-menu-item *ngFor="let emp of availableEmployees()"
+                    (click)="assignEmployee(table.idTable, emp.idEmployee!)">
+                    <mat-icon>person</mat-icon>
+                    <span>{{ emp.firstName }} {{ emp.lastName }}</span>
+                  </button>
+                  <div *ngIf="availableEmployees().length === 0" class="menu-empty">
+                    No hay empleados disponibles
+                  </div>
+                </mat-menu>
 
-            <button
-              mat-mini-fab
-              class="status-btn pendiente"
-              (click)="updateStatus(table.idTable, 'PENDING')"
-              [disabled]="table.status === 'PENDING'"
-              matTooltip="Pendiente"
-            >
-              <mat-icon>schedule</mat-icon>
-            </button>
+                <!-- Menu for assigned employee actions -->
+                <mat-menu #employeeActionMenu="matMenu">
+                  <div class="menu-title">{{ table.employeeName }}</div>
+                  <button mat-menu-item (click)="unassignEmployee(table.idAssignment!)">
+                    <mat-icon>person_remove</mat-icon>
+                    <span>Liberar mesa (Quitar empleado)</span>
+                  </button>
+                  <button mat-menu-item [matMenuTriggerFor]="reassignMenu">
+                    <mat-icon>sync</mat-icon>
+                    <span>Cambiar empleado</span>
+                  </button>
+                </mat-menu>
 
-            <button
-              mat-mini-fab
-              color="warn"
-              (click)="deleteTable(table.idTable)"
-              matTooltip="Eliminar mesa"
-            >
-              <mat-icon>delete</mat-icon>
-            </button>
+                <!-- Menu to reassign -->
+                <mat-menu #reassignMenu="matMenu">
+                  <button mat-menu-item *ngFor="let emp of availableEmployees()"
+                    (click)="reassignEmployee(table.idTable, table.idAssignment!, emp.idEmployee!)">
+                    <mat-icon>person</mat-icon>
+                    <span>{{ emp.firstName }} {{ emp.lastName }}</span>
+                  </button>
+                </mat-menu>
+              </div>
+
+              <!-- Icono de estado integrado -->
+              <mat-icon class="status-indicator-icon" *ngIf="table.status === 'NOT_BOOKED'">check_circle</mat-icon>
+              <mat-icon class="status-indicator-icon" *ngIf="table.status === 'CONFIRMED'">person</mat-icon>
+              <mat-icon class="status-indicator-icon" *ngIf="table.status === 'PENDING'">hourglass_empty</mat-icon>
+              <mat-icon class="status-indicator-icon" *ngIf="table.status === 'BOOKED'">event</mat-icon>
+            </div>
+
+            <div class="table-actions">
+              <button mat-mini-fab class="status-btn disponible" (click)="updateStatus(table.idTable, 'NOT_BOOKED')"
+                [disabled]="table.status === 'NOT_BOOKED'" matTooltip="Disponible">
+                <mat-icon>event_seat</mat-icon>
+              </button>
+
+              <button mat-mini-fab class="status-btn reservado" (click)="updateStatus(table.idTable, 'BOOKED')"
+                [disabled]="table.status === 'BOOKED'" matTooltip="Reservar">
+                <mat-icon>bookmark</mat-icon>
+              </button>
+
+              <button mat-mini-fab class="status-btn ocupado" (click)="updateStatus(table.idTable, 'CONFIRMED')"
+                [disabled]="table.status === 'CONFIRMED'" matTooltip="Confirmada / Ocupada">
+                <mat-icon>restaurant</mat-icon>
+              </button>
+
+              <button mat-mini-fab class="status-btn pendiente" (click)="updateStatus(table.idTable, 'PENDING')"
+                [disabled]="table.status === 'PENDING'" matTooltip="Pendiente">
+                <mat-icon>schedule</mat-icon>
+              </button>
+
+              <button mat-mini-fab color="warn" (click)="deleteTable(table.idTable)" matTooltip="Eliminar mesa">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
           </div>
         </div>
       </div>
