@@ -38,6 +38,15 @@
           Reorganizar mesas
         </button>
 
+        <!-- BOTÓN ELIMINAR PLANTA ACTUAL (VISIBLE SOLO EN PLANTAS NO PRINCIPALES) -->
+        <button *ngIf="canModifyEverything() && activeFloorId() && !isPrimaryFloor(activeFloorId()!) && floors().length > 1" 
+                mat-stroked-button color="warn"
+                (click)="deleteFloor($event, activeFloorId()!)"
+                matTooltip="Eliminar permanentemente esta planta">
+          <mat-icon>delete_forever</mat-icon>
+          Eliminar planta actual
+        </button>
+
         <div class="element-actions" *ngIf="canModifyEverything()">
           <button mat-flat-button color="accent" [matMenuTriggerFor]="addMenu">
             <mat-icon>add_circle_outline</mat-icon>

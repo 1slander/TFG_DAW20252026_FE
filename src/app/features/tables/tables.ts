@@ -143,6 +143,11 @@ export class TablesComponent implements OnInit {
     });
   }
 
+  isPrimaryFloor(floorId: number): boolean {
+    const floorList = this.floors();
+    return floorList.length > 0 && floorList[0].idFloor === floorId;
+  }
+
   selectFloor(floorId: number) {
     this.activeFloorId.set(floorId);
     this.loadTables();
@@ -165,6 +170,32 @@ export class TablesComponent implements OnInit {
             this.selectFloor(newFloor.idFloor);
           },
           error: () => this.notificationService.notify('Error añadiendo la planta', 'error'),
+        });
+      }
+    });
+  }
+
+  deleteFloor(event: MouseEvent, floorId: number) {
+    if (!this.canModifyEverything()) return;
+    event.stopPropagation(); // Evitar seleccionar la planta al pulsar borrar
+
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '400px',
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.floorService.deleteFloor(floorId).subscribe({
+          next: () => {
+            this.notificationService.notify('Planta eliminada', 'success');
+            if (this.activeFloorId() === floorId) {
+              this.activeFloorId.set(null);
+              this.tableList.set([]);
+              this.elementList.set([]);
+            }
+            this.loadFloors();
+          },
+          error: () => this.notificationService.notify('Error eliminando la planta', 'error'),
         });
       }
     });
