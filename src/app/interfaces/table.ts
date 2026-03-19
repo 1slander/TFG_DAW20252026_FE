@@ -6,6 +6,8 @@ export interface TableResponseInterface {
   idRestaurant: number;
   restaurantName: string;
 
+  idFloor?: number;
+
   posX?: number;
   posY?: number;
 
@@ -17,4 +19,5 @@ export interface TableResponseInterface {
 export interface TableCreateInterface {
   tableNumber: number;
   tableCapacity: number;
+  idFloor?: number;
 }

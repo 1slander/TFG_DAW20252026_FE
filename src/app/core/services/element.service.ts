@@ -15,6 +15,12 @@ export class ElementService {
     );
   }
 
+  getElementsByFloor(idFloor: number) {
+    return this.http.get<ElementResponseInterface[]>(
+      `${environment.apiUrl}elements/floor/${idFloor}`,
+    );
+  }
+
   createElement(idRestaurant: number, element: ElementCreateInterface) {
     return this.http.post<ElementResponseInterface>(
       `${environment.apiUrl}elements/${idRestaurant}`,

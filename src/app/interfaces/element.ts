@@ -6,6 +6,7 @@ export interface ElementResponseInterface {
   width: number;
   height: number;
   rotation: number;
+  idFloor?: number;
 }
 
 export interface ElementCreateInterface {
@@ -15,4 +16,5 @@ export interface ElementCreateInterface {
   width: number;
   height: number;
   rotation: number;
+  idFloor?: number;
 }

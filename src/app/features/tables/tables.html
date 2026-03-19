@@ -77,6 +77,10 @@
               <mat-icon>local_bar</mat-icon>
               <span>Barra</span>
             </button>
+            <button mat-menu-item (click)="addElement('STAIRS')">
+              <mat-icon>stairs</mat-icon>
+              <span>Escaleras</span>
+            </button>
           </mat-menu>
         </div>
       </div>
@@ -104,6 +108,8 @@
               [style.rotate]="el.rotation + 'deg'">view_column</mat-icon>
             <mat-icon *ngIf="el.type === 'SOFA'" class="element-icon"
               [style.rotate]="el.rotation + 'deg'">weekend</mat-icon>
+            <mat-icon *ngIf="el.type === 'STAIRS'" class="element-icon"
+              [style.rotate]="el.rotation + 'deg'">stairs</mat-icon>
 
             <div class="element-controls">
               <button mat-icon-button class="control-btn rotate-btn"
@@ -211,6 +217,24 @@
                 <mat-icon>delete</mat-icon>
               </button>
             </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- FLOOR SELECTOR (RIGHT SIDEBAR) -->
+      <div class="floor-selector">
+        <div class="floor-item add-floor" (click)="addFloor()" matTooltip="Añadir Planta">
+          <mat-icon>add</mat-icon>
+        </div>
+        
+        <div class="floors-scroll">
+          <div *ngFor="let floor of floors(); let i = index" 
+               class="floor-item" 
+               [class.active]="floor.idFloor === activeFloorId()"
+               (click)="selectFloor(floor.idFloor)"
+               [matTooltip]="floor.name">
+            <span class="floor-name-short">P<small>{{ i + 1 }}</small></span>
+            <div class="floor-full-label">{{ floor.name }}</div>
           </div>
         </div>
       </div>

@@ -19,6 +19,12 @@ export class TableService {
     );
   }
 
+  getTablesByFloor(idFloor: number) {
+    return this.http.get<TableResponseInterface[]>(
+      `${environment.apiUrl}tables/floor/${idFloor}`,
+    );
+  }
+
   createTable(idRestaurant: number, table: TableCreateInterface) {
     return this.http.post<TableResponseInterface>(
       `${environment.apiUrl}tables/${idRestaurant}`,

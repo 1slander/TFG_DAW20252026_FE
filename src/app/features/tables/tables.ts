@@ -17,6 +17,9 @@ import { EmployeeService } from '../../core/services/employee.service';
 import { EmployeeInterface } from '../../interfaces/employee';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog';
+import { Floor } from '../../core/models/floor';
+import { FloorService } from '../../core/services/floor.service';
+import { FloorNameDialogComponent } from './floor-name-dialog';
 
 @Component({
   selector: 'app-tables',
@@ -38,17 +41,20 @@ export class TablesComponent implements OnInit {
   private restaurantService = inject(RestaurantService);
   private elementService = inject(ElementService);
   private employeeService = inject(EmployeeService);
+  private floorService = inject(FloorService);
   private dialog = inject(MatDialog);
 
   tableList = signal<TableResponseInterface[]>([]);
   elementList = signal<ElementResponseInterface[]>([]);
   availableEmployees = signal<EmployeeInterface[]>([]);
   restaurants = signal<RestaurantsResponseInterface[]>([]);
+  floors = signal<Floor[]>([]);
+  activeFloorId = signal<number | null>(null);
   restaurantName = signal<string>('Cargando...');
   idRestaurant = signal<number>(0);
 
   // ZOOM & PAN STATE
-  zoom = signal<number>(0.2); 
+  zoom = signal<number>(1.0); 
   translateX = signal<number>(0);
   translateY = signal<number>(0);
 
@@ -91,8 +97,7 @@ export class TablesComponent implements OnInit {
         this.idRestaurant.set(restaurant.idRestaurant);
         this.restaurantName.set(restaurant.restaurantName);
 
-        this.loadTables();
-        this.loadElements();
+        this.loadFloors();
         this.loadEmployees();
 
         setTimeout(() => this.enforceBounds(), 200);
@@ -100,8 +105,48 @@ export class TablesComponent implements OnInit {
     });
   }
 
+  loadFloors() {
+    this.floorService.getFloorsByRestaurant(this.idRestaurant()).subscribe({
+      next: (floors) => {
+        this.floors.set(floors);
+        if (floors.length > 0 && !this.activeFloorId()) {
+          this.selectFloor(floors[0].idFloor);
+        }
+      },
+      error: () => this.notificationService.notify('Error cargando las plantas', 'error'),
+    });
+  }
+
+  selectFloor(floorId: number) {
+    this.activeFloorId.set(floorId);
+    this.loadTables();
+    this.loadElements();
+  }
+
+  addFloor() {
+    const dialogRef = this.dialog.open(FloorNameDialogComponent, {
+      width: '400px'
+    });
+
+    dialogRef.afterClosed().subscribe(name => {
+      if (name) {
+        this.floorService.createFloor(this.idRestaurant(), name).subscribe({
+          next: (newFloor) => {
+            this.notificationService.notify('Planta añadida', 'success');
+            this.loadFloors();
+            this.selectFloor(newFloor.idFloor);
+          },
+          error: () => this.notificationService.notify('Error añadiendo la planta', 'error'),
+        });
+      }
+    });
+  }
+
   loadTables() {
-    this.tablesService.getTables(this.idRestaurant()).subscribe({
+    const floorId = this.activeFloorId();
+    if (!floorId) return;
+
+    this.tablesService.getTablesByFloor(floorId).subscribe({
       next: (tables) => {
         this.tableList.set(
           tables.map((t, i) => ({
@@ -116,7 +161,10 @@ export class TablesComponent implements OnInit {
   }
 
   loadElements() {
-    this.elementService.getElementsByRestaurant(this.idRestaurant()).subscribe({
+    const floorId = this.activeFloorId();
+    if (!floorId) return;
+
+    this.elementService.getElementsByFloor(floorId).subscribe({
       next: (elements) => {
         this.elementList.set(elements);
       },
@@ -144,7 +192,8 @@ export class TablesComponent implements OnInit {
   }
 
   onCreateMesa(tableData: any) {
-    this.tablesService.createTable(this.idRestaurant(), tableData).subscribe({
+    const dataWithFloor = { ...tableData, idFloor: this.activeFloorId() };
+    this.tablesService.createTable(this.idRestaurant(), dataWithFloor).subscribe({
       next: (res) => {
         this.notificationService.notify('Mesa creada con éxito', 'success');
         this.showCreateForm = false;
@@ -212,6 +261,7 @@ export class TablesComponent implements OnInit {
     else if (type === 'KITCHEN') { w = 140; h = 80; }
     else if (type === 'COLUMN') { w = 30; h = 30; }
     else if (type === 'SOFA') { w = 90; h = 45; }
+    else if (type === 'STAIRS') { w = 100; h = 80; }
 
     const newElement: ElementCreateInterface = {
       type: type,
@@ -220,6 +270,7 @@ export class TablesComponent implements OnInit {
       width: w,
       height: h,
       rotation: 0,
+      idFloor: this.activeFloorId() || undefined
     };
 
     this.elementService.createElement(this.idRestaurant(), newElement).subscribe({
