@@ -44,7 +44,7 @@ export class HomeComponent {
     {
       title: 'Empleados',
       description: 'Gestión y listado de empleados.',
-      rolesAllowed: ['ROLE_OWNER'],
+      rolesAllowed: ['ROLE_OWNER', 'ROLE_MANAGER'],
       route: () => `${this.base}/employees`,
     },
     {
@@ -56,7 +56,13 @@ export class HomeComponent {
     {
       title: 'Turnos',
       description: 'Módulo para la gestión de turnos.',
-      rolesAllowed: ['ROLE_OWNER', 'ROLE_EMPLOYEE'],
+      rolesAllowed: [
+        'ROLE_OWNER',
+        'ROLE_MANAGER',
+        'ROLE_ASSISTANT_MANAGER',
+        'ROLE_TEAM_LEADER',
+        'ROLE_EMPLOYEE',
+      ],
       route: () => `${this.base}/shifts`,
     },
     {

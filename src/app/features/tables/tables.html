@@ -4,7 +4,7 @@
       <div class="users-header">
         <h2>{{ restaurantName() }}</h2>
       </div>
-      <app-create-panel title="Añadir nueva mesa" [(expanded)]="showCreateForm">
+      <app-create-panel *ngIf="canModifyEverything()" title="Añadir nueva mesa" [(expanded)]="showCreateForm">
         <app-dynamic-form [fields]="tableFields" [title]="'Añadir Mesas'"
           [subtitle]="'Rellena la información de tu mesa'" [submitLabel]="'Añadir Mesa'"
           (formSubmit)="onCreateMesa($event)">
@@ -33,12 +33,12 @@
           Pendiente
         </div>
 
-        <button mat-stroked-button color="primary" (click)="resetLayout()">
+        <button *ngIf="canMoveTables()" mat-stroked-button color="primary" (click)="resetLayout()">
           <mat-icon>grid_view</mat-icon>
           Reorganizar mesas
         </button>
 
-        <div class="element-actions">
+        <div class="element-actions" *ngIf="canModifyEverything()">
           <button mat-flat-button color="accent" [matMenuTriggerFor]="addMenu">
             <mat-icon>add_circle_outline</mat-icon>
             Añadir Elemento
@@ -92,6 +92,7 @@
           <!-- DECORATIVE ELEMENTS -->
           <div *ngFor="let el of elementList()" class="restaurant-element" [ngClass]="el.type" [style.left.px]="el.posX"
             [style.top.px]="el.posY" [style.width.px]="el.width" [style.height.px]="el.height" cdkDrag
+            [cdkDragDisabled]="!canModifyEverything()"
             [cdkDragScale]="zoom()" cdkDragBoundary=".restaurant-floor" (cdkDragEnded)="onElementDragEnd($event, el)">
             <!-- Iconos específicos por tipo -->
             <mat-icon *ngIf="el.type === 'WINDOW'" class="element-icon"
@@ -111,7 +112,7 @@
             <mat-icon *ngIf="el.type === 'STAIRS'" class="element-icon"
               [style.rotate]="el.rotation + 'deg'">stairs</mat-icon>
 
-            <div class="element-controls">
+            <div class="element-controls" *ngIf="canModifyEverything()">
               <button mat-icon-button class="control-btn rotate-btn"
                 (click)="$event.stopPropagation(); rotateElement(el)" matTooltip="Girar Muro/Elemento">
                 <mat-icon>rotate_right</mat-icon>
@@ -122,11 +123,12 @@
               </button>
             </div>
 
-            <div class="resize-handle" (mousedown)="startResize($event, el)"></div>
+            <div class="resize-handle" *ngIf="canModifyEverything()" (mousedown)="startResize($event, el)"></div>
           </div>
 
           <!-- TABLES -->
           <div class="table-card mat-elevation-z3" *ngFor="let table of tableList()" cdkDrag [cdkDragScale]="zoom()"
+            [cdkDragDisabled]="!canMoveTables()"
             cdkDragBoundary=".restaurant-floor" (cdkDragEnded)="onDragEnd($event, table)"
             [ngClass]="[table.status.toLowerCase(), 'capacity-' + table.tableCapacity]"
             [style.left.px]="table.posX || 0" [style.top.px]="table.posY || 0">
@@ -138,16 +140,24 @@
               <!-- EMPLOYEE ASSIGNMENT -->
               <div class="employee-assignment">
                 <!-- If employee assigned -->
-                <div *ngIf="table.idEmployee" class="employee-badge" [matTooltip]="'Asignado: ' + table.employeeName"
-                  (click)="$event.stopPropagation()" [matMenuTriggerFor]="employeeActionMenu">
+                <div *ngIf="table.idEmployee" class="employee-badge" 
+                  [matTooltip]="canAssignEmployees() ? 'Gestionar: ' + table.employeeName : 'Asignado: ' + table.employeeName"
+                  (click)="$event.stopPropagation()" 
+                  [matMenuTriggerFor]="canAssignEmployees() ? employeeActionMenu : null">
                   {{ getInitials(table.employeeName) }}
                 </div>
 
                 <!-- If NO employee assigned -->
-                <button *ngIf="!table.idEmployee" mat-icon-button class="add-employee-btn"
+                <button *ngIf="!table.idEmployee && canAssignEmployees()" mat-icon-button class="add-employee-btn"
                   (click)="$event.stopPropagation()" [matMenuTriggerFor]="assignMenu" matTooltip="Asignar empleado">
                   <mat-icon>person_add</mat-icon>
                 </button>
+                
+                <!-- Solo visualización para rol EMPLOYEE si no hay nadie asignado -->
+                <div *ngIf="!table.idEmployee && !canAssignEmployees()" class="add-employee-btn empty-view" 
+                     matTooltip="Sin empleado asignado">
+                  <mat-icon>person_off</mat-icon>
+                </div>
 
                 <!-- Menu to assign -->
                 <mat-menu #assignMenu="matMenu" class="employee-select-menu">
@@ -213,7 +223,7 @@
                 <mat-icon>schedule</mat-icon>
               </button>
 
-              <button mat-mini-fab color="warn" (click)="deleteTable(table.idTable)" matTooltip="Eliminar mesa">
+              <button *ngIf="canModifyEverything()" mat-mini-fab color="warn" (click)="deleteTable(table.idTable)" matTooltip="Eliminar mesa">
                 <mat-icon>delete</mat-icon>
               </button>
             </div>
@@ -223,7 +233,7 @@
       
       <!-- FLOOR SELECTOR (RIGHT SIDEBAR) -->
       <div class="floor-selector">
-        <div class="floor-item add-floor" (click)="addFloor()" matTooltip="Añadir Planta">
+        <div *ngIf="canModifyEverything()" class="floor-item add-floor" (click)="addFloor()" matTooltip="Añadir Planta">
           <mat-icon>add</mat-icon>
         </div>
         

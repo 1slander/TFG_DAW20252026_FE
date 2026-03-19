@@ -20,6 +20,7 @@ import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/c
 import { Floor } from '../../core/models/floor';
 import { FloorService } from '../../core/services/floor.service';
 import { FloorNameDialogComponent } from './floor-name-dialog';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-tables',
@@ -43,6 +44,13 @@ export class TablesComponent implements OnInit {
   private employeeService = inject(EmployeeService);
   private floorService = inject(FloorService);
   private dialog = inject(MatDialog);
+  private authService = inject(AuthService);
+
+  // --- PERMISSIONS (RBAC) ---
+  canModifyEverything = signal<boolean>(false); // Owner/Admin: Add/Delete/Resize/Rotate
+  canMoveTables = signal<boolean>(false);      // Owner/Admin/Manager: Drag & Drop tables
+  canAssignEmployees = signal<boolean>(false); // All except ROLE_EMPLOYEE
+  isEmployeeOnly = signal<boolean>(false);      // Read-only view
 
   tableList = signal<TableResponseInterface[]>([]);
   elementList = signal<ElementResponseInterface[]>([]);
@@ -81,7 +89,25 @@ export class TablesComponent implements OnInit {
   tableFields = TABLE_CREATE_FORM;
 
   ngOnInit(): void {
+    this.checkPermissions();
     this.getDatosIniciales();
+  }
+
+  checkPermissions() {
+    const roleValue = this.authService.roleValue;
+    const level = this.authService.currentLevel;
+
+    // canModifyEverything: Solo ROLE_OWNER (4) o ROLE_ADMIN (5)
+    this.canModifyEverything.set(level >= 4);
+
+    // canMoveTables: Todos los roles pueden mover mesas dentro de su restaurante
+    this.canMoveTables.set(level >= 0);
+
+    // canAssignEmployees: Todos excepto ROLE_EMPLOYEE (0) -> LEVEL > 0
+    this.canAssignEmployees.set(level > 0);
+
+    // isEmployeeOnly: Solo ROLE_EMPLOYEE (0)
+    this.isEmployeeOnly.set(level === 0);
   }
 
   getDatosIniciales() {
@@ -124,6 +150,8 @@ export class TablesComponent implements OnInit {
   }
 
   addFloor() {
+    if (!this.canModifyEverything()) return;
+    
     const dialogRef = this.dialog.open(FloorNameDialogComponent, {
       width: '400px'
     });
@@ -192,6 +220,8 @@ export class TablesComponent implements OnInit {
   }
 
   onCreateMesa(tableData: any) {
+    if (!this.canModifyEverything()) return;
+
     const dataWithFloor = { ...tableData, idFloor: this.activeFloorId() };
     this.tablesService.createTable(this.idRestaurant(), dataWithFloor).subscribe({
       next: (res) => {
@@ -230,6 +260,8 @@ export class TablesComponent implements OnInit {
   }
 
   deleteTable(id: number) {
+    if (!this.canModifyEverything()) return;
+
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '400px',
     });
@@ -250,6 +282,8 @@ export class TablesComponent implements OnInit {
   // --- ELEMENTOS DECORATIVOS ---
 
   addElement(type: string) {
+    if (!this.canModifyEverything()) return;
+
     let w = 40;
     let h = 40;
 
@@ -283,6 +317,8 @@ export class TablesComponent implements OnInit {
   }
 
   deleteElement(id: number) {
+    if (!this.canModifyEverything()) return;
+
     this.elementService.deleteElement(id).subscribe({
       next: () => {
         this.notificationService.notify('Elemento eliminado', 'success');
@@ -292,6 +328,8 @@ export class TablesComponent implements OnInit {
   }
 
   rotateElement(element: ElementResponseInterface) {
+    if (!this.canModifyEverything()) return;
+
     const newRotation = element.rotation === 0 ? 90 : 0;
     element.rotation = newRotation;
 
@@ -317,7 +355,7 @@ export class TablesComponent implements OnInit {
   }
 
   onElementDragEnd(event: CdkDragEnd, element: ElementResponseInterface) {
-    if (this.isResizing) return;
+    if (this.isResizing || !this.canModifyEverything()) return;
 
     const pos = event.source.getFreeDragPosition();
     const currentScale = this.zoom();
@@ -334,6 +372,8 @@ export class TablesComponent implements OnInit {
   }
 
   startResize(event: MouseEvent, element: ElementResponseInterface) {
+    if (!this.canModifyEverything()) return;
+    
     event.stopPropagation();
     event.preventDefault();
 
@@ -418,6 +458,8 @@ export class TablesComponent implements OnInit {
   }
 
   onDragEnd(event: CdkDragEnd, table: TableResponseInterface) {
+    if (!this.canMoveTables()) return;
+
     const pos = event.source.getFreeDragPosition();
     const currentScale = this.zoom();
     const gridSize = 20;
@@ -473,6 +515,8 @@ export class TablesComponent implements OnInit {
   }
 
   resetLayout() {
+    if (!this.canMoveTables()) return;
+
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '400px',
     });
