@@ -17,6 +17,9 @@ import { CreatePanelComponent } from '../../shared/components/create-panel/creat
 import { AuthService } from '../../core/services/auth.service';
 import { AdminService } from '../../core/services/admin.service';
 import { NotificationService } from '../../core/services/notification.service';
+import { DynamicTableComponent } from '../../shared/components/dynamic-table/dynamic-table';
+import { DynamicTableAction, DynamicTableColumn } from '../../interfaces/dynamic-table';
+
 
 @Component({
   selector: 'app-users',
@@ -27,12 +30,12 @@ import { NotificationService } from '../../core/services/notification.service';
     DynamicFormComponent,
     SearchBoxComponent,
     CreatePanelComponent,
+    DynamicTableComponent,
   ],
   templateUrl: './users.html',
   styleUrl: './users.scss',
 })
 export class UsersComponent implements OnInit {
-  //nos traemos el service
   private employeeService = inject(EmployeeService);
   public screenSize = inject(ScreenSizeService);
   private dialog = inject(MatDialog);
@@ -44,23 +47,50 @@ export class UsersComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
 
-  // Guardamos todos los empleados originales traídos de base de datos
   private sourceEmployees: EmployeeInterface[] = [];
 
-  // El signal visible en la tabla
   employees = signal<EmployeeInterface[]>([]);
   restaurants = signal<RestaurantsResponseInterface[]>([]);
   role = signal(this.authService.getRole());
 
-  displayedColumns = computed(() =>
-    this.screenSize.isMobile()
-      ? ['fullName', 'actions']
-      : ['fullName', 'email', 'role', 'restaurant', 'actions'],
-  );
-
-  // Formulario
   showCreateForm = false;
   initialOwnerData: Record<string, any> = {};
+
+  selectedEmployee = signal<EmployeeInterface | null>(null);
+  sidenavOpen = signal(false);
+
+  tableColumns = computed<DynamicTableColumn<EmployeeInterface>[]>(() =>
+    this.screenSize.isMobile()
+      ? [
+          {
+            key: 'fullName',
+            label: 'Nombre Completo',
+            valueFn: (employee) => `${employee.firstName} ${employee.lastName}`,
+          },
+        ]
+      : [
+          {
+            key: 'fullName',
+            label: 'Nombre Completo',
+            valueFn: (employee) => `${employee.firstName} ${employee.lastName}`,
+          },
+          { key: 'email', label: 'Email' },
+          { key: 'role', label: 'Rol' },
+          {
+            key: 'restaurant',
+            label: 'Restaurante',
+            valueFn: (employee) => this.getRestaurantName(employee),
+          },
+        ],
+  );
+
+  tableActions: DynamicTableAction<EmployeeInterface>[] = [
+    {
+      id: 'view',
+      icon: 'visibility',
+      tooltip: 'Ver detalle',
+    },
+  ];
 
   employeeFields: FormFieldInterface[] = [
     { name: 'firstName', label: 'Nombre', type: 'text', required: true },
@@ -100,7 +130,6 @@ export class UsersComponent implements OnInit {
     this.loadEmployees();
     this.loadRestaurants();
 
-    // Comprobar parámetros de ruta para la autocompletación desde admisiones
     this.route.queryParams.subscribe((params) => {
       if (params['action'] === 'createOwner') {
         this.initialOwnerData = {
@@ -124,7 +153,6 @@ export class UsersComponent implements OnInit {
   loadEmployees() {
     this.employeeService.getEmployeesForAdmin().subscribe({
       next: (data: EmployeeInterface[]) => {
-        console.log(data);
         this.sourceEmployees = data;
         this.employees.set(data);
       },
@@ -154,12 +182,11 @@ export class UsersComponent implements OnInit {
 
   onCreateOwner(value: any) {
     this.adminService.createOwner(value).subscribe({
-      next: (res) => {
+      next: () => {
         this.notificationService.notify('¡Dueño creado con éxito!', 'success');
         this.showCreateForm = false;
         this.initialOwnerData = {};
 
-        // Limpiamos los query parameters para evitar que se reabra el formulario al recargar
         this.router.navigate([], {
           relativeTo: this.route,
           queryParams: { action: null, firstName: null, lastName: null, email: null, dni: null },
@@ -179,44 +206,13 @@ export class UsersComponent implements OnInit {
     try {
       // this.employeeService.createEmployee(value);
       // this.employees.set(this.employeeService.getEmployees());
-      // this.notify('¡Empleado creado con exito!', 'success')
+      // this.notificationService.notify('¡Empleado creado con exito!', 'success');
       // this.showCreateForm = false;
     } catch (error) {
       this.notificationService.notify('Error: no se ha podido crear', 'error');
       console.error('Error al crear empleado', error);
     }
   }
-
-  // onToggleActive(event: { id: number; nextIsActive: boolean }) {
-  //   const dialogRef = this.dialog.open(ConfirmDialogComponent, { width: '350px' });
-  //   dialogRef.afterClosed().subscribe(result => {
-  //     if (result) {
-  //       try {
-  //         // This requires adjusting EmployeeService to fire a PUT request to the backend.
-  //         // For now, this will just call the mock function but since we are fetching from backend
-  //         // it won't persist unless 'setActive' also hits an API.
-  //         // this.employeeService.setActive(event.id, event.nextIsActive);
-
-  //         // Patch locally to avoid reloading the whole table unnecessarily
-  //         const patchedSource = this.sourceEmployees.map(emp =>
-  //           emp.id === event.id ? { ...emp, isActive: event.nextIsActive } : emp
-  //         );
-  //         this.sourceEmployees = patchedSource;
-  //         this.employees.set(patchedSource);
-
-  //         const selEmp = patchedSource.find((e) => e.id === event.id);
-  //         this.selectedEmployee = selEmp ?? this.selectedEmployee;
-
-  //       } catch (error) {
-  //         this.notify('Error: no se ha podido ejecutar', 'error')
-  //       }
-  //     }
-  //   });
-  // }
-
-  //añadimos la lista de employees a una variable de tipo EmployeeInterface[]
-  selectedEmployee = signal<EmployeeInterface | null>(null);
-  sidenavOpen = signal(false);
 
   openSidenav(employee: EmployeeInterface) {
     this.selectedEmployee.set(employee);
@@ -228,20 +224,23 @@ export class UsersComponent implements OnInit {
     this.sidenavOpen.set(false);
   }
 
+  onTableAction(event: { action: string; row: EmployeeInterface }): void {
+    if (event.action === 'view') {
+      this.openSidenav(event.row);
+    }
+  }
+
   getRestaurantName(employee: EmployeeInterface): string {
-    // If it's already an object with a name (from EmployeeInterface)
     if (employee.restaurant && (employee.restaurant as any).name) {
       return (employee.restaurant as any).name;
     }
-    // If it's a string (old behavior)
+
     if (typeof employee.restaurant === 'string') {
       return employee.restaurant;
     }
-    // Search in restaurants list by owner ID (for Owners)
-    // We use == for defensive type matching
+
     const found = this.restaurants().find((r) => r.idOwner == (employee as any).id);
 
-    // Debugging link
     const isOwner =
       typeof employee.role === 'string'
         ? employee.role === 'ROLE_OWNER'

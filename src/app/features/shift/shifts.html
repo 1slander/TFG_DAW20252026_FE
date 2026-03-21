@@ -24,8 +24,8 @@
     }
   </div>
 </app-create-panel>
-}
-      </div>
+}    
+</div>
       <mat-menu #createShiftMenu="matMenu">
         @for (shiftType of getAvailableShiftTypesToCreate(); track shiftType) {
           <button mat-menu-item (click)="createShift(shiftType)">

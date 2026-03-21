@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CreatePanelComponent } from '../../shared/components/create-panel/create-panel';
 import { ScreenSizeService } from '../../core/services/screen-size';
@@ -16,10 +16,20 @@ import { RestaurantService } from '../../core/services/restaurant.service';
 import { DetailViewComponent } from '../../shared/components/detail-view.component/detail-view.component';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog';
+import { DynamicTableComponent } from '../../shared/components/dynamic-table/dynamic-table';
+import { DynamicTableAction, DynamicTableColumn } from '../../interfaces/dynamic-table';
 
 @Component({
   selector: 'app-employees',
-  imports: [CreatePanelComponent, DynamicFormComponent, SearchBoxComponent, MaterialModule, DetailViewComponent, CommonModule],
+  imports: [
+    CreatePanelComponent,
+    DynamicFormComponent,
+    SearchBoxComponent,
+    MaterialModule,
+    DetailViewComponent,
+    CommonModule,
+    DynamicTableComponent,
+  ],
   templateUrl: './employees.html',
   styleUrl: './employees.scss',
 })
@@ -45,7 +55,41 @@ export class EmployeesComponent {
   editInitialValues: Record<string, any> = {};
   restaurantName = signal<string>('Cargando...');
 
-  displayedColumns: string[] = ['firstName', 'lastName', 'dni', 'email', 'role'];
+  tableColumns = computed<DynamicTableColumn<EmployeeInterface>[]>(() =>
+    this.screenSize.isMobile()
+      ? [
+          { key: 'firstName', label: 'Nombre' },
+          { key: 'lastName', label: 'Apellidos' },
+          {
+            key: 'role',
+            label: 'Rol',
+            type: 'badge',
+            valueFn: (employee) => this.getRoleName(employee),
+            badgeClassFn: (employee) => this.getRoleName(employee).toLowerCase(),
+          },
+        ]
+      : [
+          { key: 'firstName', label: 'Nombre' },
+          { key: 'lastName', label: 'Apellidos' },
+          { key: 'dni', label: 'DNI' },
+          { key: 'email', label: 'Email' },
+          {
+            key: 'role',
+            label: 'Rol',
+            type: 'badge',
+            valueFn: (employee) => this.getRoleName(employee),
+            badgeClassFn: (employee) => this.getRoleName(employee).toLowerCase(),
+          },
+        ],
+  );
+
+  tableActions: DynamicTableAction<EmployeeInterface>[] = [
+    {
+      id: 'view',
+      icon: 'chevron_right',
+      tooltip: 'Ver detalles/Editar',
+    },
+  ];
 
   ngOnInit(): void {
     this.employeeFields = [
@@ -73,7 +117,7 @@ export class EmployeesComponent {
         label: 'Rol',
         type: 'select',
         options: this.buildRoleOptions(),
-        required: true
+        required: true,
       },
       { name: 'isActive', label: 'Activo', type: 'checkbox' },
     ];
@@ -85,7 +129,6 @@ export class EmployeesComponent {
   getDatosIniciales() {
     this.employeeService.getEmployees().subscribe({
       next: (data) => {
-        console.log(data);
         this.employees.set(data);
         this.filteredEmployees.set(data);
       },
@@ -97,7 +140,6 @@ export class EmployeesComponent {
 
   private buildRoleOptions(): { value: string; label: string }[] {
     const currentRole = this.authService.roleValue;
-
     if (!currentRole) return [];
 
     const allowedRoles = this.roleService.getAssignableRoles(currentRole);
@@ -110,19 +152,21 @@ export class EmployeesComponent {
 
   private formatRole(role: Role): string {
     return role
-      .replace('ROLE_', '') // remove prefix
-      .toLowerCase() // lowercase
-      .replace(/_/g, ' ') // underscores → spaces
-      .replace(/\b\w/g, (l) => l.toUpperCase()); // capitalize words
+      .replace('ROLE_', '')
+      .toLowerCase()
+      .replace(/_/g, ' ')
+      .replace(/\b\w/g, (l) => l.toUpperCase());
   }
 
   onCreateEmployee(value: any) {
-    // Ensure numeric parsing for creation too
     const payload = {
       ...value,
-      hourlyWage: (value.hourlyWage !== undefined && value.hourlyWage !== null && value.hourlyWage !== '')
-        ? Number(value.hourlyWage)
-        : 0
+      hourlyWage:
+        value.hourlyWage !== undefined &&
+        value.hourlyWage !== null &&
+        value.hourlyWage !== ''
+          ? Number(value.hourlyWage)
+          : 0,
     };
 
     this.employeeService.createEmployees(payload).subscribe({
@@ -132,8 +176,8 @@ export class EmployeesComponent {
         this.filteredEmployees.set([...current, newEmployee]);
 
         this.notificationService.notify('Empleado creado con éxito!', 'success');
-        this.showCreateForm = false; // Auto-close form
-        this.getDatosIniciales(); // Refresh table
+        this.showCreateForm = false;
+        this.getDatosIniciales();
       },
       error: () => {
         this.notificationService.notify('No se ha podido crear al empleado', 'error');
@@ -165,7 +209,7 @@ export class EmployeesComponent {
           label: 'Rol',
           type: 'select',
           options: this.buildRoleOptions(),
-          required: true
+          required: true,
         },
         { name: 'isActive', label: 'Activo', type: 'checkbox' },
       ];
@@ -177,7 +221,7 @@ export class EmployeesComponent {
       email: employee.email,
       isActive: employee.isActive,
       hourlyWage: employee.hourlyWage,
-      role: this.getRoleName(employee)
+      role: this.getRoleName(employee),
     };
   }
 
@@ -226,7 +270,7 @@ export class EmployeesComponent {
 
     if (confirmNeeded) {
       const dialogRef = this.dialog.open(ConfirmDialogComponent);
-      dialogRef.afterClosed().subscribe(result => {
+      dialogRef.afterClosed().subscribe((result) => {
         if (result) {
           performDelete();
         }
@@ -243,16 +287,22 @@ export class EmployeesComponent {
       return;
     }
 
-    const filtered = this.employees().filter(node =>
-      node.firstName.toLowerCase().includes(filterValue) ||
-      node.lastName.toLowerCase().includes(filterValue) ||
-      node.email.toLowerCase().includes(filterValue) ||
-      node.dni.toLowerCase().includes(filterValue)
+    const filtered = this.employees().filter(
+      (node) =>
+        node.firstName.toLowerCase().includes(filterValue) ||
+        node.lastName.toLowerCase().includes(filterValue) ||
+        node.email.toLowerCase().includes(filterValue) ||
+        node.dni.toLowerCase().includes(filterValue),
     );
     this.filteredEmployees.set(filtered);
   }
 
-  // Helpers for template safety
+  onTableAction(event: { action: string; row: EmployeeInterface }): void {
+    if (event.action === 'view') {
+      this.openEmployeeDetail(event.row);
+    }
+  }
+
   getEmployeeId(employee: any): number {
     return employee?.idEmployee || employee?.idemployee || employee?.id || 0;
   }
@@ -266,8 +316,6 @@ export class EmployeesComponent {
   private getRestaurantName() {
     this.restaurantService.getEmployeeRestaurant().subscribe({
       next: (restaurant) => {
-        console.log(restaurant);
-        // Adjust depending on your backend response structure
         this.restaurantName.set(restaurant.restaurantName);
       },
       error: () => {

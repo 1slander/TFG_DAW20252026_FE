@@ -3,20 +3,18 @@ import { CommonModule } from '@angular/common';
 import { MaterialModule } from '../../shared/ui/material-modules';
 import { RoleService } from '../../core/services/role.service';
 import { ScreenSizeService } from '../../core/services/screen-size';
-
 import { FormFieldInterface } from '../../interfaces/form-field';
-
-// Servicios para avisos y diálogos
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog } from '@angular/material/dialog';
-
 import { RoleResponseInterface } from '../../interfaces/role';
 import { NotificationService } from '../../core/services/notification.service';
+import { DynamicTableColumn } from '../../interfaces/dynamic-table';
+import { DynamicTableComponent } from '../../shared/components/dynamic-table/dynamic-table';
 
 @Component({
   selector: 'app-roles',
   standalone: true,
-  imports: [CommonModule, MaterialModule],
+  imports: [CommonModule, MaterialModule, DynamicTableComponent],
   templateUrl: './roles.html',
   styleUrl: './roles.scss',
 })
@@ -27,14 +25,19 @@ export class RolesComponent {
   private snackBar = inject(MatSnackBar);
   private notificationService = inject(NotificationService);
 
-  // Usamos Signal para que la UI vuele
   roles = signal<RoleResponseInterface[]>([]);
   showCreateForm = false;
   selectedCategory = signal<string>('ALL');
-  displayedColumns: string[] = ['roleName'];
 
   roleFields: FormFieldInterface[] = [
     { name: 'roleName', label: 'Nombre del Rol (ej: ADMIN)', type: 'text', required: true },
+  ];
+
+  tableColumns: DynamicTableColumn<RoleResponseInterface>[] = [
+    {
+      key: 'roleName',
+      label: 'Identificador',
+    },
   ];
 
   ngOnInit() {
@@ -45,7 +48,6 @@ export class RolesComponent {
   }
 
   onCreateRole(value: any) {
-    console.log(value);
     this.roleService.createRole(value).subscribe({
       next: (role) => {
         this.roles.update((list) => [...list, role]);
@@ -57,31 +59,6 @@ export class RolesComponent {
       },
     });
   }
-
-  // deleteRole(id: number) {
-  //   const dialogRef = this.dialog.open(ConfirmDialogComponent, { width: '350px' });
-
-  //   dialogRef.afterClosed().subscribe(result => {
-  //     if (result) {
-  //       this.roleService.deleteById(id).subscribe({
-  //         next: () => {
-  //           this.roles.update(list => list.filter(r => r.idRole !== id));
-  //           this.notify('Rol eliminado con éxito');
-  //         },
-  //         error: (err) => {
-  //           console.error(err);
-  //           this.notify('Error: No se ha podido eliminar el rol', 'error');
-  //         }
-  //       });
-  //     }
-  //   });
-  // }
-
-  // onCategoryChange(value: string) {
-  //   this.selectedCategory.set(value);
-  //   const all = this.roleService.getRoles();
-  //   this.roles.set(value === 'ALL' ? all : all.filter(r => r.roleCategory === value));
-  // }
 
   trackById(index: number, item: any) {
     return item.idRole;

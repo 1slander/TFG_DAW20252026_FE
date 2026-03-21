@@ -6,7 +6,7 @@ export interface UserInterface{
     lastName:string;
     email:string;
     password:string;
-    isActive: boolean;
-    createdAt:string;
-    updatedAt:string;
+    isActive?: boolean;
+    createdAt?:string;
+    updatedAt?:string;
 }

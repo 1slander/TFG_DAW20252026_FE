@@ -7,20 +7,23 @@ import { DynamicFormComponent } from '../../shared/components/dynamic-form/dynam
 import { FormFieldInterface } from '../../interfaces/form-field';
 import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog';
 import { MatDialog } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { SearchBoxComponent } from '../../shared/components/search-box/search-box';
 import { CreatePanelComponent } from '../../shared/components/create-panel/create-panel';
 import { AdminResponseInterface } from '../../interfaces/admin';
 import { NotificationService } from '../../core/services/notification.service';
+import { DynamicTableComponent } from '../../shared/components/dynamic-table/dynamic-table';
+import { DynamicTableAction, DynamicTableColumn } from '../../interfaces/dynamic-table';
+
 @Component({
   selector: 'app-admin',
-  standalone: true, // Asegúrate de que sea standalone
+  standalone: true,
   imports: [
     MaterialModule,
     CommonModule,
     DynamicFormComponent,
     SearchBoxComponent,
     CreatePanelComponent,
+    DynamicTableComponent,
   ],
   templateUrl: './admin.html',
   styleUrl: './admin.scss',
@@ -29,35 +32,35 @@ export class AdminComponent {
   protected adminService = inject(AdminService);
   public screenSize = inject(ScreenSizeService);
   private dialog = inject(MatDialog);
-
   private notificationService = inject(NotificationService);
-  // Lista que se muestra en la tabla
+
   admins = signal<AdminResponseInterface[]>([]);
   allAdmins: AdminResponseInterface[] = [];
 
-  displayedColumns: string[] = ['username', 'email', 'actions'];
-
-  // Lógica del Formulario
   showCreateForm = false;
+
+  tableColumns: DynamicTableColumn<AdminResponseInterface>[] = [
+    { key: 'username', label: 'Nombre' },
+    { key: 'email', label: 'Email' },
+  ];
+
+  tableActions: DynamicTableAction<AdminResponseInterface>[] = [
+    {
+      id: 'delete',
+      icon: 'delete',
+      tooltip: 'Eliminar administrador',
+    },
+  ];
+
   adminFields: FormFieldInterface[] = [
     { name: 'username', label: 'Nombre de usuario', type: 'text', required: true },
     { name: 'email', label: 'Email', type: 'email', required: true },
     { name: 'password', label: 'Contraseña', type: 'password', required: true },
-    // {
-    //   name: 'role',
-    //   label: 'Rol',
-    //   type: 'select',
-    //   required: true,
-    //   options: [{ value: 'ADMIN', label: 'Admin' }],
-    // },
   ];
-
-  // Al iniciar
 
   ngOnInit() {
     this.adminService.getAllAdmins().subscribe({
       next: (data) => {
-        console.log(data);
         this.allAdmins = data;
         this.admins.set(data);
       },
@@ -67,17 +70,18 @@ export class AdminComponent {
     });
   }
 
-  // FILTRO DE TEXTO
   applyFilter(filterValue: string) {
     if (!filterValue) {
       this.admins.set(this.allAdmins);
       return;
     }
 
+    const lower = filterValue.toLowerCase();
+
     const filtered = this.allAdmins.filter(
       (admin) =>
-        admin.username.toLowerCase().includes(filterValue.toLowerCase()) ||
-        admin.email.toLowerCase().includes(filterValue.toLowerCase()),
+        admin.username.toLowerCase().includes(lower) ||
+        admin.email.toLowerCase().includes(lower),
     );
 
     this.admins.set(filtered);
@@ -86,7 +90,6 @@ export class AdminComponent {
   onCreateAdmin(value: any) {
     this.adminService.createAdmin(value).subscribe({
       next: () => {
-        // Refrescamos la lista después de que el backend confirme creación
         this.adminService.getAllAdmins().subscribe({
           next: (data) => {
             this.allAdmins = data;
@@ -103,6 +106,12 @@ export class AdminComponent {
         this.notificationService.notify('Error: No se ha podido crear el administrador', 'error');
       },
     });
+  }
+
+  onTableAction(event: { action: string; row: AdminResponseInterface }): void {
+    if (event.action === 'delete') {
+      this.deleteAdmin(event.row.idAdmin);
+    }
   }
 
   deleteAdmin(id: number) {
@@ -125,9 +134,5 @@ export class AdminComponent {
         });
       }
     });
-  }
-
-  trackById(index: number, item: AdminResponseInterface): number {
-    return item.idAdmin;
   }
 }
