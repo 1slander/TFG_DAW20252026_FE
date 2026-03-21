@@ -13,6 +13,7 @@ export interface EmployeeInterface extends UserInterface {
   role: string;
   restaurant?: string;
   shift?: string;
+  hireDate?: string;
 }
 
 export interface EmployeeCreateInterface extends UserInterface {

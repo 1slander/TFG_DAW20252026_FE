@@ -4,6 +4,11 @@ import { EmployeeCreateInterface, EmployeeInterface } from '../../interfaces/emp
 import { RoleService } from './role.service';
 import { environment } from '../../../environment';
 
+export interface ChangePasswordPayload {
+  currentPassword: string;
+  newPassword: string;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -22,6 +27,18 @@ export class EmployeeService {
   getEmployeeById(id: number) {
     return this.http.get<EmployeeInterface>(`${environment.apiUrl}employees/${id}`);
   }
+
+  // ── PERFIL PROPIO ──────────────────────────────────────────
+  getMyProfile() {
+    return this.http.get<EmployeeInterface>(`${environment.apiUrl}employees/me`);
+  }
+
+  changeMyPassword(payload: ChangePasswordPayload) {
+    return this.http.put<string>(`${environment.apiUrl}employees/me/password`, payload, {
+      responseType: 'text' as 'json',
+    });
+  }
+  // ───────────────────────────────────────────────────────────
 
   createEmployees(employee: EmployeeCreateInterface) {
     return this.http.post<EmployeeInterface>(
