@@ -1,4 +1,4 @@
-@import "../user/users.scss";
+@use "../user/users.scss" as *;
 
 .filters-container {
     display: flex;

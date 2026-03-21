@@ -8,8 +8,8 @@ import { AdminLoginComponent } from './features/auth/admin-login/admin-login';
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: 'dashboard',
-    pathMatch: 'full',
+    loadComponent: () => import('./features/landing/landing').then((m) => m.LandingComponent),
+    title: 'ReservaYa - Gestión de Reservas',
   },
 
   // RUTAS DE AUTH DE USUARIO

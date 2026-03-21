@@ -9,6 +9,7 @@ import { EmployeeService } from '../../core/services/employee.service';
 import { ShiftService } from '../../core/services/shift.service';
 import { NotificationService } from '../../core/services/notification.service';
 import { ScreenSizeService } from '../../core/services/screen-size';
+import { AuthService } from '../../core/services/auth.service';
 import { C } from '@angular/cdk/keycodes';
 
 @Component({
@@ -23,7 +24,12 @@ export class ShiftsComponent {
   private shiftService = inject(ShiftService);
   private notificationService = inject(NotificationService);
   public screenSize = inject(ScreenSizeService);
+  private authService = inject(AuthService);
+
   showCreateShiftPanel = false;
+
+  // canManageShifts: Solo Roles >= ROLE_ASSISTANT_MANAGER (Nivel 2)
+  canManageShifts = signal<boolean>(false);
 
   shiftTypes = ['MORNING', 'AFTERNOON', 'EVENING', 'NIGHT'];
 
@@ -33,8 +39,14 @@ export class ShiftsComponent {
   availableShifts = signal<ShiftInterface[]>([]);
 
   ngOnInit() {
+    this.checkPermissions();
     this.loadEmployees();
     this.loadShifts();
+  }
+
+  checkPermissions() {
+    const level = this.authService.currentLevel;
+    this.canManageShifts.set(level >= 2);
   }
 
 loadEmployees() {
@@ -112,6 +124,10 @@ buildShiftGroups(employees: EmployeeInterface[]) {
   }
 
   changeEmployeeShift(employeeId: number, shiftId: number) {
+    if (!this.canManageShifts()) {
+      this.notificationService.notify('No tienes permiso para asignar turnos', 'error');
+      return;
+    }
     this.employeeService.assignShiftToEmployee(employeeId, shiftId).subscribe({
       next: () => {
         this.notificationService.notify('Turno actualizado correctamente', 'success');
@@ -124,6 +140,10 @@ buildShiftGroups(employees: EmployeeInterface[]) {
   }
 
   deleteShift(idShift: number) {
+    if (!this.canManageShifts()) {
+      this.notificationService.notify('No tienes permiso para eliminar turnos', 'error');
+      return;
+    }
     this.shiftService.deleteShift(idShift).subscribe({
       next: () => {
         this.notificationService.notify('Turno eliminado correctamente', 'success');
@@ -136,19 +156,40 @@ buildShiftGroups(employees: EmployeeInterface[]) {
     });
   }
 
-createShift(assignShift: string) {
-  this.shiftService.createShift({ assignShift }).subscribe({
-    next: () => {
-      this.notificationService.notify('Turno creado correctamente', 'success');
-      this.loadShifts();
-      this.loadEmployees();
-      this.showCreateShiftPanel = false;
-    },
-    error: () => {
-      this.notificationService.notify('No se pudo crear el turno', 'error');
-    },
-  });
-}
+  unassignEmployee(employeeId: number) {
+    if (!this.canManageShifts()) {
+      this.notificationService.notify('No tienes permiso para desasignar turnos', 'error');
+      return;
+    }
+    // Usamos shiftId = 0 para representar "quitar turno" en nuestro nuevo backend
+    this.employeeService.assignShiftToEmployee(employeeId, 0).subscribe({
+      next: () => {
+        this.notificationService.notify('Empleado quitado del turno correctamente', 'success');
+        this.loadEmployees();
+      },
+      error: () => {
+        this.notificationService.notify('No se pudo quitar al empleado del turno', 'error');
+      },
+    });
+  }
+
+  createShift(assignShift: string) {
+    if (!this.canManageShifts()) {
+      this.notificationService.notify('No tienes permiso para crear turnos', 'error');
+      return;
+    }
+    this.shiftService.createShift({ assignShift }).subscribe({
+      next: () => {
+        this.notificationService.notify('Turno creado correctamente', 'success');
+        this.loadShifts();
+        this.loadEmployees();
+        this.showCreateShiftPanel = false;
+      },
+      error: () => {
+        this.notificationService.notify('No se pudo crear el turno', 'error');
+      },
+    });
+  }
 
   updateShift(idShift: number, assignShift: string) {
     this.shiftService.updateShift(idShift, { assignShift }).subscribe({
