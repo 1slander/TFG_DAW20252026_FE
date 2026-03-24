@@ -29,6 +29,7 @@ export interface AuthResponse {
 export class AuthService {
   private roleSignal = signal<Role | null>(null);
   private usernameSignal = signal<string | null>(null);
+  private fullNameSignal = signal<string | null>(null);
 
   private http = inject(HttpClient);
   private router = inject(Router);
@@ -49,6 +50,14 @@ export class AuthService {
     return this.usernameSignal();
   }
 
+  get userFullName(): string | null {
+    return this.fullNameSignal();
+  }
+
+  setFullName(name: string) {
+    this.fullNameSignal.set(name);
+  }
+
   /**
    * Performs standard user login using DNI and password
    */
@@ -63,8 +72,7 @@ export class AuthService {
     return this.http.post(`${environment.apiUrl}signup`, data);
   }
 
-  // Mantenemos los niveles simplificados
-  private readonly roleLevels: Record<Role, number> = {
+  public readonly roleLevels: Record<string, number> = {
     ROLE_EMPLOYEE: 0,
     ROLE_TEAM_LEADER: 1,
     ROLE_ASSISTANT_MANAGER: 2,
@@ -125,6 +133,7 @@ export class AuthService {
     localStorage.removeItem('token');
     this.roleSignal.set(null);
     this.usernameSignal.set(null);
+    this.fullNameSignal.set(null);
   }
 
   getDecodedToken(): JwtPayloadInterface | null {
@@ -144,5 +153,9 @@ export class AuthService {
   // }
   hasRole(role: Role): boolean {
     return this.roleValue === role;
+  }
+
+  isAdmin(): boolean {
+    return this.roleValue === Role.ROLE_ADMIN;
   }
 }

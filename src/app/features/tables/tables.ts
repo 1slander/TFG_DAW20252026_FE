@@ -1,4 +1,4 @@
-import { Component, HostListener, inject, signal, OnInit } from '@angular/core';
+import { Component, HostListener, inject, signal, OnInit, computed } from '@angular/core';
 import { TableService } from '../../core/services/table.service';
 import { TableCreateInterface, TableResponseInterface } from '../../interfaces/table';
 import { NotificationService } from '../../core/services/notification.service';
@@ -47,9 +47,10 @@ export class TablesComponent implements OnInit {
   private authService = inject(AuthService);
 
   // --- PERMISSIONS (RBAC) ---
-  canModifyEverything = signal<boolean>(false); // Owner/Admin: Add/Delete/Resize/Rotate
-  canMoveTables = signal<boolean>(false);      // Owner/Admin/Manager: Drag & Drop tables
-  canAssignEmployees = signal<boolean>(false); // All except ROLE_EMPLOYEE
+  canManageTables = signal<boolean>(false);
+  canManageLayout = signal<boolean>(false);
+  canMoveTables = signal<boolean>(false);
+  canAssignEmployees = signal<boolean>(false);
   isEmployeeOnly = signal<boolean>(false);      // Read-only view
 
   tableList = signal<TableResponseInterface[]>([]);
@@ -94,21 +95,23 @@ export class TablesComponent implements OnInit {
   }
 
   checkPermissions() {
-    const roleValue = this.authService.roleValue;
     const level = this.authService.currentLevel;
 
-    // canModifyEverything: Solo ROLE_OWNER (4) o ROLE_ADMIN (5)
-    this.canModifyEverything.set(level >= 4);
-
-    // canMoveTables: Todos los roles pueden mover mesas dentro de su restaurante
+    this.canManageTables.set(level >= 0);
+    this.canManageLayout.set(level >= 4);
     this.canMoveTables.set(level >= 0);
-
-    // canAssignEmployees: Todos excepto ROLE_EMPLOYEE (0) -> LEVEL > 0
-    this.canAssignEmployees.set(level > 0);
-
-    // isEmployeeOnly: Solo ROLE_EMPLOYEE (0)
-    this.isEmployeeOnly.set(level === 0);
+    this.canAssignEmployees.set(level >= 0);
+    this.isEmployeeOnly.set(false);
   }
+
+  filteredEmployees = computed(() => {
+    const all = this.availableEmployees();
+    if (this.authService.currentLevel >= 1) return all;
+    
+    // Si es nivel 0 (Employee), solo puede verse a sí mismo para asignarse
+    const myDni = (this.authService.usernameValue || '').trim().toUpperCase();
+    return all.filter(e => (e.dni || '').trim().toUpperCase() === myDni);
+  });
 
   getDatosIniciales() {
     this.loadRestaurant();
@@ -155,7 +158,7 @@ export class TablesComponent implements OnInit {
   }
 
   addFloor() {
-    if (!this.canModifyEverything()) return;
+    if (!this.canManageLayout()) return;
     
     const dialogRef = this.dialog.open(FloorNameDialogComponent, {
       width: '400px'
@@ -176,7 +179,7 @@ export class TablesComponent implements OnInit {
   }
 
   deleteFloor(event: MouseEvent, floorId: number) {
-    if (!this.canModifyEverything()) return;
+    if (!this.canManageLayout()) return;
     event.stopPropagation(); // Evitar seleccionar la planta al pulsar borrar
 
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
@@ -251,7 +254,7 @@ export class TablesComponent implements OnInit {
   }
 
   onCreateMesa(tableData: any) {
-    if (!this.canModifyEverything()) return;
+    if (!this.canManageTables()) return;
 
     const dataWithFloor = { ...tableData, idFloor: this.activeFloorId() };
     this.tablesService.createTable(this.idRestaurant(), dataWithFloor).subscribe({
@@ -291,7 +294,7 @@ export class TablesComponent implements OnInit {
   }
 
   deleteTable(id: number) {
-    if (!this.canModifyEverything()) return;
+    if (!this.canManageTables()) return;
 
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '400px',
@@ -313,7 +316,7 @@ export class TablesComponent implements OnInit {
   // --- ELEMENTOS DECORATIVOS ---
 
   addElement(type: string) {
-    if (!this.canModifyEverything()) return;
+    if (!this.canManageLayout()) return;
 
     let w = 40;
     let h = 40;
@@ -348,7 +351,7 @@ export class TablesComponent implements OnInit {
   }
 
   deleteElement(id: number) {
-    if (!this.canModifyEverything()) return;
+    if (!this.canManageLayout()) return;
 
     this.elementService.deleteElement(id).subscribe({
       next: () => {
@@ -359,7 +362,7 @@ export class TablesComponent implements OnInit {
   }
 
   rotateElement(element: ElementResponseInterface) {
-    if (!this.canModifyEverything()) return;
+    if (!this.canManageLayout()) return;
 
     const newRotation = element.rotation === 0 ? 90 : 0;
     element.rotation = newRotation;
@@ -386,7 +389,7 @@ export class TablesComponent implements OnInit {
   }
 
   onElementDragEnd(event: CdkDragEnd, element: ElementResponseInterface) {
-    if (this.isResizing || !this.canModifyEverything()) return;
+    if (this.isResizing || !this.canManageLayout()) return;
 
     const pos = event.source.getFreeDragPosition();
     const currentScale = this.zoom();
@@ -403,7 +406,7 @@ export class TablesComponent implements OnInit {
   }
 
   startResize(event: MouseEvent, element: ElementResponseInterface) {
-    if (!this.canModifyEverything()) return;
+    if (!this.canManageLayout()) return;
     
     event.stopPropagation();
     event.preventDefault();

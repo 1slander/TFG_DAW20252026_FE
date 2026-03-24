@@ -4,7 +4,7 @@
       <div class="users-header">
         <h2>{{ restaurantName() }}</h2>
       </div>
-      <app-create-panel *ngIf="canModifyEverything()" title="Añadir nueva mesa" [(expanded)]="showCreateForm">
+      <app-create-panel *ngIf="canManageTables()" title="Añadir nueva mesa" [(expanded)]="showCreateForm">
         <app-dynamic-form [fields]="tableFields" [title]="'Añadir Mesas'"
           [subtitle]="'Rellena la información de tu mesa'" [submitLabel]="'Añadir Mesa'"
           (formSubmit)="onCreateMesa($event)">
@@ -39,7 +39,7 @@
         </button>
 
         <!-- BOTÓN ELIMINAR PLANTA ACTUAL (VISIBLE SOLO EN PLANTAS NO PRINCIPALES) -->
-        <button *ngIf="canModifyEverything() && activeFloorId() && !isPrimaryFloor(activeFloorId()!) && floors().length > 1" 
+        <button *ngIf="canManageLayout() && activeFloorId() && !isPrimaryFloor(activeFloorId()!) && floors().length > 1" 
                 mat-stroked-button color="warn"
                 (click)="deleteFloor($event, activeFloorId()!)"
                 matTooltip="Eliminar permanentemente esta planta">
@@ -47,7 +47,7 @@
           Eliminar planta actual
         </button>
 
-        <div class="element-actions" *ngIf="canModifyEverything()">
+        <div class="element-actions" *ngIf="canManageLayout()">
           <button mat-flat-button color="accent" [matMenuTriggerFor]="addMenu">
             <mat-icon>add_circle_outline</mat-icon>
             Añadir Elemento
@@ -101,7 +101,7 @@
           <!-- DECORATIVE ELEMENTS -->
           <div *ngFor="let el of elementList()" class="restaurant-element" [ngClass]="el.type" [style.left.px]="el.posX"
             [style.top.px]="el.posY" [style.width.px]="el.width" [style.height.px]="el.height" cdkDrag
-            [cdkDragDisabled]="!canModifyEverything()"
+            [cdkDragDisabled]="!canManageLayout()"
             [cdkDragScale]="zoom()" cdkDragBoundary=".restaurant-floor" (cdkDragEnded)="onElementDragEnd($event, el)">
             <!-- Iconos específicos por tipo -->
             <mat-icon *ngIf="el.type === 'WINDOW'" class="element-icon"
@@ -121,7 +121,7 @@
             <mat-icon *ngIf="el.type === 'STAIRS'" class="element-icon"
               [style.rotate]="el.rotation + 'deg'">stairs</mat-icon>
 
-            <div class="element-controls" *ngIf="canModifyEverything()">
+            <div class="element-controls" *ngIf="canManageLayout()">
               <button mat-icon-button class="control-btn rotate-btn"
                 (click)="$event.stopPropagation(); rotateElement(el)" matTooltip="Girar Muro/Elemento">
                 <mat-icon>rotate_right</mat-icon>
@@ -132,7 +132,7 @@
               </button>
             </div>
 
-            <div class="resize-handle" *ngIf="canModifyEverything()" (mousedown)="startResize($event, el)"></div>
+            <div class="resize-handle" *ngIf="canManageLayout()" (mousedown)="startResize($event, el)"></div>
           </div>
 
           <!-- TABLES -->
@@ -171,7 +171,7 @@
                 <!-- Menu to assign -->
                 <mat-menu #assignMenu="matMenu" class="employee-select-menu">
                   <div class="menu-title">Asignar Empleado</div>
-                  <button mat-menu-item *ngFor="let emp of availableEmployees()"
+                  <button mat-menu-item *ngFor="let emp of filteredEmployees()"
                     (click)="assignEmployee(table.idTable, emp.idEmployee!)">
                     <mat-icon>person</mat-icon>
                     <span>{{ emp.firstName }} {{ emp.lastName }}</span>
@@ -196,7 +196,7 @@
 
                 <!-- Menu to reassign -->
                 <mat-menu #reassignMenu="matMenu">
-                  <button mat-menu-item *ngFor="let emp of availableEmployees()"
+                  <button mat-menu-item *ngFor="let emp of filteredEmployees()"
                     (click)="reassignEmployee(table.idTable, table.idAssignment!, emp.idEmployee!)">
                     <mat-icon>person</mat-icon>
                     <span>{{ emp.firstName }} {{ emp.lastName }}</span>
@@ -232,7 +232,7 @@
                 <mat-icon>schedule</mat-icon>
               </button>
 
-              <button *ngIf="canModifyEverything()" mat-mini-fab color="warn" (click)="deleteTable(table.idTable)" matTooltip="Eliminar mesa">
+              <button *ngIf="canManageTables()" mat-mini-fab color="warn" (click)="deleteTable(table.idTable)" matTooltip="Eliminar mesa">
                 <mat-icon>delete</mat-icon>
               </button>
             </div>
@@ -242,7 +242,7 @@
       
       <!-- FLOOR SELECTOR (RIGHT SIDEBAR) -->
       <div class="floor-selector">
-        <div *ngIf="canModifyEverything()" class="floor-item add-floor" (click)="addFloor()" matTooltip="Añadir Planta">
+        <div *ngIf="canManageLayout()" class="floor-item add-floor" (click)="addFloor()" matTooltip="Añadir Planta">
           <mat-icon>add</mat-icon>
         </div>
         

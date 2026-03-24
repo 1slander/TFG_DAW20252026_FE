@@ -8,6 +8,7 @@ import { ThemeSelectorComponent } from "../../shared/components/theme-selector/t
 import { SideBarMenuComponent } from '../../shared/components/sidebar-menu/sidebar-menu';
 import { AuthService } from '../../core/services/auth.service';
 import { AdminService } from '../../core/services/admin.service';
+import { EmployeeService } from '../../core/services/employee.service';
 import { Role } from '../../core/models/RoleEnum';
 
 
@@ -23,6 +24,7 @@ export class DashboardComponent implements OnInit {
   private readonly screenSizeService = inject(ScreenSizeService);
   public authService = inject(AuthService); // Injecting AuthService directly
   private adminService = inject(AdminService);
+  private employeeService = inject(EmployeeService);
   protected readonly Role = Role;
 
 
@@ -46,6 +48,28 @@ export class DashboardComponent implements OnInit {
   }
 
   ngOnInit() {
-    // No longer parsing {area} from route. Role is handled by AuthService globally.
+    this.loadUserProfile();
+  }
+
+  private loadUserProfile() {
+    const role = this.authService.roleValue;
+    if (role && role !== Role.ROLE_ADMIN) {
+      this.employeeService.getMyProfile().subscribe({
+        next: (profile) => {
+          if (profile) {
+            this.authService.setFullName(`${profile.firstName} ${profile.lastName}`);
+          }
+        },
+        error: () => {
+          // Fallback to username if profile fetch fails
+          if (this.authService.usernameValue) {
+            this.authService.setFullName(this.authService.usernameValue);
+          }
+        }
+      });
+    } else if (this.authService.usernameValue) {
+      // For Admins, use the username as full name
+      this.authService.setFullName(this.authService.usernameValue);
+    }
   }
 }

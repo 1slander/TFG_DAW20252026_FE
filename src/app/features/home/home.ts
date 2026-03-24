@@ -22,36 +22,42 @@ export class HomeComponent {
       description: 'Lista de todos los Administradores.',
       rolesAllowed: ['ROLE_ADMIN'],
       route: () => `${this.base}/admins`,
+      image: 'assets/images/modules/admins.png',
     },
     {
       title: 'Admisión',
       description: 'Aprobar o rechazar nuevos Owners.',
       rolesAllowed: ['ROLE_ADMIN'],
       route: () => `${this.base}/admision`,
+      image: 'assets/images/modules/admision.png',
     },
     {
       title: 'Roles',
       description: 'Vista para insertar nuevos roles.',
-      rolesAllowed: ['ROLE_ADMIN'], // Owner will no longer see this as requested: "Admin solo deberá ver Roles, Admins y Users"
+      rolesAllowed: ['ROLE_ADMIN'],
       route: () => `${this.base}/roles`,
+      image: 'assets/images/modules/roles.png',
     },
     {
       title: 'Usuarios',
       description: 'Vista de todos los usuarios.',
-      rolesAllowed: ['ROLE_ADMIN'], // ONLY ADMIN as requested
+      rolesAllowed: ['ROLE_ADMIN'],
       route: () => `${this.base}/users`,
+      image: 'assets/images/modules/users.png',
     },
     {
       title: 'Empleados',
       description: 'Gestión y listado de empleados.',
-      rolesAllowed: ['ROLE_OWNER', 'ROLE_MANAGER'],
+      rolesAllowed: ['ROLE_OWNER', 'ROLE_MANAGER', 'ROLE_ASSISTANT_MANAGER'],
       route: () => `${this.base}/employees`,
+      image: 'assets/images/modules/employees.png',
     },
     {
       title: 'Restaurantes',
       description: 'Módulo para la gestión de locales.',
       rolesAllowed: ['ROLE_ADMIN', 'ROLE_OWNER'],
       route: () => `${this.base}/restaurants`,
+      image: 'assets/images/modules/restaurants.png',
     },
     {
       title: 'Turnos',
@@ -64,6 +70,7 @@ export class HomeComponent {
         'ROLE_EMPLOYEE',
       ],
       route: () => `${this.base}/shifts`,
+      image: 'assets/images/modules/shifts.png',
     },
     {
       title: 'Mesas',
@@ -76,6 +83,7 @@ export class HomeComponent {
         'ROLE_EMPLOYEE',
       ],
       route: () => `${this.base}/tables`,
+      image: 'assets/images/modules/tables.png',
     },
   ];
 

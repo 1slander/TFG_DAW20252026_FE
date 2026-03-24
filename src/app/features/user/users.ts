@@ -47,9 +47,27 @@ export class UsersComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
 
-  private sourceEmployees: EmployeeInterface[] = [];
+  sourceEmployees = signal<EmployeeInterface[]>([]);
+  searchText = signal('');
+  selectedRole = signal<string | null>(null);
 
-  employees = signal<EmployeeInterface[]>([]);
+  employees = computed(() => {
+    const text = this.searchText().toLowerCase();
+    const role = this.selectedRole();
+    return this.sourceEmployees().filter((emp) => {
+      const matchesText =
+        !text ||
+        emp.firstName.toLowerCase().includes(text) ||
+        emp.lastName.toLowerCase().includes(text) ||
+        emp.email.toLowerCase().includes(text);
+
+      const empRole = typeof emp.role === 'string' ? emp.role : (emp.role as any)?.roleName;
+      const matchesRole = !role || empRole === role;
+
+      return matchesText && matchesRole;
+    });
+  });
+
   restaurants = signal<RestaurantsResponseInterface[]>([]);
   role = signal(this.authService.getRole());
 
@@ -153,8 +171,7 @@ export class UsersComponent implements OnInit {
   loadEmployees() {
     this.employeeService.getEmployeesForAdmin().subscribe({
       next: (data: EmployeeInterface[]) => {
-        this.sourceEmployees = data;
-        this.employees.set(data);
+        this.sourceEmployees.set(data);
       },
       error: (err) => {
         console.error('Error fetching employees', err);
@@ -164,20 +181,11 @@ export class UsersComponent implements OnInit {
   }
 
   applyFilter(filterValue: string) {
-    if (!filterValue) {
-      this.employees.set(this.sourceEmployees);
-      return;
-    }
+    this.searchText.set(filterValue);
+  }
 
-    const lowerFIlter = filterValue.toLowerCase();
-    this.employees.set(
-      this.sourceEmployees.filter(
-        (employee) =>
-          employee.firstName.toLowerCase().includes(lowerFIlter) ||
-          employee.lastName.toLowerCase().includes(lowerFIlter) ||
-          employee.email.toLowerCase().includes(lowerFIlter),
-      ),
-    );
+  onRoleFilterChange(role: string) {
+    this.selectedRole.set(role === 'ALL' ? null : role);
   }
 
   onCreateOwner(value: any) {

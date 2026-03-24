@@ -51,7 +51,9 @@
       [data]="restaurants()"
       [columns]="tableColumns()"
       [actions]="tableActions"
+      [rowClickable]="true"
       [emptyMessage]="'No hay restaurantes disponibles'"
+      (rowClick)="openSidenav($event)"
       (actionClick)="onTableAction($event)"
     >
     </app-dynamic-table>

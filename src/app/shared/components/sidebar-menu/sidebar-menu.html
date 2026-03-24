@@ -61,8 +61,8 @@
   </mat-list-item>
   }
 
-  <!-- Empleados (Visible para Admin con Owner y Manager) -->
-  @if (userRole === 'ROLE_OWNER' || userRole === 'ROLE_MANAGER') {
+  <!-- Empleados (Visible para Admin con Owner, Manager y Assistant Manager) -->
+  @if (userRole === 'ROLE_OWNER' || userRole === 'ROLE_MANAGER' || userRole === 'ROLE_ASSISTANT_MANAGER') {
   <mat-list-item routerLink="employees" routerLinkActive="activelink" (click)="handleItemClick()" tabindex="-1">
     <span class="icon-and-text">
       <mat-icon class="icon-margin">badge</mat-icon>

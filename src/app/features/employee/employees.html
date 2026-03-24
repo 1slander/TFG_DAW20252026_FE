@@ -23,7 +23,7 @@
                 <span class="label">Email</span>
                 <span class="value">{{ selectedEmployee()?.email }}</span>
               </div>
-              <div class="info-item">
+              <div class="info-item" *ngIf="canSeeSelectedSalary()">
                 <span class="label">Salario</span>
                 <span class="value">{{ selectedEmployee()?.hourlyWage }}€/h</span>
               </div>
@@ -33,21 +33,15 @@
                   {{ getRoleName(selectedEmployee()) }}
                 </span>
               </div>
-              <div class="info-item full">
-                <span class="label">Estado</span>
-                <span class="value status" [class.active]="selectedEmployee()?.isActive">
-                  {{ selectedEmployee()?.isActive ? 'Activo' : 'Inactivo' }}
-                </span>
-              </div>
             </div>
 
-            <div class="view-actions">
+            <div class="view-actions" *ngIf="canEditSelectedEmployee()">
               <button mat-flat-button color="primary" (click)="toggleEdit()">
                 <mat-icon>edit</mat-icon>
                 Modificar Datos
               </button>
 
-              @if (getRoleName(selectedEmployee()) !== 'ROLE_OWNER') {
+              @if (canDeleteSelectedEmployee()) {
                 <button
                   mat-stroked-button
                   color="warn"

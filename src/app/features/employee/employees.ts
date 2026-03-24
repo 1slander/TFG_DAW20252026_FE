@@ -47,6 +47,77 @@ export class EmployeesComponent {
   selectedEmployee = signal<EmployeeInterface | null>(null);
   sidenavOpen = signal(false);
   isEditingEmployee = signal(false);
+  canEditSelectedEmployee = computed(() => {
+    const selected = this.selectedEmployee();
+    if (!selected) return false;
+
+    const loggedInDni = (this.authService.usernameValue || '').trim().toUpperCase();
+    const targetDni = (selected.dni || '').trim().toUpperCase();
+    
+    // Si es mi propio perfil, siempre puedo editar mis datos básicos
+    if (targetDni === loggedInDni) return true;
+
+    const loggedInLevel = this.authService.currentLevel;
+    const targetRoleName = this.getRoleName(selected).trim().toUpperCase();
+    const targetLevel = this.authService.roleLevels[targetRoleName] ?? 0;
+
+    // Solo nivel 2+ puede editar a otros, y solo si son de nivel inferior
+    return loggedInLevel >= 2 && loggedInLevel > targetLevel;
+  });
+  canDeleteSelectedEmployee = computed(() => {
+    const selected = this.selectedEmployee();
+    if (!selected) return false;
+
+    const loggedInDni = (this.authService.usernameValue || '').trim().toUpperCase();
+    const targetDni = (selected.dni || '').trim().toUpperCase();
+    
+    // No puedes borrarte a ti mismo
+    if (targetDni === loggedInDni) return false;
+
+    const loggedInLevel = this.authService.currentLevel;
+    const targetRoleName = this.getRoleName(selected).trim().toUpperCase();
+    const targetLevel = this.authService.roleLevels[targetRoleName] ?? 0;
+
+    // Solo nivel 2+ puede borrar a otros, y solo si son de nivel inferior
+    return loggedInLevel >= 2 && loggedInLevel > targetLevel;
+  });
+
+  canSeeSelectedSalary = computed(() => {
+    const selected = this.selectedEmployee();
+    if (!selected) return false;
+
+    const loggedInDni = (this.authService.usernameValue || '').trim().toUpperCase();
+    const targetDni = (selected.dni || '').trim().toUpperCase();
+    if (targetDni === loggedInDni) return true;
+
+    if (this.authService.isAdmin()) return true;
+
+    const loggedInLevel = this.authService.currentLevel;
+    const targetRoleName = this.getRoleName(selected).trim().toUpperCase();
+    const targetLevel = this.authService.roleLevels[targetRoleName] ?? 0;
+
+    return loggedInLevel > targetLevel;
+  });
+
+  canEditSelectedSalary = computed(() => {
+    const selected = this.selectedEmployee();
+    if (!selected) return false;
+
+    const loggedInDni = (this.authService.usernameValue || '').trim().toUpperCase();
+    const targetDni = (selected.dni || '').trim().toUpperCase();
+    const isSelf = targetDni === loggedInDni;
+    
+    // NUNCA puedes editar tu propio salario
+    if (isSelf) return false;
+
+    if (this.authService.isAdmin()) return true;
+
+    const loggedInLevel = this.authService.currentLevel;
+    const targetRoleName = this.getRoleName(selected).trim().toUpperCase();
+    const targetLevel = this.authService.roleLevels[targetRoleName] ?? 0;
+
+    return loggedInLevel > targetLevel;
+  });
 
   showCreateForm = false;
 
@@ -119,7 +190,6 @@ export class EmployeesComponent {
         options: this.buildRoleOptions(),
         required: true,
       },
-      { name: 'isActive', label: 'Activo', type: 'checkbox' },
     ];
 
     this.getRestaurantName();
@@ -190,7 +260,7 @@ export class EmployeesComponent {
     this.isEditingEmployee.set(false);
     this.sidenavOpen.set(true);
 
-    const isOwnerSelected = this.getRoleName(employee) === 'ROLE_OWNER';
+    const isOwnerSelected = this.getRoleName(employee).trim().toUpperCase() === 'ROLE_OWNER';
 
     if (isOwnerSelected) {
       this.editEmployeeFields = [
@@ -199,27 +269,46 @@ export class EmployeesComponent {
         { name: 'email', label: 'Email', type: 'email', required: true },
       ];
     } else {
+      const loggedInDni = (this.authService.usernameValue || '').trim().toUpperCase();
+      const targetDni = (employee.dni || '').trim().toUpperCase();
+      const isSelf = targetDni === loggedInDni;
+      const loggedInLevel = this.authService.currentLevel;
+      const targetRoleName = this.getRoleName(employee).trim().toUpperCase();
+      const targetLevel = this.authService.roleLevels[targetRoleName] ?? 0;
+
+      const canChangeRole = !isSelf && loggedInLevel >= 2 && loggedInLevel > targetLevel;
+
       this.editEmployeeFields = [
         { name: 'firstName', label: 'Nombre', type: 'text', required: true },
         { name: 'lastName', label: 'Apellidos', type: 'text', required: true },
         { name: 'email', label: 'Email', type: 'email', required: true },
-        { name: 'hourlyWage', label: 'Salario por hora', type: 'number', required: true },
-        {
+      ];
+
+      if (this.canEditSelectedSalary()) {
+        this.editEmployeeFields.push({
+          name: 'hourlyWage',
+          label: 'Salario por hora',
+          type: 'number',
+          required: true,
+        });
+      }
+
+      if (canChangeRole) {
+        this.editEmployeeFields.push({
           name: 'role',
           label: 'Rol',
           type: 'select',
           options: this.buildRoleOptions(),
           required: true,
-        },
-        { name: 'isActive', label: 'Activo', type: 'checkbox' },
-      ];
+        });
+      }
+
     }
 
     this.editInitialValues = {
       firstName: employee.firstName,
       lastName: employee.lastName,
       email: employee.email,
-      isActive: employee.isActive,
       hourlyWage: employee.hourlyWage,
       role: this.getRoleName(employee),
     };

@@ -31,12 +31,26 @@
     <div class="users-header">
       <h2>Lista de Usuarios</h2>
 
-      <app-search-box
-        label="Buscar por nombre o email"
-        placeholder="Ej: Carlos"
-        (valueChange)="applyFilter($event)"
-      >
-      </app-search-box>
+      <div class="users-filters">
+        <app-search-box
+          label="Buscar por nombre o email"
+          placeholder="Ej: Carlos"
+          (valueChange)="applyFilter($event)"
+        >
+        </app-search-box>
+
+        <mat-form-field appearance="outline" class="role-filter no-subscript">
+          <mat-label>Filtrar por Rol</mat-label>
+          <mat-select (selectionChange)="onRoleFilterChange($event.value)" value="ALL">
+            <mat-option value="ALL">Todos los roles</mat-option>
+            <mat-option value="ROLE_OWNER">Owner</mat-option>
+            <mat-option value="ROLE_MANAGER">Manager</mat-option>
+            <mat-option value="ROLE_ASSISTANT_MANAGER">Assistant Manager</mat-option>
+            <mat-option value="ROLE_TEAM_LEADER">Team Leader</mat-option>
+            <mat-option value="ROLE_EMPLOYEE">Empleado</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
     </div>
 
     @if (role() === 'ROLE_ADMIN') {
@@ -60,7 +74,9 @@
       [data]="employees()"
       [columns]="tableColumns()"
       [actions]="tableActions"
+      [rowClickable]="true"
       [emptyMessage]="'No hay usuarios disponibles'"
+      (rowClick)="openSidenav($event)"
       (actionClick)="onTableAction($event)"
     >
     </app-dynamic-table>

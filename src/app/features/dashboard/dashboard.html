@@ -3,15 +3,20 @@
     matTooltipPosition="below" (click)="drawer.toggle()">
     <mat-icon>menu</mat-icon>
   </button>
-  <span>
-    {{ authService.hasRole(Role.ROLE_ADMIN) ? 'Admin' : (authService.roleValue ? authService.roleValue.replace('ROLE_',
-    '')
-    : 'User') }} Dashboard
-
-    @if (authService.usernameValue) {
-    | Hola, {{ authService.usernameValue }}
+  <div class="user-info-section">
+    @if (authService.roleValue) {
+      <span class="role-badge" [class]="authService.roleValue.toLowerCase()">
+        {{ authService.hasRole(Role.ROLE_ADMIN) ? 'Admin' : authService.roleValue.replace('ROLE_', '') }}
+      </span>
     }
-  </span>
+
+    @if (authService.userFullName) {
+      <span class="welcome-text">
+        <span class="hide-mobile">Bienvenido,</span>
+        <span class="user-name">{{ authService.userFullName }}</span>
+      </span>
+    }
+  </div>
   <span class="example-spacer"></span>
 
   <app-theme-selector />

@@ -16,8 +16,25 @@
 .users-header {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
+  align-items: center; // Cambiado a center para alinear título y filtros interactivos
   gap: var(--space-lg);
+  flex-wrap: wrap; // Permite que los filtros caigan debajo del título en móviles
+}
+
+.users-filters {
+  display: flex;
+  align-items: center; // Alineamos el buscador y el select
+  gap: var(--space-md);
+  flex-wrap: wrap; // Permite que el selector caiga debajo del buscador si no hay espacio
+  
+  app-search-box {
+    margin: 0;
+  }
+}
+
+.role-filter {
+  width: 220px;
+  margin: 0; // Prevenir márgenes extra
 }
 
 .users-header h2 {

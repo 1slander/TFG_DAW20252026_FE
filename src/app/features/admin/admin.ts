@@ -13,6 +13,7 @@ import { AdminResponseInterface } from '../../interfaces/admin';
 import { NotificationService } from '../../core/services/notification.service';
 import { DynamicTableComponent } from '../../shared/components/dynamic-table/dynamic-table';
 import { DynamicTableAction, DynamicTableColumn } from '../../interfaces/dynamic-table';
+import { DetailViewComponent } from '../../shared/components/detail-view.component/detail-view.component';
 
 @Component({
   selector: 'app-admin',
@@ -24,6 +25,7 @@ import { DynamicTableAction, DynamicTableColumn } from '../../interfaces/dynamic
     SearchBoxComponent,
     CreatePanelComponent,
     DynamicTableComponent,
+    DetailViewComponent,
   ],
   templateUrl: './admin.html',
   styleUrl: './admin.scss',
@@ -37,6 +39,9 @@ export class AdminComponent {
   admins = signal<AdminResponseInterface[]>([]);
   allAdmins: AdminResponseInterface[] = [];
 
+  selectedAdmin = signal<AdminResponseInterface | null>(null);
+  sidenavOpen = signal(false);
+
   showCreateForm = false;
 
   tableColumns: DynamicTableColumn<AdminResponseInterface>[] = [
@@ -45,6 +50,11 @@ export class AdminComponent {
   ];
 
   tableActions: DynamicTableAction<AdminResponseInterface>[] = [
+    {
+      id: 'view',
+      icon: 'visibility',
+      tooltip: 'Ver detalle',
+    },
     {
       id: 'delete',
       icon: 'delete',
@@ -87,6 +97,16 @@ export class AdminComponent {
     this.admins.set(filtered);
   }
 
+  openSidenav(admin: AdminResponseInterface) {
+    this.selectedAdmin.set(admin);
+    this.sidenavOpen.set(true);
+  }
+
+  closeSidenav() {
+    this.selectedAdmin.set(null);
+    this.sidenavOpen.set(false);
+  }
+
   onCreateAdmin(value: any) {
     this.adminService.createAdmin(value).subscribe({
       next: () => {
@@ -109,7 +129,9 @@ export class AdminComponent {
   }
 
   onTableAction(event: { action: string; row: AdminResponseInterface }): void {
-    if (event.action === 'delete') {
+    if (event.action === 'view') {
+      this.openSidenav(event.row);
+    } else if (event.action === 'delete') {
       this.deleteAdmin(event.row.idAdmin);
     }
   }
@@ -124,6 +146,9 @@ export class AdminComponent {
             this.admins.update((list) => list.filter((a) => a.idAdmin !== id));
             this.allAdmins = this.allAdmins.filter((a) => a.idAdmin !== id);
             this.notificationService.notify('Administrador borrado correctamente');
+            if (this.selectedAdmin()?.idAdmin === id) {
+              this.closeSidenav();
+            }
           },
           error: () => {
             this.notificationService.notify(

@@ -43,12 +43,6 @@
               <span class="value">{{ profile()?.email }}</span>
             </div>
             <div class="info-item">
-              <span class="label">Estado</span>
-              <span class="value status" [class.active]="profile()?.isActive">
-                {{ profile()?.isActive ? 'Activo' : 'Inactivo' }}
-              </span>
-            </div>
-            <div class="info-item">
               <span class="label">Salario/hora</span>
               <span class="value">{{ profile()?.hourlyWage | number:'1.2-2' }} €/h</span>
             </div>
